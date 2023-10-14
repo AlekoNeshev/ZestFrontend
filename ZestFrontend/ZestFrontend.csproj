@@ -49,18 +49,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Remove="Libs\**" />
+	  <Compile Remove="Libs\**" />
+	  <EmbeddedResource Remove="Libs\**" />
+	  <MauiCss Remove="Libs\**" />
+	  <MauiXaml Remove="Libs\**" />
+	  <None Remove="Libs\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Libs\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Reference Include="Zest.ViewModels">
-	    <HintPath>Libs\Zest.ViewModels.dll</HintPath>
-	  </Reference>
 	</ItemGroup>
 
 	<ItemGroup>
