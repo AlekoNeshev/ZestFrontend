@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using ZestFrontend.ViewModels;
 
 namespace ZestFrontend;
 
@@ -19,6 +20,11 @@ public static class MauiProgram
 		builder.Logging.AddDebug();
 #endif
 
-		return builder.Build();
+        builder.Services.AddSingleton<MainViewModel>();
+		builder.Services.AddSingleton<LoginViewModel>();
+        builder.Services.AddSingleton<MainPage>();
+        builder.Services.AddSingleton<Login>();
+
+        return builder.Build();
 	}
 }

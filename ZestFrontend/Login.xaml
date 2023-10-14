@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ZestFrontend.Login"
+             Title="Login"
+             xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+             x:DataType="viewmodel:LoginViewModel">
+    <Grid Padding="50, 50, 50, 50" RowSpacing="2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Label Text="Username:"></Label>
+        <Entry Grid.Row="1" Text="{Binding Username, Mode=TwoWay}"></Entry>
+        <Label Text="Password:" Grid.Row="2"></Label>
+        <Entry Grid.Row="3" IsPassword="True" Text="{Binding Password, Mode=TwoWay}"></Entry>
+        <Button Text="Submit" Grid.Row="4"/>
+    </Grid>
+</ContentPage>
