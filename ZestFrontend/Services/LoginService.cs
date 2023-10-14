@@ -8,5 +8,12 @@ namespace ZestFrontend.Services
 {
     internal class LoginService
     {
+        HttpClient _httpClient;
+        public LoginService (HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
+       
     }
 }

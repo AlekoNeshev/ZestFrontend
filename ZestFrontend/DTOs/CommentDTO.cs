@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Zest.ViewModels.ViewModels
+namespace ZestFrontend.DTOs
 {
-    public class CommentViewModel
+    public class CommentDTO
     {
         public string Publisher { get; set; }
         public string Text { get; set; }

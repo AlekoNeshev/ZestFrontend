@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Zest.ViewModels.ViewModels
+namespace ZestFrontend.DTOs
 {
-    public class CommunityViewModel
+    public class CommunityDTO
     {
         public string Name { get; set; }
         public string Description { get; set; }
