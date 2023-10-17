@@ -1,4 +1,5 @@
-﻿using ZestFrontend.ViewModels;
+﻿using ZestFrontend.Services;
+using ZestFrontend.ViewModels;
 
 namespace ZestFrontend;
 
@@ -9,8 +10,8 @@ public partial class MainPage : ContentPage
 	{
 		InitializeComponent();
 		BindingContext = viewModel;
-	}
+    }
 
- 
+
 }
 
