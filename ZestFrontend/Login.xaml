@@ -21,6 +21,6 @@
         <Entry Grid.Row="1" Text="{Binding Username, Mode=TwoWay}"></Entry>
         <Label Text="Password:" Grid.Row="2"></Label>
         <Entry Grid.Row="3" IsPassword="True" Text="{Binding Password, Mode=TwoWay}"></Entry>
-        <Button Text="Submit" Grid.Row="4"/>
+        <Button Text="Submit" Grid.Row="4" Command="{Binding LoginCommand}"/>
     </Grid>
 </ContentPage>
