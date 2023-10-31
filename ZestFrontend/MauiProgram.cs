@@ -23,12 +23,15 @@ public static class MauiProgram
 		builder.Services.AddSingleton<HttpClient>();
 		builder.Services.AddSingleton<LoginService>();
 		builder.Services.AddSingleton<PostsService>();
+		builder.Services.AddSingleton<CommunityService>();
         builder.Services.AddSingleton<MainViewModel>();
 		builder.Services.AddTransient<LoginViewModel>();
 		builder.Services.AddSingleton<PostsViewModel>();
+		builder.Services.AddSingleton<CommunitesViewModel>();
         builder.Services.AddSingleton<MainPage>();
         builder.Services.AddTransient<Login>();
 		builder.Services.AddSingleton<PostsPage>();
+		builder.Services.AddSingleton<CommunitiesPage>();
 
 
         builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
