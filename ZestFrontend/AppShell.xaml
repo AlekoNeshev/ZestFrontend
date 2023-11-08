@@ -19,8 +19,8 @@
         ContentTemplate="{DataTemplate local:PostsPage}"
         Route="MainPage" />
         <ShellContent
-        Title="Login"
-        ContentTemplate="{DataTemplate local:Login}"
+        Title="Coms"
+        ContentTemplate="{DataTemplate local:CommunitiesPage}"
         Route="MainPage" />
     </TabBar>
 

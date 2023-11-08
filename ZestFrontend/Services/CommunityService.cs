@@ -16,7 +16,7 @@ namespace ZestFrontend.Services
             _httpClient = httpClient;
         }
 
-        public async Task<List<CommunityDTO>> GetPosts()
+        public async Task<List<CommunityDTO>> GetCommunities()
         {
             var url = $"https://localhost:7183/api/Community/getAll";
             var response = await _httpClient.GetAsync(url);

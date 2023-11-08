@@ -2,11 +2,50 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ZestFrontend.CommunitiesPage"
+             xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+             x:DataType="viewmodel:CommunitesViewModel"
+             xmlns:model="clr-namespace:ZestFrontend.DTOs"
              Title="CommunitiesPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <Grid>
+        <CollectionView ItemsSource="{Binding Communities}" SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:CommunityDTO">
+                    <Grid>
+                        <Frame>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer CommandParameter="{Binding .}"
+                                                      Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunitesViewModel}}, Path=GoToCommunityDetailPageCommand}"/>
+                            </Frame.GestureRecognizers>
+                            <Grid Padding="10">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="50" />
+
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Column="0"
+                       Text="{Binding Name}"
+                       FontAttributes="Bold" 
+                               MinimumWidthRequest="100"/>
+                                <Label Grid.Row="1"
+                       Grid.Column="0"
+                       Text="{Binding Description}"
+                       FontAttributes="Italic"
+                       VerticalOptions="End" 
+                               MinimumWidthRequest="100"/>
+
+
+                            </Grid>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+    </Grid>
 </ContentPage>

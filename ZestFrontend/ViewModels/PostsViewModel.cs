@@ -30,6 +30,6 @@ namespace ZestFrontend.ViewModels
                 Posts.Add(post);
             }
         }
-
+      
     }
 }
