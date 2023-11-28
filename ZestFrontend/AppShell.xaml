@@ -22,6 +22,10 @@
         Title="Coms"
         ContentTemplate="{DataTemplate local:CommunitiesPage}"
         Route="MainPage" />
+        <ShellContent
+        Title="Account"
+        ContentTemplate="{DataTemplate local:AccountPage}"
+        Route="MainPage" />
     </TabBar>
 
 </Shell>

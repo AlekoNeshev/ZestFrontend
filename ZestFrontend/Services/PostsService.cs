@@ -27,5 +27,16 @@ namespace ZestFrontend.Services
             else
                 return null;
         }
+        public async Task<PostDTO> GetSinglePost(int id)
+        {
+            var url = $"https://localhost:7183/api/Post/{id}";
+            var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<PostDTO>();
+            }
+            else
+                return null;
+        }
     }
 }
