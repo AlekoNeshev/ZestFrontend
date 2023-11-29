@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ZestFrontend.PostDetailsPage"
+             xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+             x:DataType="viewmodel:PostDetailsViewModel"
+             xmlns:model="clr-namespace:ZestFrontend.DTOs"
+             Title="PostDetailsPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Frame>
+                <Grid Padding="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="10" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0"
+                      Text="{Binding Post.Title}"
+                      FontAttributes="Bold"
+                      MinimumWidthRequest="100"/>
+                    <Label Grid.Row="1"
+                      Grid.Column="0"
+                      Text="{Binding Post.Text}"
+                      FontAttributes="Italic"
+                      VerticalOptions="End"
+                      MinimumWidthRequest="100"/>
+                    <Button Text="L" Grid.Column="1" Command="{Binding LikePostCommand}" />
+                    <Label Text="{Binding Post.Likes}" Grid.Column="2" />
+                    <Button Text="DL" Grid.Column="1" Grid.Row="1" Command="{Binding DislikePostCommand}" />
+                    <Label Text="{Binding Post.Dislikes}" Grid.Column="2" Grid.Row="1" />
+                </Grid>
+            </Frame>
+            <Label Text="Comments" FontSize="Large" HorizontalOptions="Center" />
+            <ListView ItemsSource="{Binding Comments}">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="model:CommentDTO">
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="{Binding Publisher}" FontAttributes="Bold" />
+                                <Label Text="{Binding Text}" />
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <StackLayout Orientation="Horizontal">
+                <Entry x:Name="CommentEntry" Placeholder="Write a comment" />
+                <Button Text="Send" Command="{Binding SendCommand}" CommandParameter="{Binding Text, Source={x:Reference CommentEntry}}" />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
