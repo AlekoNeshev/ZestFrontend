@@ -30,7 +30,7 @@
                       FontAttributes="Italic"
                       VerticalOptions="End"
                       MinimumWidthRequest="100"/>
-                    <Button Text="L" Grid.Column="1" Command="{Binding LikePostCommand}" />
+                    <Button Text="L" Grid.Column="1" Command="{Binding LikePostCommand}"/>
                     <Label Text="{Binding Post.Likes}" Grid.Column="2" />
                     <Button Text="DL" Grid.Column="1" Grid.Row="1" Command="{Binding DislikePostCommand}" />
                     <Label Text="{Binding Post.Dislikes}" Grid.Column="2" Grid.Row="1" />
