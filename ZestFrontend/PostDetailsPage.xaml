@@ -37,8 +37,8 @@
                 </Grid>
             </Frame>
             <Label Text="Comments" FontSize="Large" HorizontalOptions="Center" />
-            <ListView ItemsSource="{Binding Comments}">
-                <ListView.ItemTemplate>
+            <CollectionView ItemsSource="{Binding Comments}">
+                <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:CommentDTO">
                         <ViewCell>
                             <StackLayout Orientation="Horizontal">
@@ -47,8 +47,8 @@
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
             <StackLayout Orientation="Horizontal">
                 <Entry x:Name="CommentEntry" Placeholder="Write a comment" />
                 <Button Text="Send" Command="{Binding SendCommand}" CommandParameter="{Binding Text, Source={x:Reference CommentEntry}}" />

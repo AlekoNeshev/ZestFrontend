@@ -9,6 +9,8 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(PostsPage), typeof(PostsPage));
         Routing.RegisterRoute(nameof(CommunitiesPage), typeof(CommunitiesPage));
         Routing.RegisterRoute(nameof(CommunityDetailsPage), typeof(CommunityDetailsPage));
-        
+        Routing.RegisterRoute(nameof(PostsPage), typeof(PostsPage));
+        Routing.RegisterRoute(nameof(PostDetailsPage), typeof(PostDetailsPage));
+
     }
 }

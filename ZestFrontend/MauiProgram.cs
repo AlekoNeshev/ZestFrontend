@@ -34,6 +34,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<CommunitesViewModel>();
 		builder.Services.AddSingleton<CommunityDetailsViewModel>();
 		builder.Services.AddSingleton<AccountViewModel>();
+		builder.Services.AddSingleton<PostDetailsViewModel>();
 
         builder.Services.AddSingleton<MainPage>();
         builder.Services.AddSingleton<Login>();
@@ -41,6 +42,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<CommunitiesPage>();
 		builder.Services.AddSingleton<CommunityDetailsPage>();
 		builder.Services.AddSingleton<AccountPage>();
+		builder.Services.AddSingleton<PostDetailsPage>();
 
 
         builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);

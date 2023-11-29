@@ -38,5 +38,10 @@ namespace ZestFrontend.ViewModels
         {
             await likesService.Like(authService.Id, postDTO.Id, 0, true);
         }
+        [RelayCommand]
+        async Task SendAsync()
+        {
+           // await likesService.Like(authService.Id, postDTO.Id, 0, true);
+        }
     }
 }
