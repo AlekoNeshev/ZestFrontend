@@ -6,8 +6,17 @@
              x:DataType="viewmodel:PostDetailsViewModel"
              xmlns:model="clr-namespace:ZestFrontend.DTOs"
              Title="PostDetailsPage">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding GoBackCommand}"/>
+    </Shell.BackButtonBehavior>
     <ContentPage.Content>
-        <StackLayout>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ScrollView Orientation="Vertical">
+        <StackLayout Spacing="50" Orientation="Vertical" VerticalOptions="FillAndExpand">
             <Frame>
                 <Grid Padding="10">
                     <Grid.RowDefinitions>
@@ -37,22 +46,24 @@
                 </Grid>
             </Frame>
             <Label Text="Comments" FontSize="Large" HorizontalOptions="Center" />
-            <CollectionView ItemsSource="{Binding Comments}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="model:CommentDTO">
-                        <ViewCell>
-                            <StackLayout Orientation="Horizontal">
-                                <Label Text="{Binding Publisher}" FontAttributes="Bold" />
-                                <Label Text="{Binding Text}" />
-                            </StackLayout>
-                        </ViewCell>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-            <StackLayout Orientation="Horizontal">
+                    <CollectionView ItemsSource="{Binding Comments}" MinimumHeightRequest="50">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="model:CommentDTO">
+                                <StackLayout Orientation="Horizontal" Spacing="5">
+                                    <Label Text="{Binding Publisher}" FontAttributes="Bold" />
+                                    <Label Text="{Binding Text}" />
+                                    <Label Text="{Binding PostedOn}" />
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+        </ScrollView>
+            <StackLayout Orientation="Horizontal" Grid.Row="1">
                 <Entry x:Name="CommentEntry" Placeholder="Write a comment" />
                 <Button Text="Send" Command="{Binding SendCommand}" CommandParameter="{Binding Text, Source={x:Reference CommentEntry}}" />
             </StackLayout>
-        </StackLayout>
+        </Grid>
     </ContentPage.Content>
+    
 </ContentPage>
