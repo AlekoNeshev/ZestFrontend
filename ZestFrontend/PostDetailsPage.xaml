@@ -49,11 +49,23 @@
                     <CollectionView ItemsSource="{Binding Comments}" MinimumHeightRequest="50">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="model:CommentDTO">
+                                <Frame>
                                 <StackLayout Orientation="Horizontal" Spacing="5">
                                     <Label Text="{Binding Publisher}" FontAttributes="Bold" />
                                     <Label Text="{Binding Text}" />
                                     <Label Text="{Binding PostedOn}" />
-                                </StackLayout>
+                                        <ImageButton Source="like.png" HorizontalOptions="Center"  VerticalOptions="Center" WidthRequest="5" HeightRequest="5" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=LikeCommentCommand}" CommandParameter="{Binding .}">
+                                        </ImageButton>
+                                        <Label Text="{Binding Likes}"/>
+                                            <ImageButton Source="dislike.png" HorizontalOptions="Center" VerticalOptions="Center" MaximumWidthRequest="10" MaximumHeightRequest="10" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DislikeCommentCommand}" CommandParameter="{Binding .}">
+                                        </ImageButton>
+                                        <Label Text="{Binding Dislikes}"/>
+                                        <ImageButton Source="reply.png" HorizontalOptions="Center"  VerticalOptions="Center" MaximumWidthRequest="10" MaximumHeightRequest="10">
+                                        </ImageButton>
+                                        <ImageButton Source="delete.png" HorizontalOptions="Center"  VerticalOptions="Center" MaximumWidthRequest="10" MaximumHeightRequest="10" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DeleteCommentCommand}" CommandParameter="{Binding .}">
+                                        </ImageButton>
+                                    </StackLayout>
+                                </Frame>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>

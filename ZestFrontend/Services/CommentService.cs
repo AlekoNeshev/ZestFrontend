@@ -39,5 +39,23 @@ namespace ZestFrontend.Services
             response.EnsureSuccessStatusCode();
             return response;
         }
+        public async Task<CommentDTO> GetSingleComment(int id)
+        {
+            var url = $"https://localhost:7183/api/Comments/{id}";
+            var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<CommentDTO>();
+            }
+            else
+                return null;
+        }
+        public async Task<HttpResponseMessage> DeleteComment(int commentId)
+        {
+            var url = $"https://localhost:7183/api/Comments/remove/{commentId}";
+            var response = await _httpClient.DeleteAsync(url);
+            response.EnsureSuccessStatusCode();
+            return response;
+        }
     }
 }

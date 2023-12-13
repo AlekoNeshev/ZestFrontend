@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using ZestFrontend.DTOs;
@@ -20,6 +21,7 @@ namespace ZestFrontend.ViewModels
          PostsService postsService;
          LikesService likesService;
          HubConnection connection;
+        HubConnection likesConnection;
         CommentService commentService;
 
         public PostDetailsViewModel(AuthService authService, PostsService postsService, LikesService likesService, CommentService commentService) 
@@ -29,8 +31,11 @@ namespace ZestFrontend.ViewModels
             this.likesService = likesService;          
             this.commentService = commentService;
             connection = new HubConnectionBuilder().WithUrl("https://localhost:7183/commentshub").Build();
+            likesConnection = new HubConnectionBuilder().WithUrl("https://localhost:7183/likeshub").Build();
             connection.On("CommentPosted", GetComments);
+            likesConnection.On<int>("CommentLiked", UpdateComment);
             connection.StartAsync();
+            likesConnection.StartAsync();
 
         }
         [ObservableProperty]
@@ -71,6 +76,28 @@ namespace ZestFrontend.ViewModels
         async Task GoBackAsync()
         {
             await Shell.Current.GoToAsync(nameof(PostsPage));
+        }
+        [RelayCommand]
+        async Task LikeCommentAsync(CommentDTO commentDTO)
+        {
+           await likesService.Like(authService.Id, 0, commentDTO.Id, true);
+        }
+        [RelayCommand]
+        async Task DislikeCommentAsync(CommentDTO commentDTO)
+        {
+            await likesService.Like(authService.Id, 0, commentDTO.Id, false);
+        }
+        public async void UpdateComment(int id)
+        {
+            var updatedComment = await commentService.GetSingleComment(id);
+            var comment = Comments.Where(x => x.Id==id).First();
+            comment.Likes = updatedComment.Likes;
+            comment.Dislikes = updatedComment.Dislikes;
+        }
+        [RelayCommand]
+        async Task DeleteCommentAsync(CommentDTO commentDTO)
+        {
+            await commentService.DeleteComment(commentDTO.Id);
         }
     }
 }
