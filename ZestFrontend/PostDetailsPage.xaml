@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ZestFrontend.PostDetailsPage"
+             xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+             x:DataType="viewmodel:PostDetailsViewModel"
+             xmlns:model="clr-namespace:ZestFrontend.DTOs"
+             Title="PostDetailsPage">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding GoBackCommand}"/>
+    </Shell.BackButtonBehavior>
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ScrollView Orientation="Vertical">
+        <StackLayout Spacing="50" Orientation="Vertical" VerticalOptions="FillAndExpand">
+            <Frame>
+                <Grid Padding="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="10" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0"
+                      Text="{Binding Post.Title}"
+                      FontAttributes="Bold"
+                      MinimumWidthRequest="100"/>
+                    <Label Grid.Row="1"
+                      Grid.Column="0"
+                      Text="{Binding Post.Text}"
+                      FontAttributes="Italic"
+                      VerticalOptions="End"
+                      MinimumWidthRequest="100"/>
+                    <Button Text="L" Grid.Column="1" Command="{Binding LikePostCommand}"/>
+                    <Label Text="{Binding Post.Likes}" Grid.Column="2" />
+                    <Button Text="DL" Grid.Column="1" Grid.Row="1" Command="{Binding DislikePostCommand}" />
+                    <Label Text="{Binding Post.Dislikes}" Grid.Column="2" Grid.Row="1" />
+                </Grid>
+            </Frame>
+            <Label Text="Comments" FontSize="Large" HorizontalOptions="Center" />
+                    <CollectionView ItemsSource="{Binding Comments}" MinimumHeightRequest="50">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="model:CommentDTO">
+                                <Frame>
+                                <StackLayout Orientation="Horizontal" Spacing="5">
+                                    <Label Text="{Binding Publisher}" FontAttributes="Bold" />
+                                    <Label Text="{Binding Text}" />
+                                    <Label Text="{Binding PostedOn}" />
+                                        <ImageButton Source="like.png" HorizontalOptions="Center"  VerticalOptions="Center" WidthRequest="5" HeightRequest="5" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=LikeCommentCommand}" CommandParameter="{Binding .}">
+                                        </ImageButton>
+                                        <Label Text="{Binding Likes}"/>
+                                            <ImageButton Source="dislike.png" HorizontalOptions="Center" VerticalOptions="Center" MaximumWidthRequest="10" MaximumHeightRequest="10" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DislikeCommentCommand}" CommandParameter="{Binding .}">
+                                        </ImageButton>
+                                        <Label Text="{Binding Dislikes}"/>
+                                        <ImageButton Source="reply.png" HorizontalOptions="Center"  VerticalOptions="Center" MaximumWidthRequest="10" MaximumHeightRequest="10">
+                                        </ImageButton>
+                                        <ImageButton Source="delete.png" HorizontalOptions="Center"  VerticalOptions="Center" MaximumWidthRequest="10" MaximumHeightRequest="10" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DeleteCommentCommand}" CommandParameter="{Binding .}">
+                                        </ImageButton>
+                                    </StackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+        </ScrollView>
+            <StackLayout Orientation="Horizontal" Grid.Row="1">
+                <Entry x:Name="CommentEntry" Placeholder="Write a comment" />
+                <Button Text="Send" Command="{Binding SendCommand}" CommandParameter="{Binding Text, Source={x:Reference CommentEntry}}" />
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+    
+</ContentPage>

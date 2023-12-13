@@ -25,7 +25,6 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="50" />
-
                                 </Grid.ColumnDefinitions>
 
                                 <Label Grid.Column="0"
