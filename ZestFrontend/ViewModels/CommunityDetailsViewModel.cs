@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,13 +18,28 @@ namespace ZestFrontend.ViewModels
     {
         CommunityService communityService;
         PostsService postsService;
-        public CommunityDetailsViewModel(CommunityService communityService, PostsService postsService)
-        {
-            this.communityService = communityService;
-            this.postsService = postsService;
-        }
+		LikesService likesService;
+		AuthService authService;
+		HubConnection connection;
+		public CommunityDetailsViewModel(CommunityService communityService, PostsService postsService, LikesService likesService, AuthService authService)
+		{
+			this.communityService = communityService;
+			this.postsService = postsService;
+			this.likesService=likesService;
+			this.authService=authService;
+			connection = new HubConnectionBuilder().WithUrl("https://localhost:7183/likeshub").Build();
+			connection.On<int>("SignalLike", (id) => UpdatePost(id));
+			connection.StartAsync();
+		}
+		public async void UpdatePost(int id)
+		{
+			var updatedPost = await postsService.GetSinglePost(id);
+			var post = Posts.Where(x => x.Id==id).First();
+			post.Likes = updatedPost.Likes;
+			post.Dislikes = updatedPost.Dislikes;
+		}
 
-        [ObservableProperty]
+		[ObservableProperty]
         CommunityDTO community;
 		public ObservableCollection<PostDTO> Posts { get; private set; } = new();
 
@@ -32,6 +48,16 @@ namespace ZestFrontend.ViewModels
         {
             await Shell.Current.GoToAsync(nameof(CommunitiesPage));
         }
+		[RelayCommand]
+		async Task DislikePostAsync(PostDTO postDTO)
+		{
+			await likesService.Like(authService.Id, postDTO.Id, 0, false);
+		}
+		[RelayCommand]
+		async Task LikePostAsync(PostDTO postDTO)
+		{
+			await likesService.Like(authService.Id, postDTO.Id, 0, true);
+		}
 		public async void GetComments()
 		{
 			Posts.Clear();
