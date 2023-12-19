@@ -4,11 +4,12 @@
              x:Class="ZestFrontend.CommunityDetailsPage"
              xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
              x:DataType="viewmodel:CommunityDetailsViewModel"
-             Title="CommunityDetailsPage">
+             xmlns:model="clr-namespace:ZestFrontend.DTOs"
+             Title="CommunityDetailsPage" >
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding GoBackCommand}"/>
     </Shell.BackButtonBehavior>
-    <VerticalStackLayout Padding="50" Spacing="100">
+    <VerticalStackLayout Padding="50" Spacing="10">
         <Label 
             Text="{Binding Community.Name}"
             VerticalOptions="Center" 
@@ -21,5 +22,46 @@
             Text="{Binding Community.Creator}"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
+        <CollectionView ItemsSource="{Binding Posts}" Grid.Column="1">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:PostDTO">
+                    <Grid >
+                        <Frame>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer CommandParameter="{Binding .}"
+                      Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=GoToPostDetailPageCommand}"/>
+                            </Frame.GestureRecognizers>
+                            <Grid Padding="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="10" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Column="0"
+          Text="{Binding Title}"
+          FontAttributes="Bold" 
+                  MinimumWidthRequest="100"/>
+                                <Label Grid.Row="1"
+          Grid.Column="0"
+          Text="{Binding Text}"
+          FontAttributes="Italic"
+          VerticalOptions="End" 
+                  MinimumWidthRequest="100"/>
+                                <Button Text="L" Grid.Column="1" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=LikePostCommand}" CommandParameter="{Binding .}" />
+                                <Label Text="{Binding Likes}" Grid.Column="2"/>
+                                <Button Text="DL" Grid.Column="1" Grid.Row="1"  Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=DislikePostCommand}" CommandParameter="{Binding .}" />
+                                <Label Text="{Binding Dislikes}" Grid.Column="2" Grid.Row="1"/>
+                            </Grid>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
     </VerticalStackLayout>
 </ContentPage>
