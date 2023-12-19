@@ -38,5 +38,16 @@ namespace ZestFrontend.Services
             else
                 return null;
         }
+        public async Task<List<PostDTO>> GetPostsByCommunity(int communityId)
+        {
+			var url = $"https://localhost:7183/api/Post/getByCommunity/{communityId}";
+			var response = await _httpClient.GetAsync(url);
+			if (response.IsSuccessStatusCode)
+			{
+				return await response.Content.ReadFromJsonAsync<List<PostDTO>>();
+			}
+			else
+				return null;
+		}
     }
 }
