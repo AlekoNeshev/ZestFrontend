@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Json;
@@ -49,5 +50,13 @@ namespace ZestFrontend.Services
 			else
 				return null;
 		}
-    }
+		public async Task<HttpResponseMessage> AddPost( string title, string content, int communityId, int accountId)
+		{
+			var url = $"https://localhost:7183/api/Post/add/{title}/account/{accountId}/community/{communityId}";
+			var body = JsonConvert.SerializeObject(content);
+			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
+			response.EnsureSuccessStatusCode();
+			return response;
+		}
+	}
 }

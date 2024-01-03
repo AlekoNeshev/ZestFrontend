@@ -9,7 +9,7 @@
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding GoBackCommand}"/>
     </Shell.BackButtonBehavior>
-    
+    <ScrollView Orientation="Vertical">
     <VerticalStackLayout Padding="50" Spacing="10">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -49,7 +49,7 @@
                         <Frame>
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer CommandParameter="{Binding .}"
-                      Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=GoToPostDetailPageCommand}"/>
+                      Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=GoToPostDetailPageCommand}"/>
                             </Frame.GestureRecognizers>
                             <Grid Padding="10">
                                 <Grid.RowDefinitions>
@@ -84,4 +84,5 @@
 
         </CollectionView>
     </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
