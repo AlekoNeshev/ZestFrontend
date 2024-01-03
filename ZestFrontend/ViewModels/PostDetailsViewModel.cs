@@ -41,7 +41,8 @@ namespace ZestFrontend.ViewModels
         [ObservableProperty]
         PostDTO post;
         public ObservableCollection<CommentDTO> Comments { get; private set; } = new();
-     
+        [ObservableProperty]
+        bool isBusy;
 
         [RelayCommand]
         async Task DislikePostAsync()

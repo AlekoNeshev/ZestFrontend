@@ -9,20 +9,37 @@
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding GoBackCommand}"/>
     </Shell.BackButtonBehavior>
+    
     <VerticalStackLayout Padding="50" Spacing="10">
-        <Label 
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto" />
+
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+        <Label
+            Grid.Row="0"
             Text="{Binding Community.Name}"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
         <Label 
+            Grid.Row="1"
             Text="{Binding Community.Description}"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
         <Label 
+            Grid.Row="2"
             Text="{Binding Community.Creator}"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
-        <CollectionView ItemsSource="{Binding Posts}" Grid.Column="1">
+            <Button Grid.Column="1" Text="{Binding ButtonText}" HorizontalOptions="End" Command="{Binding ChangeFollowshipStatusCommand}"/>
+        </Grid>
+    <CollectionView ItemsSource="{Binding Posts}" Grid.Column="1">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:PostDTO">
                     <Grid >
