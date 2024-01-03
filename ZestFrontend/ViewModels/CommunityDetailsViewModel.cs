@@ -106,5 +106,16 @@ namespace ZestFrontend.ViewModels
 				}
 			}
 		}
+		[RelayCommand]
+		async Task AddPost()
+		{
+			if (Community== null) return;
+
+			await Shell.Current.GoToAsync($"{nameof(AddPostPage)}?id={Community.Name}", true,
+				new Dictionary<string, object>
+			{
+			{"Community", Community }
+			});
+		}
 	}
 }
