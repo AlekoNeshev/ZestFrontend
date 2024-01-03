@@ -9,7 +9,7 @@
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding GoBackCommand}"/>
     </Shell.BackButtonBehavior>
-    
+    <ScrollView Orientation="Vertical">
     <VerticalStackLayout Padding="50" Spacing="10">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -37,7 +37,10 @@
             Text="{Binding Community.Creator}"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
+            <VerticalStackLayout HorizontalOptions="End">
             <Button Grid.Column="1" Text="{Binding ButtonText}" HorizontalOptions="End" Command="{Binding ChangeFollowshipStatusCommand}"/>
+            <Button Grid.Column="1" Text="Add" HorizontalOptions="End" Command="{Binding AddPostCommand}"/>
+            </VerticalStackLayout>
         </Grid>
     <CollectionView ItemsSource="{Binding Posts}" Grid.Column="1">
             <CollectionView.ItemTemplate>
@@ -46,7 +49,7 @@
                         <Frame>
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer CommandParameter="{Binding .}"
-                      Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=GoToPostDetailPageCommand}"/>
+                      Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=GoToPostDetailPageCommand}"/>
                             </Frame.GestureRecognizers>
                             <Grid Padding="10">
                                 <Grid.RowDefinitions>
@@ -81,4 +84,5 @@
 
         </CollectionView>
     </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
