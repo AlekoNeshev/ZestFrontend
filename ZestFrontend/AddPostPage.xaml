@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ZestFrontend.AddPostPage"
-             Title="AddPostPage">
+             x:Class="ZestFrontend.AddPostPage" 
+             xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+             x:DataType="viewmodel:AddPostViewModel"
+             Title="AddPostPage"  >
     <StackLayout
             HorizontalOptions="Center"
             Spacing="20">
-        <Label Text="Title" />
-        <Entry />
-        
-        <Label Text="Content" />
-        <Editor />
+        <Label Text="Title"/>
+        <Entry Text="{Binding Title}"/>
+
+        <Label Text="Content"/>
+        <Editor Text="{Binding Content}"/>
 
         <Label Text="Image" />
         <Image Source="image.png" />
 
-        <Button Text="Create Post" />
+        <Button Text="Create Post" Command="{Binding CreatePostCommand}"/>
     </StackLayout>
 </ContentPage>

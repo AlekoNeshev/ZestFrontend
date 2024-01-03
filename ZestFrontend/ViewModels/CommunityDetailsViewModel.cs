@@ -117,5 +117,16 @@ namespace ZestFrontend.ViewModels
 			{"Community", Community }
 			});
 		}
+		[RelayCommand]
+		async Task GoToPostDetailPageAsync(PostDTO post)
+		{
+			if (post == null) return;
+
+			await Shell.Current.GoToAsync($"{nameof(PostDetailsPage)}?id={post.Id}", true,
+				new Dictionary<string, object>
+			{
+			{"Post", post }
+			});
+		}
 	}
 }
