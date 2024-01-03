@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,7 +41,9 @@ namespace ZestFrontend.ViewModels
 		}
 
 		[ObservableProperty]
-        CommunityDTO community;
+		CommunityDTO community;
+		[ObservableProperty]
+		string buttonText;
 		public ObservableCollection<PostDTO> Posts { get; private set; } = new();
 
 		[RelayCommand]
@@ -69,7 +72,39 @@ namespace ZestFrontend.ViewModels
 		}
 		partial void OnCommunityChanged(CommunityDTO value)
 		{
+			if (value.IsSubscribed)
+			{
+				ButtonText = "Unfollow";
+			}
+			else
+			{
+				ButtonText = "Follow";
+			}
 			GetComments();
+		}
+		[RelayCommand]
+		async Task ChangeFollowshipStatusAsync()
+		{
+			if (Community.IsSubscribed)
+			{
+				
+				var result = await communityService.Unfollow(authService.Id, Community.Id);
+				if (result.StatusCode == HttpStatusCode.OK)
+				{
+					ButtonText = "Follow";
+					Community.IsSubscribed = false;
+				}
+			}
+			else
+			{
+
+				var result = await communityService.Follow(authService.Id, Community.Id);
+				if (result.IsSuccessStatusCode)
+				{
+					ButtonText = "Unfollow";
+					Community.IsSubscribed = true;
+				}
+			}
 		}
 	}
 }

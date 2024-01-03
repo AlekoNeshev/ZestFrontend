@@ -14,9 +14,11 @@ namespace ZestFrontend.ViewModels
     public partial class CommunitesViewModel : ObservableObject
     {
         CommunityService communityService;
-        public CommunitesViewModel(CommunityService communityService) 
+        AuthService authService;
+        public CommunitesViewModel(CommunityService communityService, AuthService authService) 
         { 
             this.communityService = communityService;
+            this.authService = authService;
             GetCommunities();
         }
 
@@ -25,7 +27,7 @@ namespace ZestFrontend.ViewModels
         [RelayCommand]
         public async void GetCommunities()
         {
-            foreach (var item in await communityService.GetCommunities())
+            foreach (var item in await communityService.GetCommunities(authService.Id))
             {
                 Communities.Add(item);
             }
