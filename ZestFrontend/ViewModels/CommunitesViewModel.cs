@@ -24,7 +24,7 @@ namespace ZestFrontend.ViewModels
 
         public ObservableCollection<CommunityDTO> Communities { get; } = new();
 
-        [RelayCommand]
+       
         public async void GetCommunities()
         {
             foreach (var item in await communityService.GetCommunities(authService.Id))

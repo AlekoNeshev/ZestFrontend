@@ -37,7 +37,10 @@
             Text="{Binding Community.Creator}"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
+            <VerticalStackLayout HorizontalOptions="End">
             <Button Grid.Column="1" Text="{Binding ButtonText}" HorizontalOptions="End" Command="{Binding ChangeFollowshipStatusCommand}"/>
+            <Button Grid.Column="1" Text="Add" HorizontalOptions="End" Command="{Binding AddPostCommand}"/>
+            </VerticalStackLayout>
         </Grid>
     <CollectionView ItemsSource="{Binding Posts}" Grid.Column="1">
             <CollectionView.ItemTemplate>
