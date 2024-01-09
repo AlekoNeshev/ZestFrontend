@@ -14,7 +14,7 @@
                         <Frame>
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer CommandParameter="{Binding .}"
-                                                  Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunitesViewModel}}, Path=GoToCommunityDetailPageCommand}"/>
+                                                  Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:FriendsViewModel}}, Path=GoToChatPageCommand}"/>
                             </Frame.GestureRecognizers>
                             <Grid Padding="10">
 
