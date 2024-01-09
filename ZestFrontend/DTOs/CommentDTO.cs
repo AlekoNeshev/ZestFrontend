@@ -24,6 +24,7 @@ namespace ZestFrontend.DTOs
             get => _dislikes;
             set => SetProperty(ref _dislikes, value);
         }
+        public List<CommentDTO> Replies { get; set; } = new List<CommentDTO>();
         public DateTime PostedOn { get; set; }
     }
 }
