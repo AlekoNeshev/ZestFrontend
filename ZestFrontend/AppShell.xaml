@@ -26,6 +26,10 @@
         Title="Account"
         ContentTemplate="{DataTemplate local:AccountPage}"
         Route="MainPage" />
+        <ShellContent
+        Title="Account"
+        ContentTemplate="{DataTemplate local:FriendsPage}"
+        Route="MainPage" />
     </TabBar>
 
 </Shell>

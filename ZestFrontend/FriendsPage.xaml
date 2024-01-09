@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ZestFrontend.FriendsPage"
+             xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+             x:DataType="viewmodel:FriendsViewModel"
+             xmlns:model="clr-namespace:ZestFrontend.DTOs"
+             Title="FriendsPage">
+    <Grid>
+        <CollectionView ItemsSource="{Binding Friends}" SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:FollowerDTO">
+                    <Grid>
+                        <Frame>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer CommandParameter="{Binding .}"
+                                                  Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunitesViewModel}}, Path=GoToCommunityDetailPageCommand}"/>
+                            </Frame.GestureRecognizers>
+                            <Grid Padding="10">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="50" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Column="0"
+                   Text="{Binding FollowerUsername}"
+                   FontAttributes="Bold" 
+                           MinimumWidthRequest="100"/>
+                               
+
+
+                            </Grid>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+    </Grid>
+</ContentPage>
