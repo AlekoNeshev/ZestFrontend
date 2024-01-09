@@ -39,6 +39,7 @@ namespace ZestFrontend.ViewModels
 			post.Likes = updatedPost.Likes;
 			post.Dislikes = updatedPost.Dislikes;
 		}
+	
 
 		[ObservableProperty]
 		CommunityDTO community;
@@ -61,7 +62,12 @@ namespace ZestFrontend.ViewModels
 		{
 			await likesService.Like(authService.Id, postDTO.Id, 0, true);
 		}
-		public async void GetComments()
+		[RelayCommand]
+		async Task DeletePostAsync(PostDTO postDTO)
+		{
+			await postsService.DeletePost(postDTO.Id);
+		}
+		public async void GetPosts()
 		{
 			Posts.Clear();
 			var posts = await postsService.GetPostsByCommunity(Community.Id);
@@ -80,7 +86,7 @@ namespace ZestFrontend.ViewModels
 			{
 				ButtonText = "Follow";
 			}
-			GetComments();
+			GetPosts();
 		}
 		[RelayCommand]
 		async Task ChangeFollowshipStatusAsync()
@@ -107,7 +113,7 @@ namespace ZestFrontend.ViewModels
 			}
 		}
 		[RelayCommand]
-		async Task AddPost()
+		async Task AddPostAsync()
 		{
 			if (Community== null) return;
 
@@ -117,6 +123,7 @@ namespace ZestFrontend.ViewModels
 			{"Community", Community }
 			});
 		}
+
 		[RelayCommand]
 		async Task GoToPostDetailPageAsync(PostDTO post)
 		{

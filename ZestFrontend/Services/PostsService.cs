@@ -58,5 +58,12 @@ namespace ZestFrontend.Services
 			response.EnsureSuccessStatusCode();
 			return response;
 		}
+		public async Task<HttpResponseMessage> DeletePost(int postId)
+		{
+			var url = $"https://localhost:7183/api/Post/remove/{postId}";
+			var response = await _httpClient.DeleteAsync(url);
+			response.EnsureSuccessStatusCode();
+			return response;
+		}
 	}
 }
