@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,6 +28,17 @@ namespace ZestFrontend.ViewModels
 			{
 				Friends.Add(item);
 			}
+		}
+		[RelayCommand]
+		async Task GoToChatPageAsync(FollowerDTO follower)
+		{
+			if (follower== null) return;
+
+			await Shell.Current.GoToAsync($"{nameof(ChatPage)}?id={follower.FollowerId}", true,
+				new Dictionary<string, object>
+			{
+			{"Follower", follower }
+			});
 		}
 	}
 }
