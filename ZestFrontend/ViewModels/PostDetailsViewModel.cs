@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
@@ -23,13 +24,15 @@ namespace ZestFrontend.ViewModels
          HubConnection connection;
         HubConnection likesConnection;
         CommentService commentService;
+        MediaService mediaService;
 
-        public PostDetailsViewModel(AuthService authService, PostsService postsService, LikesService likesService, CommentService commentService) 
+        public PostDetailsViewModel(AuthService authService, PostsService postsService, LikesService likesService, CommentService commentService, MediaService mediaService) 
         { 
             this.authService = authService;
             this.postsService = postsService;
             this.likesService = likesService;          
             this.commentService = commentService;
+            this.mediaService = mediaService;
             connection = new HubConnectionBuilder().WithUrl("https://localhost:7183/commentshub").Build();
             likesConnection = new HubConnectionBuilder().WithUrl("https://localhost:7183/likeshub").Build();
             connection.On("CommentPosted", GetComments);
@@ -40,6 +43,8 @@ namespace ZestFrontend.ViewModels
         }
         [ObservableProperty]
         PostDTO post;
+        [ObservableProperty]
+        ImageSource source;
         public ObservableCollection<CommentDTO> Comments { get; private set; } = new();
         [ObservableProperty]
         bool isBusy;
@@ -63,7 +68,12 @@ namespace ZestFrontend.ViewModels
             {
                 Comments.Add(comment);
             }
-        }
+            
+           
+            Source = ("https://localhost:7183/api/PostRescources/ivan/19e1ca76-f360-4dc4-b940-71c329c8ea8b.jpg");
+            //Source = MediaSource.FromUri("https://localhost:7183/api/PostRescources/ivan/download.jpg");
+
+		}
         [RelayCommand]
         async Task SendAsync(string text)
         {
