@@ -36,6 +36,12 @@
                     </StackLayout>
                 </Frame>
             </DataTemplate>
+            <DataTemplate x:Key="ReplyTemplate">
+                <StackLayout Orientation="Horizontal">
+                    <Entry Placeholder="Write a reply" Text="{Binding ReplyText}" />
+                    <Button Text="Send" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=SendReplyCommand}" CommandParameter="{Binding .}" />
+                </StackLayout>
+            </DataTemplate>
         </ResourceDictionary>
     </ContentPage.Resources>
     
