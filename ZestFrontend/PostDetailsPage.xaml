@@ -5,10 +5,40 @@
              xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
              x:DataType="viewmodel:PostDetailsViewModel"
              xmlns:model="clr-namespace:ZestFrontend.DTOs"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              Title="PostDetailsPage">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding GoBackCommand}"/>
     </Shell.BackButtonBehavior>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:DataType="model:CommentDTO" x:Key="CommentTemplate">
+                <Frame>
+                    <StackLayout Orientation="Vertical">
+                        <StackLayout Orientation="Horizontal" Spacing="5">
+                            <Label Text="{Binding Publisher}" FontAttributes="Bold" />
+                            <Label Text="{Binding Text}" />
+                            <Label Text="{Binding PostedOn}" />
+                            <ImageButton Source="like.png" HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="5" HeightRequest="5" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=LikeCommentCommand}" CommandParameter="{Binding .}">
+                            </ImageButton>
+                            <Label Text="{Binding Likes}"/>
+                            <ImageButton Source="dislike.png" HorizontalOptions="Center" VerticalOptions="Center" MaximumWidthRequest="10" MaximumHeightRequest="10" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DislikeCommentCommand}" CommandParameter="{Binding .}">
+                            </ImageButton>
+                            <Label Text="{Binding Dislikes}"/>
+                            <ImageButton Source="reply.png" HorizontalOptions="Center" VerticalOptions="Center" MaximumWidthRequest="10" MaximumHeightRequest="10" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommentComand}" CommandParameter="{Binding .}">
+                            </ImageButton>
+                            <ImageButton Source="delete.png" HorizontalOptions="Center" VerticalOptions="Center" MaximumWidthRequest="10" MaximumHeightRequest="10" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DeleteCommentCommand}" CommandParameter="{Binding .}">
+                            </ImageButton>
+                        </StackLayout>
+                        <!-- This is the nested CollectionView for the replies -->
+                        <CollectionView ItemsSource="{Binding Replies}" Margin="10,0,0,0" ItemTemplate="{StaticResource CommentTemplate}"/>
+                    </StackLayout>
+                </Frame>
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
     <ContentPage.Content>
         <Grid>
             <Grid.RowDefinitions>
@@ -18,13 +48,15 @@
             <ScrollView Orientation="Vertical">
         <StackLayout Spacing="50" Orientation="Vertical" VerticalOptions="FillAndExpand">
             <Frame>
-                <Grid Padding="10">
+                <Grid Padding="10" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="400" />
                         <ColumnDefinition Width="50" />
                         <ColumnDefinition Width="10" />
                     </Grid.ColumnDefinitions>
@@ -43,31 +75,24 @@
                     <Label Text="{Binding Post.Likes}" Grid.Column="2" />
                     <Button Text="DL" Grid.Column="1" Grid.Row="1" Command="{Binding DislikePostCommand}" />
                     <Label Text="{Binding Post.Dislikes}" Grid.Column="2" Grid.Row="1" />
-                </Grid>
-            </Frame>
+                            <CarouselView Grid.Row="2"  ItemsSource="{Binding Resources}" HorizontalOptions="Center" Grid.ColumnSpan="3" Loop="False" IsVisible="{Binding IsCarouselVisible}" Position="0">
+                                <CarouselView.ItemTemplate>
+                                    <DataTemplate x:DataType="model:PostResourcesDTO">
+                                        <StackLayout>
+                                            <Frame>
+                                            <Image Source="{Binding Source}" Aspect="AspectFill" HeightRequest="150" WidthRequest="150" HorizontalOptions="Center" />
+                                            </Frame>
+                                        </StackLayout>
+                                    </DataTemplate>
+                                </CarouselView.ItemTemplate>
+                            </CarouselView>
+                            <toolkit:MediaElement Grid.ColumnSpan="3" HorizontalOptions="Center" Grid.Row="2" Source="{Binding Source}" ShouldShowPlaybackControls="True" IsVisible="{Binding IsMediaPlayerVisible}"/>
+                        </Grid>
+                        
+                    </Frame>
             <Label Text="Comments" FontSize="Large" HorizontalOptions="Center" />
-                    <CollectionView ItemsSource="{Binding Comments}" MinimumHeightRequest="50">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="model:CommentDTO">
-                                <Frame>
-                                <StackLayout Orientation="Horizontal" Spacing="5">
-                                    <Label Text="{Binding Publisher}" FontAttributes="Bold" />
-                                    <Label Text="{Binding Text}" />
-                                    <Label Text="{Binding PostedOn}" />
-                                        <ImageButton Source="like.png" HorizontalOptions="Center"  VerticalOptions="Center" WidthRequest="5" HeightRequest="5" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=LikeCommentCommand}" CommandParameter="{Binding .}">
-                                        </ImageButton>
-                                        <Label Text="{Binding Likes}"/>
-                                            <ImageButton Source="dislike.png" HorizontalOptions="Center" VerticalOptions="Center" MaximumWidthRequest="10" MaximumHeightRequest="10" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DislikeCommentCommand}" CommandParameter="{Binding .}">
-                                        </ImageButton>
-                                        <Label Text="{Binding Dislikes}"/>
-                                        <ImageButton Source="reply.png" HorizontalOptions="Center"  VerticalOptions="Center" MaximumWidthRequest="10" MaximumHeightRequest="10">
-                                        </ImageButton>
-                                        <ImageButton Source="delete.png" HorizontalOptions="Center"  VerticalOptions="Center" MaximumWidthRequest="10" MaximumHeightRequest="10" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DeleteCommentCommand}" CommandParameter="{Binding .}">
-                                        </ImageButton>
-                                    </StackLayout>
-                                </Frame>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
+                    <CollectionView ItemsSource="{Binding Comments}" MinimumHeightRequest="50" ItemTemplate="{StaticResource CommentTemplate}">
+                        
                     </CollectionView>
                 </StackLayout>
         </ScrollView>
