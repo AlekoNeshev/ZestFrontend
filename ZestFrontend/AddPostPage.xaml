@@ -13,9 +13,11 @@
 
         <Label Text="Content"/>
         <Editor Text="{Binding Content}"/>
-
-        <Label Text="Image" />
-        <Image Source="image.png" />
+        <Label Text="Image" /><Label Text="Image" />
+        
+        <Button Text="Upload" Command="{Binding SelectImageClickedCommand}"></Button>
+        <Label Text="{Binding ImageName}"></Label>
+        
 
         <Button Text="Create Post" Command="{Binding CreatePostCommand}"/>
     </StackLayout>

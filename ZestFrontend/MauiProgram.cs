@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
 using ZestFrontend.Services;
 using ZestFrontend.ViewModels;
 
@@ -11,6 +12,7 @@ public static class MauiProgram
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
+		    .UseMauiCommunityToolkitMediaElement()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -30,6 +32,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<CommentService>();
 		builder.Services.AddSingleton<FollowersService>();
 		builder.Services.AddSingleton<MessageService>();
+		builder.Services.AddSingleton<MediaService>();
 
         builder.Services.AddSingleton<MainViewModel>();
 		builder.Services.AddSingleton<LoginViewModel>();
@@ -37,7 +40,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<CommunitesViewModel>();
 		builder.Services.AddSingleton<CommunityDetailsViewModel>();
 		builder.Services.AddSingleton<AccountViewModel>();
-		builder.Services.AddSingleton<PostDetailsViewModel>();
+		builder.Services.AddScoped<PostDetailsViewModel>();
 		builder.Services.AddSingleton<AddPostViewModel>();
 		builder.Services.AddSingleton<FriendsViewModel>();
 		builder.Services.AddSingleton<ChatViewModel>();

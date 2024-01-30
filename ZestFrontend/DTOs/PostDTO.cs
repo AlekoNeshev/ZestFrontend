@@ -27,7 +27,8 @@ namespace ZestFrontend.DTOs
             get => _dislikes;
             set => SetProperty(ref _dislikes, value);
         }
-        public DateTime PostedOn { get; set; }
+		public string ResourceType { get; set; }
+		public DateTime PostedOn { get; set; }
 
         
     }
