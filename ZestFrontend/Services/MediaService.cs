@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using ZestFrontend.DTOs;
 
 namespace ZestFrontend.Services
 {
@@ -23,6 +24,18 @@ namespace ZestFrontend.Services
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)
 				return await response.Content.ReadAsByteArrayAsync();
+			else
+				return null;
+		}
+		public async Task<PostResourcesDTO[]> GetPhotosByPostId(int postId)
+		{
+			var url = $"https://localhost:7183/api/PostRescources/getByPostId/{postId}";
+			var response = await _httpClient.GetAsync(url);
+			
+			if (response.IsSuccessStatusCode)
+			{
+				return await response.Content.ReadFromJsonAsync<PostResourcesDTO[]>();
+			}
 			else
 				return null;
 		}
