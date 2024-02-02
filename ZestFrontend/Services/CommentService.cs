@@ -53,8 +53,7 @@ namespace ZestFrontend.Services
         public async Task<HttpResponseMessage> DeleteComment(int commentId)
         {
             var url = $"https://localhost:7183/api/Comments/remove/{commentId}";
-            var response = await _httpClient.DeleteAsync(url);
-            response.EnsureSuccessStatusCode();
+			var response = await _httpClient.PutAsync(url, new StringContent("", Encoding.UTF8, "application/json")); response.EnsureSuccessStatusCode();
             return response;
         }
     }
