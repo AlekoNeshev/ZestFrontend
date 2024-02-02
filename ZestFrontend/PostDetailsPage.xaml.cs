@@ -9,4 +9,14 @@ public partial class PostDetailsPage : ContentPage
 		BindingContext = viewModel;
 		InitializeComponent();
 	}
+
+	private void Frame_DescendantAdded(object sender, ElementEventArgs e)
+	{
+
+    }
+
+	private void CollectionView_SizeChanged(object sender, EventArgs e)
+	{
+
+    }
 }

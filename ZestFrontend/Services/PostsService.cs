@@ -61,7 +61,7 @@ namespace ZestFrontend.Services
 		public async Task<HttpResponseMessage> DeletePost(int postId)
 		{
 			var url = $"https://localhost:7183/api/Post/remove/{postId}";
-			var response = await _httpClient.DeleteAsync(url);
+			var response = await _httpClient.PutAsync(url, new StringContent("", Encoding.UTF8, "application/json"));
 			response.EnsureSuccessStatusCode();
 			return response;
 		}

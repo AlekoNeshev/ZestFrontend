@@ -25,7 +25,7 @@ namespace ZestFrontend.ViewModels
 		HubConnection likesConnection;
 		CommentService commentService;
 		MediaService mediaService;
-
+		int repliedId = -1;
 		public PostDetailsViewModel(AuthService authService, PostsService postsService, LikesService likesService, CommentService commentService, MediaService mediaService)
 		{
 			this.authService = authService;
@@ -52,6 +52,8 @@ namespace ZestFrontend.ViewModels
 		bool isCarouselVisible;
 		[ObservableProperty]
 		bool isMediaPlayerVisible;
+		[ObservableProperty]
+		string replyText;
 		public ObservableCollection<PostResourcesDTO> Resources { get; private set; } = new();
 
 		[RelayCommand]
@@ -82,7 +84,9 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task SendAsync(string text)
 		{
-			await commentService.PostComment(Post.Id, authService.Id, text);
+			
+		 await commentService.PostComment(Post.Id, authService.Id, text);
+			
 		}
 		partial void OnPostChanged(PostDTO value)
 		{
@@ -104,6 +108,20 @@ namespace ZestFrontend.ViewModels
 		{
 			await likesService.Like(authService.Id, 0, commentDTO.Id, false);
 		}
+		[RelayCommand]
+		async Task ReplyCommentAsync(CommentDTO comment)
+		{
+			// Toggle the visibility of the reply field
+			comment.IsReplyVisible = !comment.IsReplyVisible;
+			repliedId = comment.Id;
+		}
+		[RelayCommand]
+		async Task SendReplyAsync(string text)
+		{
+			await commentService.PostComment(Post.Id, authService.Id, text, repliedId);
+			repliedId = -1;
+		}
+
 		public async void UpdateComment(int id)
 		{
 			var updatedComment = await commentService.GetSingleComment(id);
@@ -146,7 +164,7 @@ namespace ZestFrontend.ViewModels
 
 				Source = results.First().Source;
 			}
-		else
+		    else
 			{
 				IsMediaPlayerVisible = false;
 				IsCarouselVisible = false;
