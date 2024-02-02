@@ -45,6 +45,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<AddPostViewModel>();
 		builder.Services.AddSingleton<FriendsViewModel>();
 		builder.Services.AddSingleton<ChatViewModel>();
+		builder.Services.AddSingleton<RegisterNewUserViewModel>();
 
         builder.Services.AddSingleton<MainPage>();
         builder.Services.AddSingleton<Login>();
@@ -56,6 +57,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<AddPostPage>();
 		builder.Services.AddSingleton<FriendsPage>();
 		builder.Services.AddSingleton<ChatPage>();
+		builder.Services.AddSingleton<RegisterNewUser>();
 
         builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
         return builder.Build();

@@ -18,5 +18,10 @@ namespace ZestFrontend.ViewModels
         {
             await Shell.Current.GoToAsync(nameof(Login));
         }
+        [RelayCommand]
+        async Task GoToRegisterAsync()
+        {
+            await Shell.Current.GoToAsync(nameof(RegisterNewUser));
+        }
     }
 }
