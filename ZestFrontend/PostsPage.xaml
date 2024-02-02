@@ -11,11 +11,16 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
 
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+
         </Grid.RowDefinitions>
-        <CollectionView ItemsSource="{Binding Posts}" Grid.Column="1">
+        <SearchBar Margin="0, 10, 0, 10" Grid.Column="2" Text="{Binding Search}" SearchCommand="{Binding SearchPostsCommand}" MaximumWidthRequest="500"/>
+        <CollectionView ItemsSource="{Binding Posts}" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" HorizontalOptions="CenterAndExpand" MinimumWidthRequest="1000">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:PostDTO">
                     <Grid >
@@ -31,8 +36,7 @@
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="50" />
-                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
                                 <Label Grid.Column="0"
@@ -45,10 +49,14 @@
                        FontAttributes="Italic"
                        VerticalOptions="End" 
                                MinimumWidthRequest="100"/>
-                                <Button Text="L" Grid.Column="1" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=LikePostCommand}" CommandParameter="{Binding .}" />
-                                <Label Text="{Binding Likes}" Grid.Column="2"/>
-                                <Button Text="DL" Grid.Column="1" Grid.Row="1"  Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=DislikePostCommand}" CommandParameter="{Binding .}" />
-                                <Label Text="{Binding Dislikes}" Grid.Column="2" Grid.Row="1"/>
+                                <StackLayout Orientation="Horizontal" Grid.Column="1" HorizontalOptions="End">
+                                <Button Text="L"  Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=LikePostCommand}" CommandParameter="{Binding .}" />
+                                <Label Text="{Binding Likes}"/>
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" Grid.Column="1" Grid.Row="1" HorizontalOptions="End">
+                                    <Button Text="DL"   Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=DislikePostCommand}" CommandParameter="{Binding .}" />
+                                    <Label Text="{Binding Dislikes}" />
+                                </StackLayout>
                             </Grid>
                         </Frame>
                     </Grid>

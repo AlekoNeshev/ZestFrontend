@@ -50,6 +50,17 @@ namespace ZestFrontend.Services
 			else
 				return null;
 		}
+		public async Task<List<PostDTO>> GetPostsBySearch(string text)
+		{
+			var url = $"https://localhost:7183/api/Post/getBySearch/{text}";
+			var response = await _httpClient.GetAsync(url);
+			if (response.IsSuccessStatusCode)
+			{
+				return await response.Content.ReadFromJsonAsync<List<PostDTO>>();
+			}
+			else
+				return null;
+		}
 		public async Task<HttpResponseMessage> AddPost( string title, string content, int communityId, int accountId)
 		{
 			var url = $"https://localhost:7183/api/Post/add/{title}/account/{accountId}/community/{communityId}";

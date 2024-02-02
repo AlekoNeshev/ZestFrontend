@@ -40,7 +40,7 @@
                             <ImageButton Source="delete.png" HorizontalOptions="Center" VerticalOptions="Center" MaximumWidthRequest="10" MaximumHeightRequest="10" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DeleteCommentCommand}" CommandParameter="{Binding .}">
                             </ImageButton>
                         </StackLayout>
-                        <StackLayout MinimumHeightRequest="30" Orientation="Horizontal" IsVisible="{Binding IsReplyVisible}" Grid.Row="1" VerticalOptions="Start" HorizontalOptions="Start" Spacing="3">
+                        <StackLayout Margin="0,0,0,10" Orientation="Horizontal" IsVisible="{Binding IsReplyVisible}" Grid.Row="1" VerticalOptions="Start" HorizontalOptions="Start" Spacing="3">
                             <Entry x:Name="ReplyEntry" Placeholder="Write a reply" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand"/>
                             <Button Text="Send" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=SendReplyCommand}" CommandParameter="{Binding Text, Source={x:Reference ReplyEntry}}" >
                                
