@@ -1,54 +1,44 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ZestFrontend.PostsPage"
+             x:Class="ZestFrontend.CommunitiesPage"
              xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
-             x:DataType="viewmodel:PostsViewModel"
+             x:DataType="viewmodel:CommunitesViewModel"
              xmlns:model="clr-namespace:ZestFrontend.DTOs"
-             Title="PostsPage">
+             Title="CommunitiesPage">
     <Grid>
-
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-
-        </Grid.RowDefinitions>
-        <CollectionView ItemsSource="{Binding Posts}" Grid.Column="1">
+        <CollectionView ItemsSource="{Binding Communities}" SelectionMode="None">
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:PostDTO">
-                    <Grid >
+                <DataTemplate x:DataType="model:CommunityDTO">
+                    <Grid>
                         <Frame>
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer CommandParameter="{Binding .}"
-                                   Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=GoToPostDetailPageCommand}"/>
+                                                      Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunitesViewModel}}, Path=GoToCommunityDetailPageCommand}"/>
                             </Frame.GestureRecognizers>
                             <Grid Padding="10">
+
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition/>
+                                    <RowDefinition/>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="50" />
-                                    <ColumnDefinition Width="10" />
                                 </Grid.ColumnDefinitions>
 
                                 <Label Grid.Column="0"
-                       Text="{Binding Title}"
+                       Text="{Binding Name}"
                        FontAttributes="Bold" 
                                MinimumWidthRequest="100"/>
                                 <Label Grid.Row="1"
                        Grid.Column="0"
-                       Text="{Binding Text}"
+                       Text="{Binding Description}"
                        FontAttributes="Italic"
                        VerticalOptions="End" 
                                MinimumWidthRequest="100"/>
-                                <Button Text="L" Grid.Column="1" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=LikePostCommand}" CommandParameter="{Binding .}" />
-                                <Label Text="{Binding Likes}" Grid.Column="2"/>
-                                <Button Text="DL" Grid.Column="1" Grid.Row="1"  Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=DislikePostCommand}" CommandParameter="{Binding .}" />
-                                <Label Text="{Binding Dislikes}" Grid.Column="2" Grid.Row="1"/>
+
+
                             </Grid>
                         </Frame>
                     </Grid>

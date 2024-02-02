@@ -32,12 +32,14 @@
 
             <Button
                 x:Name="CounterBtn"
-                Text="Click me"
+                Text="Log in"
                 SemanticProperties.Hint="Counts the number of times you click"
                 Command="{Binding GoToLoginCommand}"
                 HorizontalOptions="Center" />
 
-
+            <Button
+                Text="Sign Up"
+                Command="{Binding GoToRegisterCommand}"/>
         </VerticalStackLayout>
     </ScrollView>
 
