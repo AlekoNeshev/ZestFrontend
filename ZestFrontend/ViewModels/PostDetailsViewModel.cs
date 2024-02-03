@@ -94,6 +94,11 @@ namespace ZestFrontend.ViewModels
 			DealWithResource();
 		}
 		[RelayCommand]
+		async Task RefreshAsync()
+		{
+		    GetComments();
+		}
+		[RelayCommand]
 		async Task GoBackAsync()
 		{
 			await Shell.Current.GoToAsync(nameof(PostsPage));
