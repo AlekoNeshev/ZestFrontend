@@ -101,7 +101,7 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task GoBackAsync()
 		{
-			await Shell.Current.GoToAsync(nameof(PostsPage));
+			await Shell.Current.GoToAsync("..");
 		}
 		[RelayCommand]
 		async Task LikeCommentAsync(CommentDTO commentDTO)

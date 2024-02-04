@@ -8,28 +8,22 @@
     <TabBar>
     <ShellContent
         Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        ContentTemplate="{DataTemplate local:MainPage}" />
         <ShellContent
         Title="Login"
-        ContentTemplate="{DataTemplate local:Login}"
-        Route="MainPage" />
+        ContentTemplate="{DataTemplate local:Login}"/>
         <ShellContent
         Title="Login"
-        ContentTemplate="{DataTemplate local:PostsPage}"
-        Route="MainPage" />
+        ContentTemplate="{DataTemplate local:PostsPage}" />
         <ShellContent
         Title="Coms"
-        ContentTemplate="{DataTemplate local:CommunitiesPage}"
-        Route="MainPage" />
+        ContentTemplate="{DataTemplate local:CommunitiesPage}" />
         <ShellContent
         Title="Account"
-        ContentTemplate="{DataTemplate local:AccountPage}"
-        Route="MainPage" />
+        ContentTemplate="{DataTemplate local:AccountPage}"/>
         <ShellContent
         Title="Account"
-        ContentTemplate="{DataTemplate local:FriendsPage}"
-        Route="MainPage" />
+        ContentTemplate="{DataTemplate local:FriendsPage}" />
     </TabBar>
 
 </Shell>
