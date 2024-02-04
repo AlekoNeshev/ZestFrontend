@@ -32,6 +32,8 @@ namespace ZestFrontend.ViewModels
             GetPosts();
            
         }
+        [ObservableProperty]
+        string search;
         
         public ObservableCollection<PostDTO> Posts { get; } = new();
         public async void UpdatePost(int id)
@@ -69,6 +71,15 @@ namespace ZestFrontend.ViewModels
             {
             {"Post", post }
             });
+        }
+        [RelayCommand]
+        async Task SearchPosts()
+        {
+            Posts.Clear();
+            foreach (var item in await postsService.GetPostsBySearch(Search))
+            {
+                Posts.Add(item);
+            }
         }
     }
 }
