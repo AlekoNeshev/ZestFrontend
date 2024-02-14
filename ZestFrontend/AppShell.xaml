@@ -22,7 +22,7 @@
         Title="Account"
         ContentTemplate="{DataTemplate local:AccountPage}"/>
         <ShellContent
-        Title="Account"
+        Title="Friends"
         ContentTemplate="{DataTemplate local:FriendsPage}" />
     </TabBar>
 
