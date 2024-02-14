@@ -17,9 +17,10 @@ namespace ZestFrontend.Services
             _httpClient = httpClient;
         }
 
-        public async Task<List<PostDTO>> GetPosts()
+        public async Task<List<PostDTO>> GetPosts(DateTime lastDatel, int minimumSkipCount, int takeCount)
         {
-            var url = $"https://localhost:7183/api/Post/getByDate";
+			string lastDate = lastDatel.ToString("yyyy-MM-ddTHH:mm:ss");
+			var url = $"https://localhost:7183/api/Post/getByDate/{lastDate}/{minimumSkipCount}/{takeCount}";
             var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {

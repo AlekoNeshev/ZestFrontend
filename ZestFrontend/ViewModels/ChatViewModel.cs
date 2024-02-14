@@ -17,14 +17,15 @@ namespace ZestFrontend.ViewModels
 	{
         MessageService messageService;
 		AuthService authService;
-		HubConnection hubConnection;
-        public ChatViewModel(MessageService messageService, AuthService authService)
+		MessageHubConnectionService hubConnection;
+		SignalRConnectionService signalRConnectionService;
+        public ChatViewModel(MessageService messageService, AuthService authService, MessageHubConnectionService messageHubConnectionService, SignalRConnectionService signalRConnectionService)
         {
             this.messageService = messageService;
 			this.authService = authService;
-			hubConnection = new HubConnectionBuilder().WithUrl("https://localhost:7183/messagehub").Build();	
-			hubConnection.On("MessageSent", GetMessages);			
-			hubConnection.StartAsync();
+			hubConnection = messageHubConnectionService;
+			this.signalRConnectionService = signalRConnectionService;
+			hubConnection.Init();
 			
 		}
 		public ObservableCollection<MessageDTO> Messages { get; private set; } = new();
@@ -41,6 +42,8 @@ namespace ZestFrontend.ViewModels
 		partial void OnFollowerChanged(FollowerDTO value)
 		{
 			GetMessages();
+			hubConnection.MessageConnection.On("MessageSent",() => GetMessages());
+			signalRConnectionService.AddConnectionToGroup(hubConnection.MessageConnection.ConnectionId, new string[] { $"chat-{authService.Id}{value.FollowerId}" });
 		}
 		[RelayCommand]
 		async Task SendAsync(string text)

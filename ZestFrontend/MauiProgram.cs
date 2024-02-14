@@ -34,6 +34,9 @@ public static class MauiProgram
 		builder.Services.AddSingleton<FollowersService>();
 		builder.Services.AddSingleton<MessageService>();
 		builder.Services.AddSingleton<MediaService>();
+		builder.Services.AddSingleton<LikesHubConnectionService>();
+		builder.Services.AddSingleton<MessageHubConnectionService>();
+		builder.Services.AddSingleton<SignalRConnectionService>();
 
         builder.Services.AddSingleton<MainViewModel>();
 		builder.Services.AddSingleton<LoginViewModel>();

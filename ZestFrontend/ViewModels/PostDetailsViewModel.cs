@@ -18,29 +18,25 @@ namespace ZestFrontend.ViewModels
 	[QueryProperty(nameof(Post), "Post")]
 	public partial class PostDetailsViewModel : ObservableObject
 	{
-		AuthService authService;
-		PostsService postsService;
-		LikesService likesService;
-		HubConnection connection;
-		HubConnection likesConnection;
-		CommentService commentService;
-		MediaService mediaService;
+		AuthService _authService;
+		PostsService _postsService;
+		LikesService _likesService;
+		HubConnection _connection;
+		HubConnection _likesConnection;
+		CommentService _commentService;
+		MediaService _mediaService;
 		int repliedId = -1;
 		public PostDetailsViewModel(AuthService authService, PostsService postsService, LikesService likesService, CommentService commentService, MediaService mediaService)
 		{
-			this.authService = authService;
-			this.postsService = postsService;
-			this.likesService = likesService;
-			this.commentService = commentService;
-			this.mediaService = mediaService;
-			connection = new HubConnectionBuilder().WithUrl("https://localhost:7183/commentshub").Build();
-			likesConnection = new HubConnectionBuilder().WithUrl("https://localhost:7183/likeshub").Build();
-			connection.On("CommentPosted", GetComments);
-			likesConnection.On<int>("CommentLiked", UpdateComment);
-			connection.StartAsync();
-			likesConnection.StartAsync();
-		
+			_authService = authService;
+			_postsService = postsService;
+			_likesService = likesService;
+			_commentService = commentService;
+			_mediaService = mediaService;
+			
 		}
+
+
 		[ObservableProperty]
 		PostDTO post;
 		[ObservableProperty]
@@ -59,18 +55,18 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task DislikePostAsync()
 		{
-			await likesService.Like(authService.Id, Post.Id, 0, false);
+			await _likesService.Like(_authService.Id, Post.Id, 0, false);
 		}
 		[RelayCommand]
 		async Task LikePostAsync()
 		{
-			await likesService.Like(authService.Id, Post.Id, 0, true);
+			await _likesService.Like(_authService.Id, Post.Id, 0, true);
 		}
 
 		public async void GetComments()
 		{
 			Comments.Clear();
-			var comments = await commentService.GetComments(Post.Id);
+			var comments = await _commentService.GetComments(Post.Id);
 			foreach (var comment in comments)
 			{
 				Comments.Add(comment);
@@ -85,14 +81,16 @@ namespace ZestFrontend.ViewModels
 		async Task SendAsync(string text)
 		{
 			
-		 await commentService.PostComment(Post.Id, authService.Id, text);
+		 await _commentService.PostComment(Post.Id, _authService.Id, text);
 			
 		}
 		partial void OnPostChanged(PostDTO value)
 		{
 			GetComments();
 			DealWithResource();
+			SetupConnections();
 		}
+		
 		[RelayCommand]
 		async Task RefreshAsync()
 		{
@@ -106,12 +104,12 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task LikeCommentAsync(CommentDTO commentDTO)
 		{
-			await likesService.Like(authService.Id, 0, commentDTO.Id, true);
+			await _likesService.Like(_authService.Id, 0, commentDTO.Id, true);
 		}
 		[RelayCommand]
 		async Task DislikeCommentAsync(CommentDTO commentDTO)
 		{
-			await likesService.Like(authService.Id, 0, commentDTO.Id, false);
+			await _likesService.Like(_authService.Id, 0, commentDTO.Id, false);
 		}
 		[RelayCommand]
 		async Task ReplyCommentAsync(CommentDTO comment)
@@ -123,21 +121,21 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task SendReplyAsync(string text)
 		{
-			await commentService.PostComment(Post.Id, authService.Id, text, repliedId);
+			await _commentService.PostComment(Post.Id, _authService.Id, text, repliedId);
 			repliedId = -1;
 		}
 
-		public async void UpdateComment(int id)
+		public async void UpdateComment(string id)
 		{
-			var updatedComment = await commentService.GetSingleComment(id);
-			var comment = Comments.Where(x => x.Id==id).First();
+			var updatedComment = await _commentService.GetSingleComment(int.Parse(id));
+			var comment = Comments.Where(x => x.Id==int.Parse(id)).First();
 			comment.Likes = updatedComment.Likes;
 			comment.Dislikes = updatedComment.Dislikes;
 		}
 		[RelayCommand]
 		async Task DeleteCommentAsync(CommentDTO commentDTO)
 		{
-			await commentService.DeleteComment(commentDTO.Id);
+			await _commentService.DeleteComment(commentDTO.Id);
 		}
 		public async void DealWithResource()
 		{
@@ -152,7 +150,7 @@ namespace ZestFrontend.ViewModels
 			{
 				IsCarouselVisible = true;
 				IsMediaPlayerVisible = false;
-				var results = await mediaService.GetPhotosByPostId(Post.Id);
+				var results = await _mediaService.GetPhotosByPostId(Post.Id);
 
 
 				foreach (var result in results)
@@ -164,7 +162,7 @@ namespace ZestFrontend.ViewModels
 			{
 				IsCarouselVisible = false;
 				IsMediaPlayerVisible = true;
-				var results = await mediaService.GetPhotosByPostId(Post.Id);
+				var results = await _mediaService.GetPhotosByPostId(Post.Id);
 
 
 				Source = results.First().Source;
@@ -175,6 +173,45 @@ namespace ZestFrontend.ViewModels
 				IsCarouselVisible = false;
 				return;
 			}
+		}
+		private async void SetupConnections()
+		{
+			_connection = BuildHubConnection("https://localhost:7183/commentshub");
+			_likesConnection = BuildLikesHubConnection("https://localhost:7183/likeshub");
+
+			await StartConnections();
+		}
+
+		private HubConnection BuildHubConnection(string url)
+		{
+			var connection = new HubConnectionBuilder()
+				.WithUrl(url)
+				.Build();
+
+			connection.On("CommentPosted", GetComments);
+
+			return connection;
+		}
+
+		private HubConnection BuildLikesHubConnection(string url)
+		{
+			var connection = new HubConnectionBuilder()
+				.WithUrl(url, options =>
+				{
+					options.Headers["userId"] = _authService.Id.ToString();
+					options.Headers["postId"] = Post.Id.ToString();
+				})
+				.Build();
+
+			connection.On<string>("CommentLiked", UpdateComment);
+
+			return connection;
+		}
+
+		private async Task StartConnections()
+		{
+			await _connection.StartAsync();
+			await _likesConnection.StartAsync();
 		}
 	}
 }
