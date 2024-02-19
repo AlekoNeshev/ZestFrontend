@@ -39,13 +39,13 @@ namespace ZestFrontend.Services
             else
                 return null;
         }
-		public async Task<List<AccountDTO>> GetAllAccounts()
+		public async Task<List<UserDTO>> GetAllAccounts(int accountId)
 		{
-			var url = $"https://localhost:7183/api/Account/getAll";
+			var url = $"https://localhost:7183/api/Account/getAll/{accountId}";
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)
 			{
-				return await response.Content.ReadFromJsonAsync<List<AccountDTO>>();
+				return await response.Content.ReadFromJsonAsync<List<UserDTO>>();
 			}
 			else
 				return null;

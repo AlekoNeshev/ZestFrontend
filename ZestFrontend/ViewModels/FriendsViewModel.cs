@@ -40,5 +40,11 @@ namespace ZestFrontend.ViewModels
 			{"Follower", follower }
 			});
 		}
+		[RelayCommand]
+		async Task RefreshAsync()
+		{
+			Friends.Clear();
+			GetFriends();
+		}
 	}
 }

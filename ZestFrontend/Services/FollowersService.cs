@@ -15,6 +15,20 @@ namespace ZestFrontend.Services
         {
             this._httpClient = httpClient;
         }
+		public async Task<HttpResponseMessage> Follow(int followerId, int followedId)
+		{
+			var url = $"https://localhost:7183/api/Followers/add/{followerId}/followed/{followedId}";
+			var response = await _httpClient.PostAsync(url, new StringContent("data"));
+			response.EnsureSuccessStatusCode();
+			return response;
+		}
+		public async Task<HttpResponseMessage> Unfollow(int followerId, int followedId)
+		{
+			var url = $"https://localhost:7183/api/Followers/delete/{followerId}/followed/{followedId}";
+			var response = await _httpClient.DeleteAsync(url);
+			response.EnsureSuccessStatusCode();
+			return response;
+		}
 		public async Task<FollowerDTO[]> GetFriends(int id)
 		{
 			var url = $"https://localhost:7183/api/Followers/account/{id}";
