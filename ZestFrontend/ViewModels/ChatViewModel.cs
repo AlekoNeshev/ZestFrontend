@@ -25,7 +25,7 @@ namespace ZestFrontend.ViewModels
 			this.authService = authService;
 			hubConnection = messageHubConnectionService;
 			this.signalRConnectionService = signalRConnectionService;
-			hubConnection.Init();
+			
 			
 		}
 		public ObservableCollection<MessageDTO> Messages { get; private set; } = new();
@@ -41,14 +41,22 @@ namespace ZestFrontend.ViewModels
 		}
 		partial void OnFollowerChanged(FollowerDTO value)
 		{
+			hubConnection.Init();
 			GetMessages();
 			hubConnection.MessageConnection.On("MessageSent",() => GetMessages());
-			signalRConnectionService.AddConnectionToGroup(hubConnection.MessageConnection.ConnectionId, new string[] { $"chat-{authService.Id}{value.FollowerId}" });
+		}
+		public async void OnNavigatedTo()
+		{
+			int firstHubId = Math.Max(authService.Id, Follower.FollowerId);
+			int secondHubId = Math.Min(authService.Id, Follower.FollowerId);
+			await signalRConnectionService.RemoveConnectionToGroup(hubConnection.MessageConnection.ConnectionId);
+			await signalRConnectionService.AddConnectionToGroup(hubConnection.MessageConnection.ConnectionId, new string[] { $"chat-{firstHubId}{secondHubId}" });
 		}
 		[RelayCommand]
 		async Task SendAsync(string text)
 		{
 			await messageService.SendMessage(authService.Id, Follower.FollowerId, text);
 		}
+		
 	}
 }

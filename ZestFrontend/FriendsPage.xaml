@@ -6,6 +6,9 @@
              x:DataType="viewmodel:FriendsViewModel"
              xmlns:model="clr-namespace:ZestFrontend.DTOs"
              Title="FriendsPage">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Refresh" Command="{Binding RefreshCommand}"></ToolbarItem>
+    </ContentPage.ToolbarItems>
     <Grid>
         <CollectionView ItemsSource="{Binding Friends}" SelectionMode="None">
             <CollectionView.ItemTemplate>

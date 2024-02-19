@@ -36,6 +36,8 @@ namespace ZestFrontend.ViewModels
 		}
 		[ObservableProperty]
 		string search;
+		[ObservableProperty]
+		bool isRefreshing;
 
 		public ObservableCollection<PostDTO> Posts { get; } = new();
 		public async void UpdatePost(int id)
@@ -92,6 +94,13 @@ namespace ZestFrontend.ViewModels
 			{
 				Posts.Add(item);
 			}
+		}
+		[RelayCommand]
+		async Task RefreshAsync()
+		{
+			Posts.Clear();
+			 GetPosts();
+			IsRefreshing = false;
 		}
 
 		public async void onNavigatedTo()

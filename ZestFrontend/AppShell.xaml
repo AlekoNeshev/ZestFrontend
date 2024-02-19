@@ -24,6 +24,9 @@
         <ShellContent
         Title="Friends"
         ContentTemplate="{DataTemplate local:FriendsPage}" />
+        <ShellContent
+        Title="Users"
+        ContentTemplate="{DataTemplate local:UsersPage}" />
     </TabBar>
 
 </Shell>

@@ -22,5 +22,13 @@ namespace ZestFrontend.Services
 			response.EnsureSuccessStatusCode();
 			return response;
 		}
+		public async Task<HttpResponseMessage> RemoveConnectionToGroup(string connectionId)
+		{
+			var url = $"https://localhost:7183/api/SignalRGroups/removeConnectionToGroup/{connectionId}";
+			var body = JsonConvert.SerializeObject("");
+			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
+			response.EnsureSuccessStatusCode();
+			return response;
+		}
 	}
 }
