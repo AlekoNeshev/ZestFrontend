@@ -21,19 +21,23 @@ namespace ZestFrontend.ViewModels
 		AuthService _authService;
 		PostsService _postsService;
 		LikesService _likesService;
-		HubConnection _connection;
-		HubConnection _likesConnection;
+		SignalRConnectionService _signalRConnectionService;
+		LikesHubConnectionService _likesHubConnectionService;
+		CommentsHubConnectionService _commentHubConnectionService;
 		CommentService _commentService;
 		MediaService _mediaService;
 		int repliedId = -1;
-		public PostDetailsViewModel(AuthService authService, PostsService postsService, LikesService likesService, CommentService commentService, MediaService mediaService)
+		public PostDetailsViewModel(AuthService authService, PostsService postsService, LikesService likesService, CommentService commentService, MediaService mediaService, LikesHubConnectionService likesHubConnectionService, CommentsHubConnectionService commentHubConnectionService, SignalRConnectionService signalRConnectionService)
 		{
 			_authService = authService;
 			_postsService = postsService;
 			_likesService = likesService;
 			_commentService = commentService;
 			_mediaService = mediaService;
-			
+			_likesHubConnectionService=likesHubConnectionService;
+			_commentHubConnectionService=commentHubConnectionService;
+			_signalRConnectionService = signalRConnectionService;
+			_commentHubConnectionService.Init();
 		}
 
 
@@ -48,6 +52,7 @@ namespace ZestFrontend.ViewModels
 		bool isCarouselVisible;
 		[ObservableProperty]
 		bool isMediaPlayerVisible;
+		
 		[ObservableProperty]
 		string replyText;
 		public ObservableCollection<PostResourcesDTO> Resources { get; private set; } = new();
@@ -61,6 +66,12 @@ namespace ZestFrontend.ViewModels
 		async Task LikePostAsync()
 		{
 			await _likesService.Like(_authService.Id, Post.Id, 0, true);
+
+		}
+		[RelayCommand]
+		async Task DeletePostAsync()
+		{
+			await _postsService.DeletePost(Post.Id);
 		}
 
 		public async void GetComments()
@@ -88,7 +99,9 @@ namespace ZestFrontend.ViewModels
 		{
 			GetComments();
 			DealWithResource();
-			SetupConnections();
+			
+			_commentHubConnectionService.CommentsConnection.On("CommentPosted", GetComments);
+			_likesHubConnectionService.LikesConnection.On<int>("CommentLiked", UpdateComment);
 		}
 		
 		[RelayCommand]
@@ -104,17 +117,16 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task LikeCommentAsync(CommentDTO commentDTO)
 		{
-			await _likesService.Like(_authService.Id, 0, commentDTO.Id, true);
+			await _likesService.Like(_authService.Id, Post.Id, commentDTO.Id, true);
 		}
 		[RelayCommand]
 		async Task DislikeCommentAsync(CommentDTO commentDTO)
 		{
-			await _likesService.Like(_authService.Id, 0, commentDTO.Id, false);
+			await _likesService.Like(_authService.Id, Post.Id, commentDTO.Id, false);
 		}
 		[RelayCommand]
 		async Task ReplyCommentAsync(CommentDTO comment)
 		{
-			// Toggle the visibility of the reply field
 			comment.IsReplyVisible = !comment.IsReplyVisible;
 			repliedId = comment.Id;
 		}
@@ -124,11 +136,28 @@ namespace ZestFrontend.ViewModels
 			await _commentService.PostComment(Post.Id, _authService.Id, text, repliedId);
 			repliedId = -1;
 		}
-
-		public async void UpdateComment(string id)
+		public CommentDTO FindCommentById(int id, IEnumerable<CommentDTO> comments)
 		{
-			var updatedComment = await _commentService.GetSingleComment(int.Parse(id));
-			var comment = Comments.Where(x => x.Id==int.Parse(id)).First();
+			foreach (var comment in comments)
+			{
+				if (comment.Id == id)
+				{
+					return comment; 
+				}
+
+				var foundInReplies = FindCommentById(id, comment.Replies);
+				if (foundInReplies != null)
+				{
+					return foundInReplies; 
+				}
+			}
+
+			return null; 
+		}
+		public async void UpdateComment(int id)
+		{
+			var updatedComment = await _commentService.GetSingleComment(id);
+			var comment = FindCommentById(id, Comments);
 			comment.Likes = updatedComment.Likes;
 			comment.Dislikes = updatedComment.Dislikes;
 		}
@@ -174,44 +203,14 @@ namespace ZestFrontend.ViewModels
 				return;
 			}
 		}
-		private async void SetupConnections()
+		
+		public async void OnNavigatedTo()
 		{
-			_connection = BuildHubConnection("https://localhost:7183/commentshub");
-			_likesConnection = BuildLikesHubConnection("https://localhost:7183/likeshub");
-
-			await StartConnections();
+			await _signalRConnectionService.RemoveConnectionToGroup(_likesHubConnectionService.LikesConnection.ConnectionId);
+			await _signalRConnectionService.RemoveConnectionToGroup(_commentHubConnectionService.CommentsConnection.ConnectionId);
+			await _signalRConnectionService.AddConnectionToGroup(_likesHubConnectionService.LikesConnection.ConnectionId, new string[] { $"pd-{Post.Id}", Post.Id.ToString() });
+			await _signalRConnectionService.AddConnectionToGroup(_commentHubConnectionService.CommentsConnection.ConnectionId, new string[] { $"message-{Post.Id}" });
 		}
-
-		private HubConnection BuildHubConnection(string url)
-		{
-			var connection = new HubConnectionBuilder()
-				.WithUrl(url)
-				.Build();
-
-			connection.On("CommentPosted", GetComments);
-
-			return connection;
-		}
-
-		private HubConnection BuildLikesHubConnection(string url)
-		{
-			var connection = new HubConnectionBuilder()
-				.WithUrl(url, options =>
-				{
-					options.Headers["userId"] = _authService.Id.ToString();
-					options.Headers["postId"] = Post.Id.ToString();
-				})
-				.Build();
-
-			connection.On<string>("CommentLiked", UpdateComment);
-
-			return connection;
-		}
-
-		private async Task StartConnections()
-		{
-			await _connection.StartAsync();
-			await _likesConnection.StartAsync();
-		}
+		
 	}
 }

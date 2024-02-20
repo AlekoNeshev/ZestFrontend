@@ -70,7 +70,7 @@ namespace ZestFrontend.ViewModels
 		public async void GetPosts()
 		{
 			Posts.Clear();
-			var posts = await postsService.GetPostsByCommunity(Community.Id);
+			var posts = await postsService.GetPostsByCommunity(Community.Id, authService.Id);
 			foreach (var post in posts)
 			{
 				Posts.Add(post);

@@ -4,19 +4,17 @@ namespace ZestFrontend;
 
 public partial class PostDetailsPage : ContentPage
 {
+	PostDetailsViewModel _viewModel;
 	public PostDetailsPage(PostDetailsViewModel viewModel)
 	{
 		BindingContext = viewModel;
+		this._viewModel = viewModel;
 		InitializeComponent();
 	}
 
-	private void Frame_DescendantAdded(object sender, ElementEventArgs e)
+	protected override void OnNavigatedTo(NavigatedToEventArgs args)
 	{
-
-    }
-
-	private void CollectionView_SizeChanged(object sender, EventArgs e)
-	{
-
-    }
+		_viewModel.OnNavigatedTo();
+		base.OnNavigatedTo(args);
+	}
 }

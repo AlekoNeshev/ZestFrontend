@@ -36,6 +36,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<MediaService>();
 		builder.Services.AddSingleton<LikesHubConnectionService>();
 		builder.Services.AddSingleton<MessageHubConnectionService>();
+		builder.Services.AddSingleton<CommentsHubConnectionService>();
 		builder.Services.AddSingleton<SignalRConnectionService>();
 
         builder.Services.AddSingleton<MainViewModel>();

@@ -58,7 +58,7 @@ namespace ZestFrontend.ViewModels
 			{
 				lastDate = Posts.Last().PostedOn;
 			}
-			foreach (var post in await postsService.GetPosts(lastDate, Posts.Count, 50))
+			foreach (var post in await postsService.GetPosts(lastDate, Posts.Count, 50, authService.Id))
 			{
 				Posts.Add(post);
 			}
@@ -90,7 +90,7 @@ namespace ZestFrontend.ViewModels
 		async Task SearchPosts()
 		{
 			Posts.Clear();
-			foreach (var item in await postsService.GetPostsBySearch(Search))
+			foreach (var item in await postsService.GetPostsBySearch(Search, authService.Id))
 			{
 				Posts.Add(item);
 			}
