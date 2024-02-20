@@ -17,10 +17,10 @@ namespace ZestFrontend.Services
             _httpClient = httpClient;
         }
 
-        public async Task<List<PostDTO>> GetPosts(DateTime lastDatel, int minimumSkipCount, int takeCount)
+        public async Task<List<PostDTO>> GetPosts(DateTime lastDatel, int minimumSkipCount, int takeCount, int accountId)
         {
 			string lastDate = lastDatel.ToString("yyyy-MM-ddTHH:mm:ss");
-			var url = $"https://localhost:7183/api/Post/getByDate/{lastDate}/{minimumSkipCount}/{takeCount}";
+			var url = $"https://localhost:7183/api/Post/getByDate/{accountId}/{lastDate}/{minimumSkipCount}/{takeCount}";
             var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
@@ -40,9 +40,9 @@ namespace ZestFrontend.Services
             else
                 return null;
         }
-        public async Task<List<PostDTO>> GetPostsByCommunity(int communityId)
+        public async Task<List<PostDTO>> GetPostsByCommunity(int communityId, int accountId)
         {
-			var url = $"https://localhost:7183/api/Post/getByCommunity/{communityId}";
+			var url = $"https://localhost:7183/api/Post/getByCommunity/{accountId}/{communityId}";
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)
 			{
@@ -51,9 +51,9 @@ namespace ZestFrontend.Services
 			else
 				return null;
 		}
-		public async Task<List<PostDTO>> GetPostsBySearch(string text)
+		public async Task<List<PostDTO>> GetPostsBySearch(string text, int accountId)
 		{
-			var url = $"https://localhost:7183/api/Post/getBySearch/{text}";
+			var url = $"https://localhost:7183/api/Post/getBySearch/{accountId}/{text}";
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)
 			{

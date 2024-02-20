@@ -98,7 +98,7 @@
                                 <Button HorizontalOptions="EndAndExpand" Text="DL" Grid.Column="1" Grid.Row="1" Command="{Binding DislikePostCommand}" />
                                 <Label HorizontalOptions="EndAndExpand"  Text="{Binding Post.Dislikes}" Grid.Column="2" Grid.Row="1" />
                                 </StackLayout>
-                                <Button Grid.Column="1" Grid.Row="2" HorizontalOptions="End" VerticalOptions="Start" Text="X"/>
+                                <Button Grid.Column="1" Grid.Row="2" HorizontalOptions="End" VerticalOptions="Start" Text="X" IsVisible="{Binding Post.IsOwner}" Command="{Binding DeletePostCommand}"/>
                                 <CarouselView Grid.Row="2"  ItemsSource="{Binding Resources}" HorizontalOptions="Center" Grid.ColumnSpan="2" Loop="False" IsVisible="{Binding IsCarouselVisible}" Position="0">
                                 <CarouselView.ItemTemplate>
                                     <DataTemplate x:DataType="model:PostResourcesDTO">
