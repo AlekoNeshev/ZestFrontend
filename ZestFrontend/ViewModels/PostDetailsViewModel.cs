@@ -10,7 +10,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using ZestFrontend.DTOs;
+using ZestFrontend.Parameters;
 using ZestFrontend.Services;
 
 namespace ZestFrontend.ViewModels
@@ -26,6 +28,7 @@ namespace ZestFrontend.ViewModels
 		CommentsHubConnectionService _commentHubConnectionService;
 		CommentService _commentService;
 		MediaService _mediaService;
+
 		int repliedId = -1;
 		public PostDetailsViewModel(AuthService authService, PostsService postsService, LikesService likesService, CommentService commentService, MediaService mediaService, LikesHubConnectionService likesHubConnectionService, CommentsHubConnectionService commentHubConnectionService, SignalRConnectionService signalRConnectionService)
 		{
@@ -38,9 +41,10 @@ namespace ZestFrontend.ViewModels
 			_commentHubConnectionService=commentHubConnectionService;
 			_signalRConnectionService = signalRConnectionService;
 			_commentHubConnectionService.Init();
+			ReplyCommand = new ReplyCommand(ExecuteReplyCommand);
 		}
 
-
+		public ICommand ReplyCommand { get; }
 		[ObservableProperty]
 		PostDTO post;
 		[ObservableProperty]
@@ -57,6 +61,7 @@ namespace ZestFrontend.ViewModels
 		string replyText;
 		public ObservableCollection<PostResourcesDTO> Resources { get; private set; } = new();
 
+
 		[RelayCommand]
 		async Task DislikePostAsync()
 		{
@@ -71,29 +76,47 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task DeletePostAsync()
 		{
-			await _postsService.DeletePost(Post.Id);
+			var response = await _postsService.DeletePost(Post.Id);
+			var content = await response.Content.ReadAsStringAsync();
+			UpdateComment(int.Parse(content));
 		}
 
 		public async void GetComments()
 		{
 			Comments.Clear();
-			var comments = await _commentService.GetComments(Post.Id);
+			var comments = await _commentService.GetComments(_authService.Id, Post.Id);
 			foreach (var comment in comments)
 			{
+				comment.IsOwner = comment.Publisher==_authService.Username;
+				IsOwner(comment.Replies);
 				Comments.Add(comment);
 			}
 
 
-			//Source = ("https://localhost:7183/api/PostRescources/ivan/19e1ca76-f360-4dc4-b940-71c329c8ea8b.jpg");
-			//Source = MediaSource.FromUri("https://localhost:7183/api/PostRescources/ivan/download.jpg");
+		}
+		public async void IsOwner(IEnumerable<CommentDTO> comments)
+		{
+			foreach (var comment in comments)
+			{
+				
+				comment.IsOwner = comment.Publisher==_authService.Username;
+				if(comment.Replies == null)
+				{
+					return;
+				}
+				IsOwner(comment.Replies);
+				
+			}
 
 		}
 		[RelayCommand]
 		async Task SendAsync(string text)
 		{
 			
-		 await _commentService.PostComment(Post.Id, _authService.Id, text);
-			
+		 var response = await _commentService.PostComment(Post.Id, _authService.Id, text);
+			var content = await response.Content.ReadAsStringAsync();
+			AddComment(int.Parse(content));
+
 		}
 		partial void OnPostChanged(PostDTO value)
 		{
@@ -130,11 +153,20 @@ namespace ZestFrontend.ViewModels
 			comment.IsReplyVisible = !comment.IsReplyVisible;
 			repliedId = comment.Id;
 		}
-		[RelayCommand]
-		async Task SendReplyAsync(string text)
+		
+		public async Task SendReplyAsync(int comment, string text)
 		{
-			await _commentService.PostComment(Post.Id, _authService.Id, text, repliedId);
+			var response = await _commentService.PostComment(Post.Id, _authService.Id, text, comment);
+
 			repliedId = -1;
+			var content = await response.Content.ReadAsStringAsync();
+			string[] parts = content.Trim('[', ']').Split(',');
+			int firstNumber = int.Parse(parts[0]);
+			int secondNumber = int.Parse(parts[1]);
+			var reply = await _commentService.GetSingleComment(firstNumber);
+			var commentToFind = FindCommentById(secondNumber, Comments);
+			commentToFind.Replies.Add(reply);
+
 		}
 		public CommentDTO FindCommentById(int id, IEnumerable<CommentDTO> comments)
 		{
@@ -160,6 +192,11 @@ namespace ZestFrontend.ViewModels
 			var comment = FindCommentById(id, Comments);
 			comment.Likes = updatedComment.Likes;
 			comment.Dislikes = updatedComment.Dislikes;
+		}
+		public async void AddComment(int id)
+		{
+			var comment = await _commentService.GetSingleComment(id);
+			Comments.Add(comment);
 		}
 		[RelayCommand]
 		async Task DeleteCommentAsync(CommentDTO commentDTO)
@@ -203,7 +240,12 @@ namespace ZestFrontend.ViewModels
 				return;
 			}
 		}
-		
+		private async void ExecuteReplyCommand(ReplyCommandParameter parameter)
+		{
+			var comment = int.Parse(parameter.Comment);
+			var text = parameter.ReplyText;
+			await SendReplyAsync(comment, text);
+		}
 		public async void OnNavigatedTo()
 		{
 			await _signalRConnectionService.RemoveConnectionToGroup(_likesHubConnectionService.LikesConnection.ConnectionId);

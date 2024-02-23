@@ -60,11 +60,13 @@ namespace ZestFrontend.ViewModels
 			}
 			foreach (var post in await postsService.GetPosts(lastDate, Posts.Count, 50, authService.Id))
 			{
+				post.IsOwner = post.Publisher == authService.Username;
 				Posts.Add(post);
 			}
 			await _signalRConnectionService.AddConnectionToGroup(connection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
 
 		}
+		
 		[RelayCommand]
 		async Task DislikePostAsync(PostDTO postDTO)
 		{

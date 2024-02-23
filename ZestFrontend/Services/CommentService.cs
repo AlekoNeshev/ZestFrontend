@@ -19,10 +19,10 @@ namespace ZestFrontend.Services
             this._httpClient=client;
         }
 
-        public async Task<CommentDTO[]> GetComments(int postId)
+        public async Task<CommentDTO[]> GetComments(int accountId,int postId)
         {
 
-            var url = $"https://localhost:7183/api/Comments/getCommentsByPost/{postId}";
+            var url = $"https://localhost:7183/api/Comments/getCommentsByPost/{accountId}/{postId}";
             var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
