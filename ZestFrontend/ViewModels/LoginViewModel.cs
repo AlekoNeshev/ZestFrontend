@@ -37,6 +37,7 @@ namespace ZestFrontend.ViewModels
             else
             {
                 authService.Id = account.Id;
+                authService.Username = account.Username;
                 await Shell.Current.GoToAsync($"{nameof(PostsPage)}");
             }
         }

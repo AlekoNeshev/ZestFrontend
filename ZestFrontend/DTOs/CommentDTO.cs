@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,12 +10,22 @@ namespace ZestFrontend.DTOs
 {
     public class CommentDTO : ObservableObject
     {
+        private string _publisher;
+        private string _text;
         private int _likes;
         private int _dislikes;
         private bool _isReplyVisible;
         public int Id { get; set; }
-        public string Publisher { get; set; }
-        public string Text { get; set; }
+        public string Publisher 
+        { 
+            get => _publisher; 
+            set => SetProperty(ref _publisher, value); 
+        }
+        public string Text 
+        { 
+            get=>_text;
+            set => SetProperty(ref _text, value); 
+        }
         public int Likes
         {
             get => _likes;
@@ -30,8 +41,8 @@ namespace ZestFrontend.DTOs
 			get => _isReplyVisible;
 			set => SetProperty(ref _isReplyVisible, value);
 		}
-	
-		public List<CommentDTO> Replies { get; set; } = new List<CommentDTO>();
+        public bool IsOwner { get; set; }
+        public ObservableCollection<CommentDTO> Replies { get; set; } = new ObservableCollection<CommentDTO>();
         public DateTime PostedOn { get; set; }
     }
 }
