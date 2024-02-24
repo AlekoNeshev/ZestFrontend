@@ -7,6 +7,9 @@
              xmlns:model="clr-namespace:ZestFrontend.DTOs"
              xmlns:windows="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;assembly=Microsoft.Maui.Controls"
              Title="PostsPage">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False"></BackButtonBehavior>
+    </Shell.BackButtonBehavior>
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Refresh" Command="{Binding RefreshCommand}"></ToolbarItem>
     </ContentPage.ToolbarItems>

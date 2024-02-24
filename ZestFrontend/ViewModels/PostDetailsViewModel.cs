@@ -88,13 +88,13 @@ namespace ZestFrontend.ViewModels
 			foreach (var comment in comments)
 			{
 				comment.IsOwner = comment.Publisher==_authService.Username;
-				IsOwner(comment.Replies);
+				await IsOwner(comment.Replies);
 				Comments.Add(comment);
 			}
 
 
 		}
-		public async void IsOwner(IEnumerable<CommentDTO> comments)
+		public async Task IsOwner(IEnumerable<CommentDTO> comments)
 		{
 			foreach (var comment in comments)
 			{
@@ -104,7 +104,7 @@ namespace ZestFrontend.ViewModels
 				{
 					return;
 				}
-				IsOwner(comment.Replies);
+				await IsOwner(comment.Replies);
 				
 			}
 

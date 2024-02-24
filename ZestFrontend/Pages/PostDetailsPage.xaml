@@ -9,10 +9,7 @@
              x:DataType="viewmodel:PostDetailsViewModel"
              Title="PostDetailsPage">
 
-    <Shell.BackButtonBehavior>
-        <BackButtonBehavior Command="{Binding GoBackCommand}" />
-    </Shell.BackButtonBehavior>
-
+  
     <ContentPage.Resources>
 
         <ResourceDictionary>

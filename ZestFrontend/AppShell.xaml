@@ -5,28 +5,24 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:ZestFrontend"
     Shell.FlyoutBehavior="Disabled">
+    
     <TabBar>
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}" />
-        <ShellContent
-        Title="Login"
-        ContentTemplate="{DataTemplate local:Login}"/>
-        <ShellContent
-        Title="Login"
-        ContentTemplate="{DataTemplate local:PostsPage}" />
-        <ShellContent
-        Title="Coms"
-        ContentTemplate="{DataTemplate local:CommunitiesPage}" />
-        <ShellContent
-        Title="Account"
-        ContentTemplate="{DataTemplate local:AccountPage}"/>
-        <ShellContent
-        Title="Friends"
-        ContentTemplate="{DataTemplate local:FriendsPage}" />
-        <ShellContent
-        Title="Users"
-        ContentTemplate="{DataTemplate local:UsersPage}" />
+
+
+        <Tab Title="Posts">
+            <ShellContent Title="Posts" ContentTemplate="{DataTemplate local:MainPage}" />
+        </Tab>
+        <Tab Title="Communities">
+            <ShellContent Title="Coms" ContentTemplate="{DataTemplate local:CommunitiesPage}" />
+        </Tab>
+
+
+        <Tab Title="Users">
+            <ShellContent Title="Friends" ContentTemplate="{DataTemplate local:FriendsPage}" />
+            <ShellContent Title="Users" ContentTemplate="{DataTemplate local:UsersPage}" />
+        </Tab>
+        <ShellContent Title="Account" ContentTemplate="{DataTemplate local:AccountPage}" />
+
     </TabBar>
 
 </Shell>

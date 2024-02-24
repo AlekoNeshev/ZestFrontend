@@ -3,8 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ZestFrontend.Login"
              Title="Login"
+             Shell.TabBarIsVisible="False"
              xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
              x:DataType="viewmodel:LoginViewModel">
+    
+    <ContentPage.ToolbarItems>
+        
+    </ContentPage.ToolbarItems>
     <Grid Padding="50, 50, 50, 50" RowSpacing="2">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>

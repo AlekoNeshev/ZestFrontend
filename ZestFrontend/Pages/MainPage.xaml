@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ZestFrontend.MainPage"
              xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+             Shell.TabBarIsVisible="False"
              x:DataType="viewmodel:MainViewModel">
 
     <ScrollView>
