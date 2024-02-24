@@ -36,6 +36,7 @@ namespace ZestFrontend.ViewModels
 			Messages.Clear();
 			foreach (var item in await messageService.GetMessages(Follower.FollowerId, authService.Id))
 			{
+				item.IsOwner = item.SenderUsername == authService.Username;
 				Messages.Add(item);
 			}
 		}
@@ -43,7 +44,7 @@ namespace ZestFrontend.ViewModels
 		{
 			hubConnection.Init();
 			GetMessages();
-			hubConnection.MessageConnection.On("MessageSent",() => GetMessages());
+			hubConnection.MessageConnection.On<int>("MessageSent",(id) => GetSingleMessage(id));
 		}
 		public async void OnNavigatedTo()
 		{
@@ -57,6 +58,11 @@ namespace ZestFrontend.ViewModels
 		{
 			await messageService.SendMessage(authService.Id, Follower.FollowerId, text);
 		}
-		
+		public async void GetSingleMessage(int messageId)
+		{
+			var message = await messageService.FindById(messageId);
+			message.IsOwner = message.SenderUsername == authService.Username;
+			Messages.Insert(Messages.Count, message);
+		}
 	}
 }

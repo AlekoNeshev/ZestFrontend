@@ -1,56 +1,85 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ZestFrontend.ChatPage"
-             xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels" 
-             x:DataType="viewmodel:ChatViewModel"
-             xmlns:model="clr-namespace:ZestFrontend.DTOs"
-             Title="ChatPage">
-    <ScrollView Orientation="Vertical">
-        <StackLayout>
-        <Label Text="Messages" FontSize="Large" HorizontalOptions="Center" />
-       
-        <CollectionView ItemsSource="{Binding Messages}" MinimumHeightRequest="50">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:MessageDTO">
-                    <Grid>
-                        <Frame>
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer CommandParameter="{Binding .}"
-                                       Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:FriendsViewModel}}, Path=GoToChatPageCommand}"/>
-                            </Frame.GestureRecognizers>
-                            <Grid Padding="10">
+<ContentPage
+    x:Class="ZestFrontend.ChatPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:ZestFrontend.Parameters"
+    xmlns:model="clr-namespace:ZestFrontend.DTOs"
+    xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+    Title="ChatPage"
+    x:DataType="viewmodel:ChatViewModel">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:UserMessageColorConverter x:Key="UserMessageColorConverter" />
+            <local:BoolToLayoutOptionsConverter x:Key="BoolToLayoutOptionsConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <ScrollView Orientation="Vertical">
+            <StackLayout>
+                <Label
+                    FontSize="Large"
+                    HorizontalOptions="Center"
+                    Text="Messages" />
 
-                                </Grid.RowDefinitions>
+                <CollectionView ItemsSource="{Binding Messages}" MinimumHeightRequest="50">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:MessageDTO">
+                            <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
+                                <Frame Grid.Column="{Binding IsOwner, Converter={StaticResource BoolToLayoutOptionsConverter}}" BackgroundColor="{Binding IsOwner, Converter={StaticResource UserMessageColorConverter}}">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:FriendsViewModel}}, Path=GoToChatPageCommand}" CommandParameter="{Binding .}" />
+                                    </Frame.GestureRecognizers>
+                                    <Grid Padding="10">
 
-                                <Label Grid.Column="0"
-        Text="{Binding SenderUsername}"
-        FontAttributes="Bold" 
-                MinimumWidthRequest="100"/>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
 
-                                <Label Grid.Column="1"
-Text="{Binding Text}"
-FontAttributes="Bold" 
-        MinimumWidthRequest="100"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
 
+                                        <Label
+                                            Grid.Column="0"
+                                            FontAttributes="Bold"
+                                            MinimumWidthRequest="100"
+                                            Text="{Binding SenderUsername}" />
+
+                                        <Label
+                                            Grid.Column="1"
+                                            FontAttributes="Bold"
+                                            MinimumWidthRequest="100"
+                                            Text="{Binding Text}" />
+
+                                    </Grid>
+                                </Frame>
                             </Grid>
-                        </Frame>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-        
-        <StackLayout Orientation="Horizontal">
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+        </ScrollView>
+        <StackLayout
+            Grid.Row="1"
+            Orientation="Horizontal"
+            VerticalOptions="End">
             <Entry x:Name="CommentEntry" Placeholder="Write a comment" />
-            <Button Text="Send" Command="{Binding SendCommand}" CommandParameter="{Binding Text, Source={x:Reference CommentEntry}}" />
+            <Button
+                Command="{Binding SendCommand}"
+                CommandParameter="{Binding Text, Source={x:Reference CommentEntry}}"
+                Text="Send" />
         </StackLayout>
-    </StackLayout>
-    </ScrollView>
+    </Grid>
+
 </ContentPage>

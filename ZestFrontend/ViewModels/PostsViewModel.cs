@@ -108,7 +108,7 @@ namespace ZestFrontend.ViewModels
 		public async void onNavigatedTo()
 		{
 			
-			connection.LikesConnection.On<int>("PostLiked", (id) => UpdatePost(id));
+			connection.LikesConnection.On<int>("PostLiked", UpdatePost);
 		}
 	}
 }
