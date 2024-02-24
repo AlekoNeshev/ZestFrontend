@@ -73,6 +73,7 @@ namespace ZestFrontend.ViewModels
 			var posts = await postsService.GetPostsByCommunity(Community.Id, authService.Id);
 			foreach (var post in posts)
 			{
+				post.IsOwner = post.Publisher == authService.Username;
 				Posts.Add(post);
 			}
 		}
