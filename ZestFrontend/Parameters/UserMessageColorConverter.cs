@@ -16,11 +16,11 @@ namespace ZestFrontend.Parameters
 			if (value is bool isCurrentUser && isCurrentUser)
 			{
 
-				return Microsoft.Maui.Graphics.Color.FromArgb("#02c0b3");
+				return Microsoft.Maui.Graphics.Color.FromArgb("#619F9E");
 			}
 			else
 			{
-				return Microsoft.Maui.Graphics.Color.FromArgb("#f6c0b3");
+				return Microsoft.Maui.Graphics.Color.FromArgb("#294F52");
 			}
 		}
 
