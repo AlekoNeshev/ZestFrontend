@@ -10,6 +10,7 @@ namespace ZestFrontend.DTOs
 	{
 		public string SenderUsername { get; set; }
 		public string Text { get; set; }
-		public DateTime CreatedOn { get; set; }
+        public bool IsOwner { get; set; }
+        public DateTime CreatedOn { get; set; }
 	}
 }

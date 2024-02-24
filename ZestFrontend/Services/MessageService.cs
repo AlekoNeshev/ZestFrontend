@@ -16,6 +16,17 @@ namespace ZestFrontend.Services
         {
              this._httpClient = httpClient;
         }
+		public async Task<MessageDTO> FindById(int id)
+		{
+			var url = $"https://localhost:7183/api/Messages/get/{id}";
+			var response = await _httpClient.GetAsync(url);
+			if (response.IsSuccessStatusCode)
+			{
+				return await response.Content.ReadFromJsonAsync<MessageDTO>();
+			}
+			else
+				return null;
+		}
 		public async Task<MessageDTO[]> GetMessages(int senderId, int receiverId)
 		{
 			var url = $"https://localhost:7183/api/Messages/get/{senderId}/receiver/{receiverId}";

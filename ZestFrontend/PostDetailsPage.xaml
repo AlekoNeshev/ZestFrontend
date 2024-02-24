@@ -14,7 +14,7 @@
     </Shell.BackButtonBehavior>
 
     <ContentPage.Resources>
-        
+
         <ResourceDictionary>
             <DataTemplate x:DataType="model:CommentDTO" x:Key="CommentTemplate">
                 <Frame HorizontalOptions="FillAndExpand">
@@ -41,7 +41,7 @@
                                 <ImageButton Source="reply.png" HorizontalOptions="End" VerticalOptions="Center" MaximumWidthRequest="10" MaximumHeightRequest="10" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommentCommand}" CommandParameter="{Binding .}">
                                 </ImageButton>
                                 <ImageButton Source="delete.png" HorizontalOptions="End" VerticalOptions="Center"  MaximumWidthRequest="10" MaximumHeightRequest="10" IsVisible="{Binding IsOwner}" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DeleteCommentCommand}" CommandParameter="{Binding .}">
-                                </ImageButton> 
+                                </ImageButton>
                             </StackLayout>
                         </StackLayout>
                         <StackLayout x:Name="SomeName" Spacing="5" MinimumHeightRequest="30" Orientation="Horizontal" Margin="0,0,0,1" IsVisible="{Binding IsReplyVisible}" Grid.Row="1" HorizontalOptions="Start">
@@ -50,8 +50,8 @@
                             <Button MinimumHeightRequest="10" MaximumHeightRequest="50" Text="Send" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommand}"  >
                                 <Button.CommandParameter>
                                     <local:ReplyCommandParameter ReplyText="{Binding Source={x:Reference ReplyEntry}, Path=Text}" Comment="{Binding Source={x:Reference Id}, Path=Text}">
-                                    
-                                </local:ReplyCommandParameter>
+
+                                    </local:ReplyCommandParameter>
                                 </Button.CommandParameter>
                             </Button>
                         </StackLayout>
@@ -71,67 +71,67 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <RefreshView Command="{Binding RefreshCommand}" >
-            <ScrollView Orientation="Vertical">
-                <StackLayout Spacing="20" Orientation="Vertical" VerticalOptions="StartAndExpand">
-                    <Frame>
-                        <Grid Padding="10" >
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
+                <ScrollView Orientation="Vertical">
+                    <StackLayout Spacing="20" Orientation="Vertical" VerticalOptions="StartAndExpand">
+                        <Frame>
+                            <Grid Padding="10" >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
-                            <Label Grid.Column="0"
+                                <Label Grid.Column="0"
           Text="{Binding Post.Title}"
           FontAttributes="Bold"
           MinimumWidthRequest="100"/>
-                            <Label Grid.Row="1"
+                                <Label Grid.Row="1"
           Grid.Column="0"
           Text="{Binding Post.Text}"
           FontAttributes="Italic"
           VerticalOptions="Start"
           MinimumWidthRequest="100"/>
                                 <StackLayout Orientation="Horizontal" Grid.Column="1" HorizontalOptions="EndAndExpand">
-                                <Button HorizontalOptions="EndAndExpand" Text="L" Grid.Column="1" Command="{Binding LikePostCommand}"/>
-                                <Label HorizontalOptions="EndAndExpand" Text="{Binding Post.Likes}" Grid.Column="2" />
+                                    <Button HorizontalOptions="EndAndExpand" Text="L" Grid.Column="1" Command="{Binding LikePostCommand}"/>
+                                    <Label HorizontalOptions="EndAndExpand" Text="{Binding Post.Likes}" Grid.Column="2" />
                                 </StackLayout>
                                 <StackLayout Orientation="Horizontal" Grid.Column="1" Grid.Row="1" HorizontalOptions="EndAndExpand">
-                                <Button HorizontalOptions="EndAndExpand" Text="DL" Grid.Column="1" Grid.Row="1" Command="{Binding DislikePostCommand}" />
-                                <Label HorizontalOptions="EndAndExpand"  Text="{Binding Post.Dislikes}" Grid.Column="2" Grid.Row="1" />
+                                    <Button HorizontalOptions="EndAndExpand" Text="DL" Grid.Column="1" Grid.Row="1" Command="{Binding DislikePostCommand}" />
+                                    <Label HorizontalOptions="EndAndExpand"  Text="{Binding Post.Dislikes}" Grid.Column="2" Grid.Row="1" />
                                 </StackLayout>
                                 <Button Grid.Column="1" Grid.Row="2" HorizontalOptions="End" VerticalOptions="Start" Text="X" IsVisible="{Binding Post.IsOwner}" Command="{Binding DeletePostCommand}"/>
                                 <CarouselView Grid.Row="2"  ItemsSource="{Binding Resources}" HorizontalOptions="Center" Grid.ColumnSpan="2" Loop="False" IsVisible="{Binding IsCarouselVisible}" Position="0">
-                                <CarouselView.ItemTemplate>
-                                    <DataTemplate x:DataType="model:PostResourcesDTO">
-                                        <StackLayout>
-                                            <Frame>
-                                               <Image Source="{Binding Source}" MaximumHeightRequest="300" MaximumWidthRequest="300" Aspect="AspectFill" HeightRequest="150" WidthRequest="150" HorizontalOptions="Center" />
-                                            </Frame>
-                                        </StackLayout>
-                                    </DataTemplate>
-                                </CarouselView.ItemTemplate>
-                            </CarouselView>
-                            <toolkit:MediaElement Grid.ColumnSpan="2" HorizontalOptions="Center" Grid.Row="2" Source="{Binding Source}" ShouldShowPlaybackControls="True" IsVisible="{Binding IsMediaPlayerVisible}" MaximumHeightRequest="300" MaximumWidthRequest="300"/>
-                        </Grid>
+                                    <CarouselView.ItemTemplate>
+                                        <DataTemplate x:DataType="model:PostResourcesDTO">
+                                            <StackLayout>
+                                                <Frame>
+                                                    <Image Source="{Binding Source}" MaximumHeightRequest="300" MaximumWidthRequest="300" Aspect="AspectFill" HeightRequest="150" WidthRequest="150" HorizontalOptions="Center" />
+                                                </Frame>
+                                            </StackLayout>
+                                        </DataTemplate>
+                                    </CarouselView.ItemTemplate>
+                                </CarouselView>
+                                <toolkit:MediaElement Grid.ColumnSpan="2" HorizontalOptions="Center" Grid.Row="2" Source="{Binding Source}" ShouldShowPlaybackControls="True" IsVisible="{Binding IsMediaPlayerVisible}" MaximumHeightRequest="300" MaximumWidthRequest="300"/>
+                            </Grid>
 
-                    </Frame>
+                        </Frame>
 
-                    <Label Text="Comments" FontSize="Large" HorizontalOptions="Center" />
+                        <Label Text="Comments" FontSize="Large" HorizontalOptions="Center" />
 
-                    <CollectionView ItemSizingStrategy="MeasureAllItems"
+                        <CollectionView ItemSizingStrategy="MeasureAllItems"
                                     ItemsSource="{Binding Comments}"
                                     MinimumHeightRequest="50"
                                     ItemTemplate="{StaticResource CommentTemplate}"
                                     Margin="0, 0, 0, 0"
                                     Background="Beige">
-                    </CollectionView>
-                </StackLayout>
-            </ScrollView>
+                        </CollectionView>
+                    </StackLayout>
+                </ScrollView>
             </RefreshView>
             <StackLayout Orientation="Horizontal" Grid.Row="1" Spacing="10" HorizontalOptions="CenterAndExpand">
                 <Entry x:Name="CommentEntry" Placeholder="Write a comment" MinimumWidthRequest="100" HorizontalOptions="StartAndExpand"/>
