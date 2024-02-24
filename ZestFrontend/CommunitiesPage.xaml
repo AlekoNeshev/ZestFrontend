@@ -62,6 +62,7 @@
             <ImageButton
                 Aspect="AspectFit"
                 BackgroundColor="Transparent"
+                Command="{Binding GoToAddCommunityPageCommand}"
                 HeightRequest="40"
                 HorizontalOptions="Center"
                 Source="your_fab_icon.png"
