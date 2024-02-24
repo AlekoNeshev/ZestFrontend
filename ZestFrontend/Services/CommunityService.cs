@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
@@ -47,6 +49,14 @@ namespace ZestFrontend.Services
 			var url = $"https://localhost:7183/api/CommunityFollowers/account/add/{accountId}/community/{communityId}";
 			var response = await _httpClient.PostAsync(url, new StringContent("data"));
 
+			return response;
+		}
+        public async Task<HttpResponseMessage> AddCommunity(string name,int creatorId ,string description)
+        {
+			var url = $"https://localhost:7183/api/Community/add/{name}/creator/{creatorId}";
+			var body = JsonConvert.SerializeObject(description);
+			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
+			response.EnsureSuccessStatusCode();
 			return response;
 		}
 	}

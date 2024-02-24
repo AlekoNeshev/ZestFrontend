@@ -10,6 +10,7 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Refresh" Command="{Binding RefreshCommand}"></ToolbarItem>
     </ContentPage.ToolbarItems>
+    
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -71,4 +72,6 @@
         </CollectionView>
         </RefreshView>
     </Grid>
+        
+   
 </ContentPage>

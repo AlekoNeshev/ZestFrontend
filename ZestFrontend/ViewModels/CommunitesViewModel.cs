@@ -43,5 +43,10 @@ namespace ZestFrontend.ViewModels
             {"Community", community }
             });
         }
-    }
+		[RelayCommand]
+		async Task GoToAddCommunityPageAsync()
+		{
+			await Shell.Current.GoToAsync($"{nameof(AddCommunityPage)}");
+		}
+	}
 }
