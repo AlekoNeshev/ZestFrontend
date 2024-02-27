@@ -6,7 +6,8 @@
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="CommunitiesPage"
-    x:DataType="viewmodel:CommunitesViewModel">
+    x:DataType="viewmodel:CommunitesViewModel"
+    BackgroundColor="GhostWhite">
     <Grid>
         <Grid>
             <CollectionView ItemsSource="{Binding Communities}" SelectionMode="None">

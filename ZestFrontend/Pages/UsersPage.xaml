@@ -1,46 +1,55 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ZestFrontend.UsersPage"
-             xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
-             x:DataType="viewmodel:UsersViewModel"
-             xmlns:model="clr-namespace:ZestFrontend.DTOs"
-             Title="UsersPage">
+<ContentPage
+    x:Class="ZestFrontend.UsersPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:model="clr-namespace:ZestFrontend.DTOs"
+    xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+    Title="UsersPage"
+    x:DataType="viewmodel:UsersViewModel"
+    BackgroundColor="GhostWhite">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Refresh" Command="{Binding RefreshCommand}"></ToolbarItem>
+        <ToolbarItem Command="{Binding RefreshCommand}" Text="Refresh" />
     </ContentPage.ToolbarItems>
     <Grid>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
 
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
 
         </Grid.RowDefinitions>
-        <SearchBar Margin="0, 10, 0, 10" Grid.Column="2" Text="{Binding Search}" SearchCommand="{Binding SearchUsersCommand}" MaximumWidthRequest="500"/>
-      
-        <CollectionView ItemsSource="{Binding Users}" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" HorizontalOptions="CenterAndExpand" MinimumWidthRequest="1000">
+        <SearchBar
+            Grid.Column="2"
+            Margin="0,10,0,10"
+            MaximumWidthRequest="500"
+            SearchCommand="{Binding SearchUsersCommand}"
+            Text="{Binding Search}" />
+
+        <CollectionView
+            Grid.Row="1"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            HorizontalOptions="CenterAndExpand"
+            ItemsSource="{Binding Users}"
+            MinimumWidthRequest="1000">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:UserDTO">
-                    <Grid >
+                    <Grid>
                         <Frame>
                             <Frame.GestureRecognizers>
-                                <TapGestureRecognizer CommandParameter="{Binding .}"
-                           Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:UsersViewModel}}, Path=GoToUserDetailPageCommand}"/>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:UsersViewModel}}, Path=GoToUserDetailPageCommand}" CommandParameter="{Binding .}" />
                             </Frame.GestureRecognizers>
                             <HorizontalStackLayout>
-                                <Label 
-                                  Text="{Binding Username}"
-                                  FontAttributes="Bold" 
-                                  MinimumWidthRequest="100"/>
-                                
-                                
-
+                                <Label
+                                    FontAttributes="Bold"
+                                    MinimumWidthRequest="100"
+                                    Text="{Binding Username}" />
                             </HorizontalStackLayout>
                         </Frame>
                     </Grid>

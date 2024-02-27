@@ -1,31 +1,41 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ZestFrontend.Login"
-             Title="Login"
-             Shell.TabBarIsVisible="False"
-             xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
-             x:DataType="viewmodel:LoginViewModel">
-    
-    <ContentPage.ToolbarItems>
-        
-    </ContentPage.ToolbarItems>
-    <Grid Padding="50, 50, 50, 50" RowSpacing="2">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
+<ContentPage
+    x:Class="ZestFrontend.Login"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+    Title="Login"
+    x:DataType="viewmodel:LoginViewModel"
+    Shell.TabBarIsVisible="False">
 
-        <Label Text="Username:"></Label>
-        <Entry Grid.Row="1" Text="{Binding Username, Mode=TwoWay}"></Entry>
-        <Label Text="Password:" Grid.Row="2"></Label>
-        <Entry Grid.Row="3" IsPassword="True" Text="{Binding Password, Mode=TwoWay}"></Entry>
-        <Button Text="Submit" Grid.Row="4" Command="{Binding LoginCommand}"/>
+    <ContentPage.ToolbarItems />
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="7*" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <StackLayout
+            Grid.Column="1"
+            Padding="0,20"
+            Spacing="20"
+            VerticalOptions="Start">
+
+            <Label Text="Username:" />
+            <Entry Placeholder="Write your username" Text="{Binding Username, Mode=TwoWay}" />
+            <Label Grid.Row="2" Text="Password:" />
+            <Entry
+                IsPassword="True"
+                Placeholder="Write you password"
+                Text="{Binding Password, Mode=TwoWay}" />
+            <Button Command="{Binding LoginCommand}" Text="Submit">
+                <Button.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Offset="0.0" Color="ForestGreen" />
+                        <GradientStop Offset="1.0" Color="LightBlue" />
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+        </StackLayout>
     </Grid>
 </ContentPage>

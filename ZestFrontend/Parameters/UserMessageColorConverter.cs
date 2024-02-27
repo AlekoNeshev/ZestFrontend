@@ -15,12 +15,19 @@ namespace ZestFrontend.Parameters
 		{
 			if (value is bool isCurrentUser && isCurrentUser)
 			{
-
-				return Microsoft.Maui.Graphics.Color.FromArgb("#619F9E");
+				GradientStop gradientStop = new GradientStop(Color.FromArgb("#7dd0ae"), (float)1.0);
+				GradientStop gradientStop2 = new GradientStop(Color.FromArgb("#FFADD8E6"), (float)0.0);
+				GradientStopCollection gradientStops = [gradientStop, gradientStop2];	
+				LinearGradientBrush linearGradientBrush = new LinearGradientBrush(gradientStops);
+				return linearGradientBrush;
 			}
 			else
 			{
-				return Microsoft.Maui.Graphics.Color.FromArgb("#294F52");
+				GradientStop gradientStop = new GradientStop(Color.FromArgb("#FF228B22"), (float)0.0);
+				GradientStop gradientStop2 = new GradientStop(Color.FromArgb("#FFADD8E6"), (float)1.0);
+				GradientStopCollection gradientStops = [gradientStop, gradientStop2];
+				LinearGradientBrush linearGradientBrush = new LinearGradientBrush(gradientStops);
+				return Color.FromArgb("#ffffff");
 			}
 		}
 

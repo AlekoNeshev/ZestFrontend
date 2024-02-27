@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MauiIcons.Core;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,7 @@ namespace ZestFrontend.ViewModels
 			_signalRConnectionService = signalRConnectionService;
 			_commentHubConnectionService.Init();
 			ReplyCommand = new ReplyCommand(ExecuteReplyCommand);
+			_ = new MauiIcon();
 		}
 
 		public ICommand ReplyCommand { get; }
@@ -164,6 +166,7 @@ namespace ZestFrontend.ViewModels
 			int firstNumber = int.Parse(parts[0]);
 			int secondNumber = int.Parse(parts[1]);
 			var reply = await _commentService.GetSingleComment(firstNumber);
+			reply.IsOwner = reply.Publisher == _authService.Username;
 			var commentToFind = FindCommentById(secondNumber, Comments);
 			commentToFind.Replies.Add(reply);
 

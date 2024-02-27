@@ -1,7 +1,9 @@
-﻿using CommunityToolkit.Maui;
+﻿using MauiIcons.Core;
+using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using ZestFrontend.Services;
 using ZestFrontend.ViewModels;
+using MauiIcons.Fluent.Filled;
 
 namespace ZestFrontend;
 
@@ -13,7 +15,9 @@ public static class MauiProgram
 		builder
 			.UseMauiApp<App>()
 		    .UseMauiCommunityToolkitMediaElement()
+			.UseFluentFilledMauiIcons()
 			.UseMauiCommunityToolkit()
+			
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

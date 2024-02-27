@@ -7,6 +7,7 @@
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="ChatPage"
+    BackgroundColor="GhostWhite"
     x:DataType="viewmodel:ChatViewModel">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -35,7 +36,7 @@
                                     <ColumnDefinition />
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
-                                <Frame Grid.Column="{Binding IsOwner, Converter={StaticResource BoolToLayoutOptionsConverter}}" BackgroundColor="{Binding IsOwner, Converter={StaticResource UserMessageColorConverter}}">
+                                <Frame Grid.Column="{Binding IsOwner, Converter={StaticResource BoolToLayoutOptionsConverter}}" Background="{Binding IsOwner, Converter={StaticResource UserMessageColorConverter}}">
                                     <Frame.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:FriendsViewModel}}, Path=GoToChatPageCommand}" CommandParameter="{Binding .}" />
                                     </Frame.GestureRecognizers>
@@ -70,16 +71,27 @@
                 </CollectionView>
             </StackLayout>
         </ScrollView>
-        <StackLayout
-            Grid.Row="1"
-            Orientation="Horizontal"
-            VerticalOptions="End">
-            <Entry x:Name="CommentEntry" Placeholder="Write a comment" />
-            <Button
-                Command="{Binding SendCommand}"
-                CommandParameter="{Binding Text, Source={x:Reference CommentEntry}}"
-                Text="Send" />
-        </StackLayout>
+        <Grid Grid.Row="1" VerticalOptions="End">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="10*" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackLayout
+                Grid.Column="1"
+                HorizontalOptions="Fill"
+                Orientation="Horizontal">
+                <Entry
+                    x:Name="CommentEntry"
+                    HorizontalOptions="FillAndExpand"
+                    Placeholder="Write a comment" />
+                <Button
+                    BackgroundColor="CadetBlue"
+                    Command="{Binding SendCommand}"
+                    CommandParameter="{Binding Text, Source={x:Reference CommentEntry}}"
+                    Text="Send" />
+            </StackLayout>
+        </Grid>
     </Grid>
 
 </ContentPage>

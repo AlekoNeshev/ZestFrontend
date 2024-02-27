@@ -1,46 +1,64 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ZestFrontend.MainPage"
-             xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
-             Shell.TabBarIsVisible="False"
-             x:DataType="viewmodel:MainViewModel">
+<ContentPage
+    x:Class="ZestFrontend.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+    x:DataType="viewmodel:MainViewModel"
+    Shell.TabBarIsVisible="False">
 
     <ScrollView>
         <VerticalStackLayout
-            Spacing="25"
             Padding="30,0"
+            Spacing="25"
             VerticalOptions="Center">
 
             <Image
-                Source="dotnet_bot.png"
+                BackgroundColor="AntiqueWhite"
+                HeightRequest="400"
+                HorizontalOptions="Center"
                 SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                HeightRequest="200"
-                HorizontalOptions="Center" />
+                Source="zestlogo.png" />
 
             <Label
-                Text="Hello, World!"
-                SemanticProperties.HeadingLevel="Level1"
                 FontSize="32"
-                HorizontalOptions="Center" />
+                HorizontalOptions="Center"
+                SemanticProperties.HeadingLevel="Level1"
+                Text="Zest" />
 
             <Label
-                Text="Welcome to .NET Multi-platform App UI"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
                 FontSize="18"
-                HorizontalOptions="Center" />
+                HorizontalOptions="Center"
+                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
+                SemanticProperties.HeadingLevel="Level2"
+                Text="Your path to science" />
+            <StackLayout
+                HorizontalOptions="Center"
+                Orientation="Horizontal"
+                Spacing="40">
+                <Button
+                    x:Name="CounterBtn"
+                    Command="{Binding GoToLoginCommand}"
+                    HorizontalOptions="Center"
+                    SemanticProperties.Hint="Counts the number of times you click"
+                    Text="Log in">
+                    <Button.Background>
+                        <LinearGradientBrush>
+                            <GradientStop Offset="0.0" Color="ForestGreen" />
+                            <GradientStop Offset="1.0" Color="LightBlue" />
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
 
-            <Button
-                x:Name="CounterBtn"
-                Text="Log in"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Command="{Binding GoToLoginCommand}"
-                HorizontalOptions="Center" />
-
-            <Button
-                Text="Sign Up"
-                Command="{Binding GoToRegisterCommand}"/>
+                <Button Command="{Binding GoToRegisterCommand}" Text="Sign Up">
+                    <Button.Background>
+                        <LinearGradientBrush>
+                            <GradientStop Offset="0.0" Color="ForestGreen" />
+                            <GradientStop Offset="1.0" Color="LightBlue" />
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+            </StackLayout>
         </VerticalStackLayout>
     </ScrollView>
 
