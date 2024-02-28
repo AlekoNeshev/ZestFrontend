@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ZestFrontend.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+    x:DataType="viewmodel:MainViewModel"
+    Shell.TabBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25"
+            VerticalOptions="Center">
+
+            <Image
+                BackgroundColor="AntiqueWhite"
+                HeightRequest="400"
+                HorizontalOptions="Center"
+                SemanticProperties.Description="Cute dot net bot waving hi to you!"
+                Source="zestlogo.png" />
+
+            <Label
+                FontSize="32"
+                HorizontalOptions="Center"
+                SemanticProperties.HeadingLevel="Level1"
+                Text="Zest" />
+
+            <Label
+                FontSize="18"
+                HorizontalOptions="Center"
+                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
+                SemanticProperties.HeadingLevel="Level2"
+                Text="Your path to science" />
+            <StackLayout
+                HorizontalOptions="Center"
+                Orientation="Horizontal"
+                Spacing="40">
+                <Button
+                    x:Name="CounterBtn"
+                    Command="{Binding GoToLoginCommand}"
+                    HorizontalOptions="Center"
+                    SemanticProperties.Hint="Counts the number of times you click"
+                    Text="Log in">
+                    <Button.Background>
+                        <LinearGradientBrush>
+                            <GradientStop Offset="0.0" Color="ForestGreen" />
+                            <GradientStop Offset="1.0" Color="LightBlue" />
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+
+                <Button Command="{Binding GoToRegisterCommand}" Text="Sign Up">
+                    <Button.Background>
+                        <LinearGradientBrush>
+                            <GradientStop Offset="0.0" Color="ForestGreen" />
+                            <GradientStop Offset="1.0" Color="LightBlue" />
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+            </StackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

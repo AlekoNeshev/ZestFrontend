@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ZestFrontend.FriendsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:model="clr-namespace:ZestFrontend.DTOs"
+    xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+    Title="FriendsPage"
+    x:DataType="viewmodel:FriendsViewModel"
+    BackgroundColor="GhostWhite">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding RefreshCommand}" Text="Refresh" />
+    </ContentPage.ToolbarItems>
+    <Grid>
+        <CollectionView ItemsSource="{Binding Friends}" SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:FollowerDTO">
+                    <Grid>
+                        <Frame BorderColor="LightGreen">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:FriendsViewModel}}, Path=GoToChatPageCommand}" CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+                            <Grid Padding="10">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="50" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label
+                                    Grid.Column="0"
+                                    FontAttributes="Bold"
+                                    MinimumWidthRequest="100"
+                                    Text="{Binding FollowerUsername}" />
+
+
+
+                            </Grid>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+    </Grid>
+</ContentPage>

@@ -4,29 +4,32 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:ZestFrontend"
+    BackgroundColor="GreenYellow"
     Shell.FlyoutBehavior="Disabled">
+
+    <Shell.Background>
+        <LinearGradientBrush>
+            <GradientStop Offset="0.1" Color="Yellow" />
+            <GradientStop Offset="1.0" Color="Green" />
+        </LinearGradientBrush>
+    </Shell.Background>
     <TabBar>
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}" />
-        <ShellContent
-        Title="Login"
-        ContentTemplate="{DataTemplate local:Login}"/>
-        <ShellContent
-        Title="Login"
-        ContentTemplate="{DataTemplate local:PostsPage}" />
-        <ShellContent
-        Title="Coms"
-        ContentTemplate="{DataTemplate local:CommunitiesPage}" />
-        <ShellContent
-        Title="Account"
-        ContentTemplate="{DataTemplate local:AccountPage}"/>
-        <ShellContent
-        Title="Friends"
-        ContentTemplate="{DataTemplate local:FriendsPage}" />
-        <ShellContent
-        Title="Users"
-        ContentTemplate="{DataTemplate local:UsersPage}" />
+
+
+        <Tab Title="Posts">
+            <ShellContent Title="Posts" ContentTemplate="{DataTemplate local:MainPage}" />
+        </Tab>
+        <Tab Title="Communities">
+            <ShellContent Title="Coms" ContentTemplate="{DataTemplate local:CommunitiesPage}" />
+        </Tab>
+
+
+        <Tab Title="Users">
+            <ShellContent Title="Friends" ContentTemplate="{DataTemplate local:FriendsPage}" />
+            <ShellContent Title="Users" ContentTemplate="{DataTemplate local:UsersPage}" />
+        </Tab>
+        <ShellContent Title="Account" ContentTemplate="{DataTemplate local:AccountPage}" />
+
     </TabBar>
 
 </Shell>

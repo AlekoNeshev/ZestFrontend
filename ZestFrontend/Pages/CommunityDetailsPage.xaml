@@ -6,10 +6,9 @@
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="CommunityDetailsPage"
-    x:DataType="viewmodel:CommunityDetailsViewModel">
-    <Shell.BackButtonBehavior>
-        <BackButtonBehavior Command="{Binding GoBackCommand}" />
-    </Shell.BackButtonBehavior>
+    x:DataType="viewmodel:CommunityDetailsViewModel"
+    BackgroundColor="GhostWhite">
+
     <ScrollView Orientation="Vertical">
         <VerticalStackLayout Padding="50" Spacing="10">
             <Grid>
@@ -45,11 +44,25 @@
                     <Button
                         Command="{Binding ChangeFollowshipStatusCommand}"
                         HorizontalOptions="End"
-                        Text="{Binding ButtonText}" />
+                        Text="{Binding ButtonText}">
+                        <Button.Background>
+                            <LinearGradientBrush>
+                                <GradientStop Offset="0.0" Color="ForestGreen" />
+                                <GradientStop Offset="1.0" Color="LightBlue" />
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
                     <Button
                         Command="{Binding AddPostCommand}"
                         HorizontalOptions="End"
-                        Text="Add" />
+                        Text="Add">
+                        <Button.Background>
+                            <LinearGradientBrush>
+                                <GradientStop Offset="0.0" Color="ForestGreen" />
+                                <GradientStop Offset="1.0" Color="LightBlue" />
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
                 </VerticalStackLayout>
             </Grid>
             <CollectionView Grid.Column="1" ItemsSource="{Binding Posts}">

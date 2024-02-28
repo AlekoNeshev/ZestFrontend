@@ -63,7 +63,7 @@ namespace ZestFrontend.ViewModels
 				post.IsOwner = post.Publisher == authService.Username;
 				Posts.Add(post);
 			}
-			await _signalRConnectionService.AddConnectionToGroup(connection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
+			
 
 		}
 		
@@ -96,6 +96,7 @@ namespace ZestFrontend.ViewModels
 			{
 				Posts.Add(item);
 			}
+			await _signalRConnectionService.AddConnectionToGroup(connection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
 		}
 		[RelayCommand]
 		async Task RefreshAsync()
@@ -103,12 +104,14 @@ namespace ZestFrontend.ViewModels
 			Posts.Clear();
 			 GetPosts();
 			IsRefreshing = false;
+			await _signalRConnectionService.AddConnectionToGroup(connection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
 		}
 
 		public async void onNavigatedTo()
 		{
 			
 			connection.LikesConnection.On<int>("PostLiked", UpdatePost);
+			await _signalRConnectionService.AddConnectionToGroup(connection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
 		}
 	}
 }
