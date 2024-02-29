@@ -58,7 +58,7 @@ namespace ZestFrontend.ViewModels
 			{
 				lastDate = Posts.Last().PostedOn;
 			}
-			foreach (var post in await postsService.GetPosts(lastDate, Posts.Count, 50, authService.Id))
+			foreach (var post in await postsService.GetPosts(lastDate, Posts.Count, 50, 1, authService.Token))
 			{
 				post.IsOwner = post.Publisher == authService.Username;
 				Posts.Add(post);

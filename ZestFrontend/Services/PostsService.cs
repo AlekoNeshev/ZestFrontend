@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,11 +19,12 @@ namespace ZestFrontend.Services
             _httpClient = httpClient;
         }
 
-        public async Task<List<PostDTO>> GetPosts(DateTime lastDatel, int minimumSkipCount, int takeCount, int accountId)
+        public async Task<List<PostDTO>> GetPosts(DateTime lastDatel, int minimumSkipCount, int takeCount, int accountId, string token)
         {
 			string lastDate = lastDatel.ToString("yyyy-MM-ddTHH:mm:ss");
 			var url = $"https://localhost:7183/api/Post/getByDate/{accountId}/{lastDate}/{minimumSkipCount}/{takeCount}";
-            var response = await _httpClient.GetAsync(url);
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<List<PostDTO>>();

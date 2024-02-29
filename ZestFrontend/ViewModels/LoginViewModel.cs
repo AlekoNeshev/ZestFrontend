@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Auth0.OidcClient;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,19 @@ namespace ZestFrontend.ViewModels
     {
         LoginService service;
         AuthService authService;
-        public LoginViewModel(LoginService service, AuthService authService) 
+		Auth0Client client = new Auth0Client(new Auth0ClientOptions
+		{
+			Domain = "dev-kckk4xk2mvwnhizd.us.auth0.com",
+			ClientId = "dLljAQ9j9n5Wws5WYJtj8Ne6X4WcQfjc",
+			Scope = "openid profile email",
+			RedirectUri = "zest://callback",
+			PostLogoutRedirectUri = "zest://callback",
+		});
+		public LoginViewModel(LoginService service, AuthService authService) 
         {
             this.service = service;
             this.authService = authService;
+            //this.authenticationService = authenticationService;
         }
 
         [ObservableProperty]
@@ -29,8 +39,18 @@ namespace ZestFrontend.ViewModels
          [RelayCommand]
         async Task Login()
         {
-             AccountDTO account = await service.GetAccount(Username, Password);
-            if (account == null)
+
+            var extraParameters = new Dictionary<string, string>();
+            var audience = "https://localhost:7183"; // FILL WITH AUDIENCE AS NEEDED
+
+            if (!string.IsNullOrEmpty(audience))
+                extraParameters.Add("audience", audience);
+
+            var result = await client.LoginAsync(extraParameters);
+            authService.Token = result.AccessToken;
+			await Shell.Current.GoToAsync($"{nameof(PostsPage)}");
+			/*AccountDTO account = await service.GetAccount(Username, Password);
+			if (account == null)
             {
                 return;
             }
@@ -39,7 +59,7 @@ namespace ZestFrontend.ViewModels
                 authService.Id = account.Id;
                 authService.Username = account.Username;
                 await Shell.Current.GoToAsync($"{nameof(PostsPage)}");
-            }
-        }
+            }*/
+		}
     }
 }
