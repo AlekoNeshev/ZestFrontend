@@ -15,10 +15,10 @@ namespace ZestFrontend.ViewModels
     {
         CommunityService communityService;
         AuthService authService;
-        public CommunitesViewModel(CommunityService communityService, AuthService authService) 
+        public CommunitesViewModel(CommunityService communityService) 
         { 
             this.communityService = communityService;
-            this.authService = authService;
+            this.authService = AuthService.Instance;
             GetCommunities();
         }
 
@@ -27,7 +27,7 @@ namespace ZestFrontend.ViewModels
        
         public async void GetCommunities()
         {
-            foreach (var item in await communityService.GetCommunities(authService.Id))
+            foreach (var item in await communityService.GetCommunities())
             {
                 Communities.Add(item);
             }

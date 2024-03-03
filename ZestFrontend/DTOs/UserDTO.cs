@@ -8,7 +8,7 @@ namespace ZestFrontend.DTOs
 {
 	public class UserDTO
 	{
-		public int Id { get; set; }
+		public string Id { get; set; }
 		public string Username { get; set; }
 		public bool IsFollowed { get; set; }
 		public DateTime CreatedOn1 { get; set; }

@@ -19,10 +19,10 @@ namespace ZestFrontend.ViewModels
 		AuthService authService;
 		MessageHubConnectionService hubConnection;
 		SignalRConnectionService signalRConnectionService;
-        public ChatViewModel(MessageService messageService, AuthService authService, MessageHubConnectionService messageHubConnectionService, SignalRConnectionService signalRConnectionService)
+        public ChatViewModel(MessageService messageService, MessageHubConnectionService messageHubConnectionService, SignalRConnectionService signalRConnectionService)
         {
             this.messageService = messageService;
-			this.authService = authService;
+			this.authService = AuthService.Instance;
 			hubConnection = messageHubConnectionService;
 			this.signalRConnectionService = signalRConnectionService;
 			
@@ -34,7 +34,7 @@ namespace ZestFrontend.ViewModels
 		public async void GetMessages()
 		{
 			Messages.Clear();
-			foreach (var item in await messageService.GetMessages(Follower.FollowerId, authService.Id))
+			foreach (var item in await messageService.GetMessages(Follower.FollowerId))
 			{
 				item.IsOwner = item.SenderUsername == authService.Username;
 				Messages.Add(item);
@@ -48,15 +48,27 @@ namespace ZestFrontend.ViewModels
 		}
 		public async void OnNavigatedTo()
 		{
-			int firstHubId = Math.Max(authService.Id, Follower.FollowerId);
-			int secondHubId = Math.Min(authService.Id, Follower.FollowerId);
+			int comparisonResult = string.Compare(authService.Id, Follower.FollowerId);
+			string firstHubId, secondHubId;
+
+			if (comparisonResult >= 0)
+			{
+				firstHubId = authService.Id;
+				secondHubId = Follower.FollowerId;
+			}
+			else
+			{
+				firstHubId = Follower.FollowerId;
+				secondHubId = authService.Id;
+			}
+			
 			await signalRConnectionService.RemoveConnectionToGroup(hubConnection.MessageConnection.ConnectionId);
 			await signalRConnectionService.AddConnectionToGroup(hubConnection.MessageConnection.ConnectionId, new string[] { $"chat-{firstHubId}{secondHubId}" });
 		}
 		[RelayCommand]
 		async Task SendAsync(string text)
 		{
-			await messageService.SendMessage(authService.Id, Follower.FollowerId, text);
+			await messageService.SendMessage( Follower.FollowerId, text);
 		}
 		public async void GetSingleMessage(int messageId)
 		{

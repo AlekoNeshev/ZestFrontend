@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ZestFrontend.AccountPage"
-             xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
-             x:DataType="viewmodel:AccountViewModel"
-             Title="AccountPage">
+<ContentPage
+    x:Class="ZestFrontend.AccountPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+    Title="AccountPage"
+    x:DataType="viewmodel:AccountViewModel">
     <StackLayout Padding="20" Spacing="10">
-        <Label Text="Account Details" FontSize="Large" HorizontalOptions="Center" />
+        <Label
+            FontSize="Large"
+            HorizontalOptions="Center"
+            Text="Account Details" />
         <Label Text="First Name:" />
-        <Label  Text="{Binding Account.FirstName}" />
+        <Label Text="{Binding Account.FirstName}" />
         <Label Text="Last Name:" />
-        <Label  Text="{Binding Account.LastName}" />
+        <Label Text="{Binding Account.LastName}" />
         <Label Text="Username:" />
-        <Label  Text="{Binding Account.Username}" />
+        <Label Text="{Binding Account.Username}" />
         <Label Text="Email:" />
-        <Label  Text="{Binding Account.Email}" />
+        <Label Text="{Binding Account.Email}" />
         <Label Text="Birthdate:" />
-        <DatePicker  Date="{Binding Account.Birthdate}" />
+        <DatePicker Date="{Binding Account.Birthdate}" />
         <Label Text="Created On:" />
         <Label Text="{Binding Account.CreatedOn1}" />
-       
+        <Button Command="{Binding LogoutCommand}" Text="Logout" />
     </StackLayout>
 </ContentPage>

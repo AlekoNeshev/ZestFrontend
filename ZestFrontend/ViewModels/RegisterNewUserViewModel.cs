@@ -13,10 +13,10 @@ namespace ZestFrontend.ViewModels
     {
         AccountService accountService;
         AuthService authService;
-        public RegisterNewUserViewModel(AccountService accountService, AuthService authService)
+        public RegisterNewUserViewModel(AccountService accountService)
         {
             this.accountService = accountService;
-            this.authService = authService;
+            this.authService = AuthService.Instance;
         }
         [ObservableProperty]
         string firstName;
@@ -33,10 +33,10 @@ namespace ZestFrontend.ViewModels
         [RelayCommand]
         async Task CreateAccountAsync()
         {
-            var response = await accountService.CreateAccount(FirstName, LastName, Username, Email, Password, Birthdate.Date);
+            /*var response = await accountService.CreateAccount(FirstName, LastName, Username, Email, Password, Birthdate.Date);
 			var content = await response.Content.ReadAsStringAsync();
-			authService.Id = int.Parse(content);
-			await Shell.Current.GoToAsync($"{nameof(PostsPage)}");
+            authService.Id = content;
+			await Shell.Current.GoToAsync($"{nameof(PostsPage)}");*/
 		}
     }
 }

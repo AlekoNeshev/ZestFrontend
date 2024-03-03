@@ -1,12 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ZestFrontend.DTOs;
-using static System.Net.WebRequestMethods;
 
 namespace ZestFrontend.Services
 {
@@ -18,30 +19,37 @@ namespace ZestFrontend.Services
         {
             this._httpClient = httpClient;
         }
-        public async Task<HttpResponseMessage> CreateAccount(string firstName, string lastName, string username, string email, string password, DateTime birthdate)
+        public async Task<string[]> CreateAccount(string accessToken, string name, string email)
         {
-            var content = new AccountDTO{ FirstName = firstName, LastName = lastName, Username = username, Email = email, Birthdate = birthdate, Password = password,CreatedOn1 = DateTime.Now };
-            var url = $"https://localhost:7183/api/Account/add";
-			var body = JsonConvert.SerializeObject(content);
-			var response = await _httpClient.PostAsJsonAsync(url, content);
+           
+            var url = $"https://localhost:7183/api/Account/add/{name}/{email}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+			var response = await _httpClient.PostAsJsonAsync(url, new StringContent("data"));
 			response.EnsureSuccessStatusCode();
-			return response;
+          
+			return JsonSerializer.Deserialize<string[]>(await response.Content.ReadAsStringAsync());
 		}
 
-        public async Task<AccountDTO> GetCurrentAccount(int id)
+        public async Task<AccountDTO> GetCurrentAccount(string accessToken)
         {
-            var url = $"https://localhost:7183/api/Account/{id}";
-            var response = await _httpClient.GetAsync(url);
+            var url = $"https://localhost:7183/api/Account/get";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadFromJsonAsync<AccountDTO>();
+                if (response.Content != null && response.Content.Headers.ContentLength > 0)
+                {
+					return await response.Content.ReadFromJsonAsync<AccountDTO>();
+				}
+				else { return null; }
+              
             }
             else
                 return null;
         }
-		public async Task<List<UserDTO>> GetAllAccounts(int accountId)
+		public async Task<List<UserDTO>> GetAllAccounts()
 		{
-			var url = $"https://localhost:7183/api/Account/getAll/{accountId}";
+			var url = $"https://localhost:7183/api/Account/getAll";
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)
 			{

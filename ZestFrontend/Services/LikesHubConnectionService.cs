@@ -8,10 +8,10 @@ namespace ZestFrontend.Services
 	{
 		private  HubConnection _likesConnection;
 		private readonly AuthService _authService;
-		public LikesHubConnectionService(AuthService authService)
+		public LikesHubConnectionService( )
 		{
 			
-			_authService=authService;
+			_authService=AuthService.Instance;
 		}
 
 		public HubConnection LikesConnection => _likesConnection;

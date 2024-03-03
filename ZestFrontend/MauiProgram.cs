@@ -42,7 +42,6 @@ public static class MauiProgram
 		builder.Services.AddSingleton<MessageHubConnectionService>();
 		builder.Services.AddSingleton<CommentsHubConnectionService>();
 		builder.Services.AddSingleton<SignalRConnectionService>();
-		//builder.Services.AddSingleton<AuthenticationService>();
 
         builder.Services.AddSingleton<MainViewModel>();
 		builder.Services.AddSingleton<LoginViewModel>();

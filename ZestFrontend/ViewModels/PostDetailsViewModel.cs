@@ -31,9 +31,9 @@ namespace ZestFrontend.ViewModels
 		MediaService _mediaService;
 
 		int repliedId = -1;
-		public PostDetailsViewModel(AuthService authService, PostsService postsService, LikesService likesService, CommentService commentService, MediaService mediaService, LikesHubConnectionService likesHubConnectionService, CommentsHubConnectionService commentHubConnectionService, SignalRConnectionService signalRConnectionService)
+		public PostDetailsViewModel( PostsService postsService, LikesService likesService, CommentService commentService, MediaService mediaService, LikesHubConnectionService likesHubConnectionService, CommentsHubConnectionService commentHubConnectionService, SignalRConnectionService signalRConnectionService)
 		{
-			_authService = authService;
+			_authService = AuthService.Instance;
 			_postsService = postsService;
 			_likesService = likesService;
 			_commentService = commentService;
@@ -67,12 +67,12 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task DislikePostAsync()
 		{
-			await _likesService.Like(_authService.Id, Post.Id, 0, false);
+			await _likesService.Like( Post.Id, 0, false);
 		}
 		[RelayCommand]
 		async Task LikePostAsync()
 		{
-			await _likesService.Like(_authService.Id, Post.Id, 0, true);
+			await _likesService.Like(Post.Id, 0, true);
 
 		}
 		[RelayCommand]
@@ -87,13 +87,15 @@ namespace ZestFrontend.ViewModels
 		{
 			Comments.Clear();
 			var comments = await _commentService.GetComments(_authService.Id, Post.Id);
-			foreach (var comment in comments)
+			if (comments != null)
 			{
-				comment.IsOwner = comment.Publisher==_authService.Username;
-				await IsOwner(comment.Replies);
-				Comments.Add(comment);
+				foreach (var comment in comments)
+				{
+					comment.IsOwner = comment.Publisher==_authService.Username;
+					await IsOwner(comment.Replies);
+					Comments.Add(comment);
+				}
 			}
-
 
 		}
 		public async Task IsOwner(IEnumerable<CommentDTO> comments)
@@ -115,7 +117,7 @@ namespace ZestFrontend.ViewModels
 		async Task SendAsync(string text)
 		{
 			
-		 var response = await _commentService.PostComment(Post.Id, _authService.Id, text);
+		 var response = await _commentService.PostComment(Post.Id, text);
 			var content = await response.Content.ReadAsStringAsync();
 			AddComment(int.Parse(content));
 
@@ -142,12 +144,12 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task LikeCommentAsync(CommentDTO commentDTO)
 		{
-			await _likesService.Like(_authService.Id, Post.Id, commentDTO.Id, true);
+			await _likesService.Like(Post.Id, commentDTO.Id, true);
 		}
 		[RelayCommand]
 		async Task DislikeCommentAsync(CommentDTO commentDTO)
 		{
-			await _likesService.Like(_authService.Id, Post.Id, commentDTO.Id, false);
+			await _likesService.Like(Post.Id, commentDTO.Id, false);
 		}
 		[RelayCommand]
 		async Task ReplyCommentAsync(CommentDTO comment)
@@ -158,7 +160,7 @@ namespace ZestFrontend.ViewModels
 		
 		public async Task SendReplyAsync(int comment, string text)
 		{
-			var response = await _commentService.PostComment(Post.Id, _authService.Id, text, comment);
+			var response = await _commentService.PostComment(Post.Id, text, comment);
 
 			repliedId = -1;
 			var content = await response.Content.ReadAsStringAsync();
