@@ -19,7 +19,7 @@ namespace ZestFrontend.ViewModels
 		AccountService accountService;
 		FollowersService followersService;
 		
-        public UsersViewModel(AuthService authService, AccountService accountService, FollowersService followersService)
+        public UsersViewModel( AccountService accountService, FollowersService followersService, AuthService authService)
         {
             this.accountService = accountService;
 			this.authService = authService;
@@ -35,7 +35,7 @@ namespace ZestFrontend.ViewModels
 		public async void GetUsers()
 		{
 		
-			foreach (var user in await accountService.GetAllAccounts(authService.Id))
+			foreach (var user in await accountService.GetAllAccounts())
 			{
 				Users.Add(user);
 			}

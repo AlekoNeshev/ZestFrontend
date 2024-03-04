@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,15 +15,18 @@ namespace ZestFrontend.Services
     public class CommunityService
     {
         HttpClient _httpClient;
-        public CommunityService(HttpClient httpClient)
+		AuthService _authService;
+        public CommunityService(HttpClient httpClient , AuthService authService)
         {
             _httpClient = httpClient;
+			_authService = authService;
         }
 
-        public async Task<List<CommunityDTO>> GetCommunities(int accountId)
+        public async Task<List<CommunityDTO>> GetCommunities()
         {
-            var url = $"https://localhost:7183/api/Community/getAll/{accountId}";
-            var response = await _httpClient.GetAsync(url);
+            var url = $"https://localhost:7183/api/Community/getAll";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
+			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<List<CommunityDTO>>();
@@ -30,30 +34,34 @@ namespace ZestFrontend.Services
             else
                 return null;
         }
-        public async Task<HttpResponseMessage> Follow(int accountId, int communityId)       
+        public async Task<HttpResponseMessage> Follow(int communityId)       
         {
-			var url = $"https://localhost:7183/api/CommunityFollowers/account/add/{accountId}/community/{communityId}";
+			var url = $"https://localhost:7183/api/CommunityFollowers/account/add/community/{communityId}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.PostAsync(url, new StringContent("data"));
 			
 			return response;
 		}
-		public async Task<HttpResponseMessage> Unfollow(int accountId, int communityId)
+		public async Task<HttpResponseMessage> Unfollow(int communityId)
 		{
-			var url = $"https://localhost:7183/api/CommunityFollowers/account/delete/{accountId}/community/{communityId}";
+			var url = $"https://localhost:7183/api/CommunityFollowers/account/delete/community/{communityId}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.DeleteAsync(url);
 
 			return response;
 		}
-		public async Task<HttpResponseMessage> IsSubscribed(int accountId, int communityId)
+		public async Task<HttpResponseMessage> IsSubscribed(int communityId)
 		{
-			var url = $"https://localhost:7183/api/CommunityFollowers/account/add/{accountId}/community/{communityId}";
+			var url = $"https://localhost:7183/api/CommunityFollowers/account/add/community/{communityId}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.PostAsync(url, new StringContent("data"));
 
 			return response;
 		}
-        public async Task<HttpResponseMessage> AddCommunity(string name,int creatorId ,string description)
+        public async Task<HttpResponseMessage> AddCommunity(string name, string description)
         {
-			var url = $"https://localhost:7183/api/Community/add/{name}/creator/{creatorId}";
+			var url = $"https://localhost:7183/api/Community/add/{name}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject(description);
 			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
 			response.EnsureSuccessStatusCode();

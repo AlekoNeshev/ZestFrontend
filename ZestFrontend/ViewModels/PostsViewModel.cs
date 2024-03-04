@@ -21,7 +21,7 @@ namespace ZestFrontend.ViewModels
 		LikesService likesService;
 		AuthService authService;
 		SignalRConnectionService _signalRConnectionService;
-		public PostsViewModel(PostsService postsService, LikesService service, AuthService authService, LikesHubConnectionService likesHubConnectionService, SignalRConnectionService signalRConnectionService)
+		public PostsViewModel(PostsService postsService, LikesService service, LikesHubConnectionService likesHubConnectionService, SignalRConnectionService signalRConnectionService,AuthService authService)
 		{
 
 			this.postsService = postsService;
@@ -58,7 +58,7 @@ namespace ZestFrontend.ViewModels
 			{
 				lastDate = Posts.Last().PostedOn;
 			}
-			foreach (var post in await postsService.GetPosts(lastDate, Posts.Count, 50, authService.Id))
+			foreach (var post in await postsService.GetPosts(lastDate, Posts.Count, 50))
 			{
 				post.IsOwner = post.Publisher == authService.Username;
 				Posts.Add(post);
@@ -70,12 +70,12 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task DislikePostAsync(PostDTO postDTO)
 		{
-			await likesService.Like(authService.Id, postDTO.Id, 0, false);
+			await likesService.Like(postDTO.Id, 0, false);
 		}
 		[RelayCommand]
 		async Task LikePostAsync(PostDTO postDTO)
 		{
-			await likesService.Like(authService.Id, postDTO.Id, 0, true);
+			await likesService.Like(postDTO.Id, 0, true);
 		}
 		[RelayCommand]
 		async Task GoToPostDetailPageAsync(PostDTO post)
@@ -92,7 +92,7 @@ namespace ZestFrontend.ViewModels
 		async Task SearchPosts()
 		{
 			Posts.Clear();
-			foreach (var item in await postsService.GetPostsBySearch(Search, authService.Id))
+			foreach (var item in await postsService.GetPostsBySearch(Search))
 			{
 				Posts.Add(item);
 			}

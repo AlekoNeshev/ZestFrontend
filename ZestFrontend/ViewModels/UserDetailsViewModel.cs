@@ -17,7 +17,7 @@ namespace ZestFrontend.ViewModels
 		FollowersService followersService;
 		AuthService authService;
         public UserDetailsViewModel(FollowersService followersService, AuthService authService)
-        {
+        { 
             this.followersService = followersService;
 			this.authService = authService;
         }
@@ -42,7 +42,7 @@ namespace ZestFrontend.ViewModels
 			if (User.IsFollowed)
 			{
 
-				var result = await followersService.Unfollow(authService.Id, User.Id);
+				var result = await followersService.Unfollow(User.Id);
 				if (result.StatusCode == HttpStatusCode.OK)
 				{
 					ButtonText = "Follow";
@@ -52,7 +52,7 @@ namespace ZestFrontend.ViewModels
 			else
 			{
 
-				var result = await followersService.Follow(authService.Id, User.Id);
+				var result = await followersService.Follow(User.Id);
 				if (result.IsSuccessStatusCode)
 				{
 					ButtonText = "Unfollow";

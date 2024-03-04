@@ -33,10 +33,10 @@ namespace ZestFrontend.ViewModels
         [RelayCommand]
         async Task CreateAccountAsync()
         {
-            var response = await accountService.CreateAccount(FirstName, LastName, Username, Email, Password, Birthdate.Date);
+            /*var response = await accountService.CreateAccount(FirstName, LastName, Username, Email, Password, Birthdate.Date);
 			var content = await response.Content.ReadAsStringAsync();
-			authService.Id = int.Parse(content);
-			await Shell.Current.GoToAsync($"{nameof(PostsPage)}");
+            authService.Id = content;
+			await Shell.Current.GoToAsync($"{nameof(PostsPage)}");*/
 		}
     }
 }

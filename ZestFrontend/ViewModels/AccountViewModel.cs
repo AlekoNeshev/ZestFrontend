@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Auth0.ManagementApi.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +26,22 @@ namespace ZestFrontend.ViewModels
         public async void GetAccountDetails()
         {
             Account = await service.GetCurrentAccount(authService.Id);
+        }
+        [RelayCommand]
+        async Task LogoutAsync()
+        {
+            try
+            {
+                  await authService.LogoutAsync();
+                authService.Token ="";
+                authService.Username = "";
+                authService.Id = "";
+				await Shell.Current.GoToAsync($"{nameof(MainPage)}");
+			}
+            catch (Exception ex)
+            {
+
+            }
         }
     }
 }

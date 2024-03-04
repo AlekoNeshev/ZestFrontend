@@ -24,7 +24,7 @@ namespace ZestFrontend.ViewModels
 		public ObservableCollection<FollowerDTO> Friends { get; private set; } = new();
 		public async void GetFriends()
 		{
-			foreach (var item in await followersService.GetFriends(authService.Id))
+			foreach (var item in await followersService.GetFriends())
 			{
 				Friends.Add(item);
 			}

@@ -31,7 +31,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<LoginService>();
 		builder.Services.AddSingleton<PostsService>();
 		builder.Services.AddSingleton<CommunityService>();
-		builder.Services.AddSingleton<AuthService>();
+		builder.Services.AddScoped<AuthService>();
 		builder.Services.AddSingleton<AccountService>();
 	    builder.Services.AddSingleton<LikesService>();
 		builder.Services.AddSingleton<CommentService>();

@@ -19,7 +19,7 @@ namespace ZestFrontend.ViewModels
 		AuthService authService;
 		FileResult fileResult;
 		MediaService mediaService;
-		public AddPostViewModel(PostsService postsService, AuthService authService, MediaService mediaService)
+		public AddPostViewModel(PostsService postsService , MediaService mediaService, AuthService authService)
         {
             this.postsService = postsService;
 			this.authService = authService;
@@ -42,7 +42,7 @@ namespace ZestFrontend.ViewModels
 			{
 				return;
 			}
-			var response = await postsService.AddPost(Title, Content, Community.Id, authService.Id);
+			var response = await postsService.AddPost(Title, Content, Community.Id);
 			var content = await response.Content.ReadAsStringAsync();
 			var imageResponse = await mediaService.UploadImage(int.Parse(content), fileResult);
 			if (response.IsSuccessStatusCode && imageResponse.IsSuccessStatusCode) 

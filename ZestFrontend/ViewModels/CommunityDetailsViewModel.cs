@@ -23,7 +23,7 @@ namespace ZestFrontend.ViewModels
 		AuthService authService;
 		HubConnection connection;
 		public CommunityDetailsViewModel(CommunityService communityService, PostsService postsService, LikesService likesService, AuthService authService)
-		{
+		{ 
 			this.communityService = communityService;
 			this.postsService = postsService;
 			this.likesService=likesService;
@@ -55,12 +55,12 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task DislikePostAsync(PostDTO postDTO)
 		{
-			await likesService.Like(authService.Id, postDTO.Id, 0, false);
+			await likesService.Like(postDTO.Id, 0, false);
 		}
 		[RelayCommand]
 		async Task LikePostAsync(PostDTO postDTO)
 		{
-			await likesService.Like(authService.Id, postDTO.Id, 0, true);
+			await likesService.Like(postDTO.Id, 0, true);
 		}
 		[RelayCommand]
 		async Task DeletePostAsync(PostDTO postDTO)
@@ -70,7 +70,7 @@ namespace ZestFrontend.ViewModels
 		public async void GetPosts()
 		{
 			Posts.Clear();
-			var posts = await postsService.GetPostsByCommunity(Community.Id, authService.Id);
+			var posts = await postsService.GetPostsByCommunity(Community.Id);
 			foreach (var post in posts)
 			{
 				post.IsOwner = post.Publisher == authService.Username;
@@ -95,7 +95,7 @@ namespace ZestFrontend.ViewModels
 			if (Community.IsSubscribed)
 			{
 				
-				var result = await communityService.Unfollow(authService.Id, Community.Id);
+				var result = await communityService.Unfollow(Community.Id);
 				if (result.StatusCode == HttpStatusCode.OK)
 				{
 					ButtonText = "Follow";
@@ -105,7 +105,7 @@ namespace ZestFrontend.ViewModels
 			else
 			{
 
-				var result = await communityService.Follow(authService.Id, Community.Id);
+				var result = await communityService.Follow(Community.Id);
 				if (result.IsSuccessStatusCode)
 				{
 					ButtonText = "Unfollow";

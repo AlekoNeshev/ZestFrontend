@@ -13,7 +13,7 @@ namespace ZestFrontend.ViewModels
     {
         CommunityService communityService;
         AuthService authService;
-        public AddCommunityViewModel(CommunityService communityService, AuthService authService) 
+        public AddCommunityViewModel(CommunityService communityService, AuthService authService ) 
         {
             this.communityService = communityService;
             this.authService = authService;
@@ -25,7 +25,7 @@ namespace ZestFrontend.ViewModels
         [RelayCommand]
         async Task CreateCommunityAsync()
         {
-            var response = await communityService.AddCommunity(Name, authService.Id, Description);
+            var response = await communityService.AddCommunity(Name, Description);
             if (response.IsSuccessStatusCode)
             {
                 await Shell.Current.GoToAsync($"{nameof(CommunitiesPage)}");

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,14 +14,16 @@ namespace ZestFrontend.Services
     public class MediaService
     {
         HttpClient _httpClient;
-
-        public MediaService(HttpClient httpClient)
+		AuthService _authService;
+        public MediaService(HttpClient httpClient, AuthService authService )
         {
             this._httpClient = httpClient;
+			this._authService = authService;
         }
 		public async Task<byte[]> GetMedia(string name)
 		{
 			var url = $"https://localhost:7183/api/PostRescources/ivan/{name}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)
 				return await response.Content.ReadAsByteArrayAsync();
@@ -30,6 +33,7 @@ namespace ZestFrontend.Services
 		public async Task<PostResourcesDTO[]> GetPhotosByPostId(int postId)
 		{
 			var url = $"https://localhost:7183/api/PostRescources/getByPostId/{postId}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			
 			if (response.IsSuccessStatusCode)
@@ -42,7 +46,9 @@ namespace ZestFrontend.Services
 		public async Task<HttpResponseMessage> UploadImage(int postId, FileResult postedFile)
 		{
 			var request = $"https://localhost:7183/api/PostRescources/ivan/{postId}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var content = new MultipartFormDataContent();
+			if(postedFile != null)
 			content.Add(new StreamContent(await postedFile.OpenReadAsync()), "postedFile", postedFile.FileName);
 
 			
