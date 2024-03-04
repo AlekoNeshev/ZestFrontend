@@ -22,12 +22,12 @@ namespace ZestFrontend.ViewModels
 		LikesService likesService;
 		AuthService authService;
 		HubConnection connection;
-		public CommunityDetailsViewModel(CommunityService communityService, PostsService postsService, LikesService likesService)
-		{
+		public CommunityDetailsViewModel(CommunityService communityService, PostsService postsService, LikesService likesService, AuthService authService)
+		{ 
 			this.communityService = communityService;
 			this.postsService = postsService;
 			this.likesService=likesService;
-			this.authService=AuthService.Instance;
+			this.authService=authService;
 			connection = new HubConnectionBuilder().WithUrl("https://localhost:7183/likeshub").Build();
 			connection.On<int>("SignalLike", (id) => UpdatePost(id));
 			connection.StartAsync();

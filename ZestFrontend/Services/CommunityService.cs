@@ -16,10 +16,10 @@ namespace ZestFrontend.Services
     {
         HttpClient _httpClient;
 		AuthService _authService;
-        public CommunityService(HttpClient httpClient )
+        public CommunityService(HttpClient httpClient , AuthService authService)
         {
             _httpClient = httpClient;
-			_authService = AuthService.Instance;
+			_authService = authService;
         }
 
         public async Task<List<CommunityDTO>> GetCommunities()

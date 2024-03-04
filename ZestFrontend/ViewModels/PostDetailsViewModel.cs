@@ -30,10 +30,10 @@ namespace ZestFrontend.ViewModels
 		CommentService _commentService;
 		MediaService _mediaService;
 
-		int repliedId = -1;
-		public PostDetailsViewModel( PostsService postsService, LikesService likesService, CommentService commentService, MediaService mediaService, LikesHubConnectionService likesHubConnectionService, CommentsHubConnectionService commentHubConnectionService, SignalRConnectionService signalRConnectionService)
+		
+		public PostDetailsViewModel( PostsService postsService, LikesService likesService, CommentService commentService, MediaService mediaService, LikesHubConnectionService likesHubConnectionService, CommentsHubConnectionService commentHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService)
 		{
-			_authService = AuthService.Instance;
+			_authService = authService;
 			_postsService = postsService;
 			_likesService = likesService;
 			_commentService = commentService;
@@ -155,14 +155,14 @@ namespace ZestFrontend.ViewModels
 		async Task ReplyCommentAsync(CommentDTO comment)
 		{
 			comment.IsReplyVisible = !comment.IsReplyVisible;
-			repliedId = comment.Id;
+			
 		}
 		
 		public async Task SendReplyAsync(int comment, string text)
 		{
 			var response = await _commentService.PostComment(Post.Id, text, comment);
 
-			repliedId = -1;
+			
 			var content = await response.Content.ReadAsStringAsync();
 			string[] parts = content.Trim('[', ']').Split(',');
 			int firstNumber = int.Parse(parts[0]);

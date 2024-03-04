@@ -19,10 +19,10 @@ namespace ZestFrontend.ViewModels
 		AuthService authService;
 		FileResult fileResult;
 		MediaService mediaService;
-		public AddPostViewModel(PostsService postsService , MediaService mediaService)
+		public AddPostViewModel(PostsService postsService , MediaService mediaService, AuthService authService)
         {
             this.postsService = postsService;
-			this.authService = AuthService.Instance;
+			this.authService = authService;
 			this.mediaService = mediaService;
         }
 

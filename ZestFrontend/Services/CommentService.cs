@@ -16,10 +16,10 @@ namespace ZestFrontend.Services
     {
         HttpClient _httpClient;
         AuthService _authService;
-        public CommentService(HttpClient client )
+        public CommentService(HttpClient client, AuthService authService )
         {
             this._httpClient=client;
-            this._authService=AuthService.Instance;
+            this._authService=authService;
         }
 
         public async Task<CommentDTO[]> GetComments(string accountId,int postId)

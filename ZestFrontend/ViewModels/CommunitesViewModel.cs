@@ -15,10 +15,10 @@ namespace ZestFrontend.ViewModels
     {
         CommunityService communityService;
         AuthService authService;
-        public CommunitesViewModel(CommunityService communityService) 
+        public CommunitesViewModel(CommunityService communityService, AuthService authService) 
         { 
             this.communityService = communityService;
-            this.authService = AuthService.Instance;
+            this.authService = authService;
             GetCommunities();
         }
 

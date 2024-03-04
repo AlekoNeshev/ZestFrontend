@@ -12,10 +12,10 @@ namespace ZestFrontend.Services
 	{
         HttpClient _httpClient;
 		AuthService _authService;
-        public SignalRConnectionService(HttpClient httpClient)
+        public SignalRConnectionService(HttpClient httpClient, AuthService authService)
         {
             this._httpClient = httpClient;
-			this._authService = AuthService.Instance;
+			this._authService = authService;
 		}
 		public async Task<HttpResponseMessage> AddConnectionToGroup(string connectionId, string[] groupsId)
 		{

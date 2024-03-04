@@ -15,10 +15,10 @@ namespace ZestFrontend.ViewModels
 	{
         FollowersService followersService;
 		AuthService authService;
-        public FriendsViewModel(FollowersService followersService)
+        public FriendsViewModel(FollowersService followersService, AuthService authService)
         {
             this.followersService = followersService;
-			this.authService = AuthService.Instance;
+			this.authService = authService;
 			GetFriends();
         }
 		public ObservableCollection<FollowerDTO> Friends { get; private set; } = new();

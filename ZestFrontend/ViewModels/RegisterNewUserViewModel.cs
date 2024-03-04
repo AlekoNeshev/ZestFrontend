@@ -13,10 +13,10 @@ namespace ZestFrontend.ViewModels
     {
         AccountService accountService;
         AuthService authService;
-        public RegisterNewUserViewModel(AccountService accountService)
+        public RegisterNewUserViewModel(AccountService accountService, AuthService authService)
         {
             this.accountService = accountService;
-            this.authService = AuthService.Instance;
+            this.authService = authService;
         }
         [ObservableProperty]
         string firstName;

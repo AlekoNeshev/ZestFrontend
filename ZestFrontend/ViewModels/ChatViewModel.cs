@@ -19,10 +19,10 @@ namespace ZestFrontend.ViewModels
 		AuthService authService;
 		MessageHubConnectionService hubConnection;
 		SignalRConnectionService signalRConnectionService;
-        public ChatViewModel(MessageService messageService, MessageHubConnectionService messageHubConnectionService, SignalRConnectionService signalRConnectionService)
+        public ChatViewModel(MessageService messageService, MessageHubConnectionService messageHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService)
         {
             this.messageService = messageService;
-			this.authService = AuthService.Instance;
+			this.authService = authService;
 			hubConnection = messageHubConnectionService;
 			this.signalRConnectionService = signalRConnectionService;
 			

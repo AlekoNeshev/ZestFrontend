@@ -15,10 +15,10 @@ namespace ZestFrontend.ViewModels
     {
         AccountService service;
         AuthService authService;
-        public AccountViewModel(AccountService service)
+        public AccountViewModel(AccountService service, AuthService authService)
         {
             this.service = service;
-            this.authService = AuthService.Instance;
+            this.authService = authService;
             GetAccountDetails();
         }
         [ObservableProperty]
@@ -32,7 +32,7 @@ namespace ZestFrontend.ViewModels
         {
             try
             {
-                var result = await authService.Client.LogoutAsync();
+                  await authService.LogoutAsync();
                 authService.Token ="";
                 authService.Username = "";
                 authService.Id = "";

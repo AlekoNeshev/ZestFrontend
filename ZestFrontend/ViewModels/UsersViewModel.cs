@@ -19,10 +19,10 @@ namespace ZestFrontend.ViewModels
 		AccountService accountService;
 		FollowersService followersService;
 		
-        public UsersViewModel( AccountService accountService, FollowersService followersService)
+        public UsersViewModel( AccountService accountService, FollowersService followersService, AuthService authService)
         {
             this.accountService = accountService;
-			this.authService = AuthService.Instance;
+			this.authService = authService;
 			this.followersService = followersService;
 			GetUsers();
         }

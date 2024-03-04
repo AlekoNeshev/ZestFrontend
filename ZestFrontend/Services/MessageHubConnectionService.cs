@@ -11,10 +11,10 @@ namespace ZestFrontend.Services
 	{
 		private HubConnection _messageConnection;
 		private readonly AuthService _authService;
-		public MessageHubConnectionService()
+		public MessageHubConnectionService(AuthService authService)
 		{
 
-			_authService=AuthService.Instance;
+			_authService=authService;
 		}
 
 		public HubConnection MessageConnection => _messageConnection;

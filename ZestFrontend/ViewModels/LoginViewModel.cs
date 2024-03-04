@@ -22,10 +22,10 @@ namespace ZestFrontend.ViewModels
         AuthService authService;
         AccountService accountService;
         HttpClient httpClient;
-		public LoginViewModel(LoginService service,  AccountService accountService, HttpClient httpClient) 
+		public LoginViewModel(LoginService service,  AccountService accountService, HttpClient httpClient, AuthService authService) 
         {
             this.loginService = service;
-            this.authService = AuthService.Instance;
+            this.authService = authService;
        this.httpClient = httpClient;
             this.accountService = accountService;
         }
@@ -45,7 +45,7 @@ namespace ZestFrontend.ViewModels
             if (!string.IsNullOrEmpty(audience))
                 extraParameters.Add("audience", audience);
 
-            var result = await authService.Client.LoginAsync(extraParameters);
+            var result = await authService.LoginAsync(extraParameters);
             authService.Token = result.AccessToken;
             var handler = new JwtSecurityTokenHandler();
             var token = handler.ReadJwtToken(authService.Token);
