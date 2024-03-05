@@ -3,6 +3,7 @@
     x:Class="ZestFrontend.PostsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     xmlns:windows="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;assembly=Microsoft.Maui.Controls"
@@ -62,76 +63,90 @@
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=GoToPostDetailPageCommand}" CommandParameter="{Binding .}" />
                                 </Frame.GestureRecognizers>
-                                <Grid Padding="10">
+                                <Grid Padding="-10">
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <Label
-                                        Grid.Column="0"
-                                        FontAttributes="Bold"
-                                        MinimumWidthRequest="100"
-                                        Text="{Binding Title}" />
-                                    <Label
-                                        Grid.Row="1"
-                                        Grid.Column="0"
-                                        FontAttributes="Italic"
-                                        MinimumWidthRequest="100"
-                                        Text="{Binding Text}"
-                                        VerticalOptions="End" />
-                                    <StackLayout
-                                        Grid.Column="1"
-                                        HorizontalOptions="End"
-                                        Orientation="Horizontal"
-                                        Spacing="5">
+                                    <Grid Grid.Row="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Label FontAttributes="Italic" Text="{Binding Publisher}" />
+                                        <Label
+                                            Grid.Row="1"
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="2"
+                                            FontAttributes="Bold"
+                                            MinimumWidthRequest="100"
+                                            Text="{Binding Title}" />
+                                        <Label
+                                            Grid.Row="2"
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="2"
+                                            FontAttributes="None"
+                                            MinimumWidthRequest="100"
+                                            Text="{Binding Text}"
+                                            VerticalOptions="End" />
+                                        <Label
+                                            Grid.Column="1"
+                                            FontSize="12"
+                                            HorizontalOptions="End"
+                                            Text="{Binding PostedOn}"
+                                            VerticalOptions="Start" />
+                                        <StackLayout
+                                            Grid.Row="3"
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="2"
+                                            Margin="0,10,0,0"
+                                            HorizontalOptions="StartAndExpand"
+                                            IsClippedToBounds="False"
+                                            Orientation="Horizontal"
+                                            Spacing="1"
+                                            VerticalOptions="EndAndExpand">
 
-                                        <Button
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=LikePostCommand}"
-                                            CommandParameter="{Binding .}"
-                                            FontAutoScalingEnabled="True"
-                                            Text="L"
-                                            WidthRequest="{Binding Source={x:Reference DislikeButton}, Path=Width}">
-                                            <Button.Background>
-                                                <LinearGradientBrush>
-                                                    <GradientStop Offset="0.0" Color="ForestGreen" />
-                                                    <GradientStop Offset="1.0" Color="LightBlue" />
-                                                </LinearGradientBrush>
-                                            </Button.Background>
-                                        </Button>
-                                        <Label
-                                            MinimumWidthRequest="20"
-                                            Text="{Binding Likes}"
-                                            VerticalOptions="Center" />
-                                    </StackLayout>
-                                    <StackLayout
-                                        Grid.Row="1"
-                                        Grid.Column="1"
-                                        HorizontalOptions="End"
-                                        Orientation="Horizontal"
-                                        Spacing="5">
-                                        <Button
-                                            x:Name="DislikeButton"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=DislikePostCommand}"
-                                            CommandParameter="{Binding .}"
-                                            FontAutoScalingEnabled="True"
-                                            Text="DL">
-                                            <Button.Background>
-                                                <LinearGradientBrush>
-                                                    <GradientStop Offset="0.0" Color="ForestGreen" />
-                                                    <GradientStop Offset="1.0" Color="LightBlue" />
-                                                </LinearGradientBrush>
-                                            </Button.Background>
-                                        </Button>
-                                        <Label
-                                            MinimumWidthRequest="20"
-                                            Text="{Binding Dislikes}"
-                                            VerticalOptions="Center" />
-                                    </StackLayout>
+                                            <ImageButton
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=LikePostCommand}"
+                                                CommandParameter="{Binding .}"
+                                                HorizontalOptions="Center"
+                                                MaximumHeightRequest="10"
+                                                MaximumWidthRequest="10"
+                                                Source="{mi:FluentFilled ArrowUp20Filled,
+                                                                         IconAutoScaling=True,
+                                                                         IconSize=20}"
+                                                VerticalOptions="End" />
+                                            <Label Text="{Binding Likes}" VerticalOptions="Start" />
+                                            <ImageButton
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=DislikePostCommand}"
+                                                CommandParameter="{Binding .}"
+                                                HorizontalOptions="End"
+                                                Source="{mi:FluentFilled Icon=ArrowDown20Filled,
+                                                                         IconAutoScaling=True,
+                                                                         IconSize=20}"
+                                                VerticalOptions="Center" />
+                                            <Label Text="{Binding Dislikes}" VerticalOptions="Start" />
+                                            <ImageButton
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=GoToPostDetailPageCommand}"
+                                                CommandParameter="{Binding .}"
+                                                HorizontalOptions="End"
+                                                Source="{mi:FluentFilled ArrowReplyDown16Filled,
+                                                                         IconAutoScaling=True,
+                                                                         IconSize=20}"
+                                                VerticalOptions="Center" />
+
+
+                                        </StackLayout>
+                                    </Grid>
                                 </Grid>
                             </Frame>
                         </Grid>

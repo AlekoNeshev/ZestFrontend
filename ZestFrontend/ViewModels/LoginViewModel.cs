@@ -51,9 +51,15 @@ namespace ZestFrontend.ViewModels
             var token = handler.ReadJwtToken(authService.Token);
 			var usernameClaim = token.Claims.FirstOrDefault(c => c.Type == "username");
 			var username = usernameClaim?.Value;
-
+            try
+            {
+                var m = await accountService.GetCurrentAccount(result.AccessToken);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
 			var account = await accountService.GetCurrentAccount(result.AccessToken);
-
 			httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authService.Token);
 			var response = await httpClient.GetAsync("https://dev-kckk4xk2mvwnhizd.us.auth0.com/userinfo");
 			if (response.IsSuccessStatusCode)

@@ -17,4 +17,9 @@ public partial class PostDetailsPage : ContentPage
 		_viewModel.OnNavigatedTo();
 		base.OnNavigatedTo(args);
 	}
+	/*protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
+	{
+		_viewModel.
+		base.OnNavigatedFrom(args);
+	}*/
 }

@@ -22,7 +22,7 @@
                     HasShadow="True"
                     HorizontalOptions="FillAndExpand">
 
-                    <Grid Padding="0" RowSpacing="1">
+                    <Grid Padding="-10" RowSpacing="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
@@ -157,11 +157,11 @@
                         VerticalOptions="StartAndExpand">
                         <Frame BorderColor="LightSkyBlue">
 
-                            <Grid Padding="10">
+                            <Grid Padding="-10">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
                                     <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
@@ -177,11 +177,14 @@
                                 <Label
                                     Grid.Row="1"
                                     Grid.Column="0"
-                                    FontAttributes="Italic"
+                                    FontAttributes="None"
                                     MinimumWidthRequest="100"
                                     Text="{Binding Post.Text}"
                                     VerticalOptions="Start" />
-                                <StackLayout Grid.Column="1" HorizontalOptions="End">
+                                <StackLayout
+                                    Grid.RowSpan="3"
+                                    Grid.Column="1"
+                                    HorizontalOptions="End">
                                     <StackLayout Orientation="Horizontal" Spacing="10">
                                         <Button
                                             Command="{Binding LikePostCommand}"
@@ -228,25 +231,29 @@
                                     </StackLayout>
                                 </StackLayout>
                                 <CarouselView
+                                    x:Name="Carousel"
                                     Grid.Row="2"
                                     Grid.ColumnSpan="2"
+                                    CurrentItem="{Binding Source={x:Reference Image}}"
                                     HorizontalOptions="Center"
                                     IsVisible="{Binding IsCarouselVisible}"
                                     ItemsSource="{Binding Resources}"
                                     Loop="False"
-                                    Position="0">
+                                    VerticalOptions="StartAndExpand">
                                     <CarouselView.ItemTemplate>
                                         <DataTemplate x:DataType="model:PostResourcesDTO">
                                             <StackLayout>
                                                 <Frame>
                                                     <Image
+                                                        x:Name="Image"
                                                         Aspect="AspectFill"
-                                                        HeightRequest="150"
+                                                        HeightRequest="300"
                                                         HorizontalOptions="Center"
                                                         MaximumHeightRequest="300"
                                                         MaximumWidthRequest="300"
                                                         Source="{Binding Source}"
-                                                        WidthRequest="150" />
+                                                        VerticalOptions="Center"
+                                                        WidthRequest="300" />
                                                 </Frame>
                                             </StackLayout>
                                         </DataTemplate>

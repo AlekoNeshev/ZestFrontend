@@ -19,7 +19,7 @@ using ZestFrontend.Services;
 namespace ZestFrontend.ViewModels
 {
 	[QueryProperty(nameof(Post), "Post")]
-	public partial class PostDetailsViewModel : ObservableObject
+	public partial class PostDetailsViewModel : ObservableObject, INotifyPropertyChanged
 	{
 		AuthService _authService;
 		PostsService _postsService;
@@ -46,6 +46,7 @@ namespace ZestFrontend.ViewModels
 			_ = new MauiIcon();
 		}
 
+		public CarouselView Carousel {  get; set; }
 		public ICommand ReplyCommand { get; }
 		[ObservableProperty]
 		PostDTO post;
@@ -211,23 +212,22 @@ namespace ZestFrontend.ViewModels
 		public async void DealWithResource()
 		{
 			Resources.Clear();
-			if(Post.ResourceType == null)
+			if (Post.ResourceType == null)
 			{
 				IsMediaPlayerVisible = false;
 				IsCarouselVisible = false;
 				return;
 			}
-			if (Post.ResourceType.Trim()=="image")
+			if (Post.ResourceType.Trim() == "image")
 			{
 				IsCarouselVisible = true;
 				IsMediaPlayerVisible = false;
-				var results = await _mediaService.GetPhotosByPostId(Post.Id);
+				PostResourcesDTO[] results = await _mediaService.GetPhotosByPostId(Post.Id);
 
-
-				foreach (var result in results)
-				{
-					Resources.Add(result);
-				}
+				Resources = new ObservableCollection<PostResourcesDTO>(results); // Convert the list to an ObservableCollection
+				
+				OnPropertyChanged(nameof(Resources));
+				
 			}
 			else if (Post.ResourceType.Trim()=="video")
 			{
@@ -238,13 +238,14 @@ namespace ZestFrontend.ViewModels
 
 				Source = results.First().Source;
 			}
-		    else
+			else
 			{
 				IsMediaPlayerVisible = false;
 				IsCarouselVisible = false;
 				return;
 			}
 		}
+
 		private async void ExecuteReplyCommand(ReplyCommandParameter parameter)
 		{
 			var comment = int.Parse(parameter.Comment);
@@ -253,6 +254,7 @@ namespace ZestFrontend.ViewModels
 		}
 		public async void OnNavigatedTo()
 		{
+			
 			await _signalRConnectionService.RemoveConnectionToGroup(_likesHubConnectionService.LikesConnection.ConnectionId);
 			await _signalRConnectionService.RemoveConnectionToGroup(_commentHubConnectionService.CommentsConnection.ConnectionId);
 			await _signalRConnectionService.AddConnectionToGroup(_likesHubConnectionService.LikesConnection.ConnectionId, new string[] { $"pd-{Post.Id}", Post.Id.ToString() });

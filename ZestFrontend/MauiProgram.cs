@@ -49,7 +49,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<CommunitesViewModel>();
 		builder.Services.AddSingleton<CommunityDetailsViewModel>();
 		builder.Services.AddSingleton<AccountViewModel>();
-		builder.Services.AddScoped<PostDetailsViewModel>();
+		builder.Services.AddTransient<PostDetailsViewModel>();
 		builder.Services.AddSingleton<AddPostViewModel>();
 		builder.Services.AddSingleton<FriendsViewModel>();
 		builder.Services.AddSingleton<ChatViewModel>();

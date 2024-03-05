@@ -3,6 +3,7 @@
     x:Class="ZestFrontend.CommunityDetailsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="CommunityDetailsPage"
@@ -10,40 +11,51 @@
     BackgroundColor="GhostWhite">
 
     <ScrollView Orientation="Vertical">
-        <VerticalStackLayout Padding="50" Spacing="10">
+        <VerticalStackLayout>
             <Grid>
+
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
+
+                    <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
+                    <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=9*}" />
+                    <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
 
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Label
                     Grid.Row="0"
+                    Grid.Column="1"
                     HorizontalOptions="Center"
                     Text="{Binding Community.Name}"
                     VerticalOptions="Center" />
                 <Label
                     Grid.Row="1"
+                    Grid.Column="1"
                     HorizontalOptions="Center"
                     Text="{Binding Community.Description}"
                     VerticalOptions="Center" />
                 <Label
                     Grid.Row="2"
+                    Grid.Column="1"
                     HorizontalOptions="Center"
                     Text="{Binding Community.Creator}"
                     VerticalOptions="Center" />
                 <VerticalStackLayout
                     Grid.RowSpan="3"
                     Grid.Column="1"
-                    HorizontalOptions="End">
+                    Grid.ColumnSpan="2"
+                    HorizontalOptions="End"
+                    MaximumWidthRequest="75">
+
                     <Button
                         Command="{Binding ChangeFollowshipStatusCommand}"
                         HorizontalOptions="End"
+                        MaximumWidthRequest="75"
                         Text="{Binding ButtonText}">
                         <Button.Background>
                             <LinearGradientBrush>
@@ -51,6 +63,7 @@
                                 <GradientStop Offset="1.0" Color="LightBlue" />
                             </LinearGradientBrush>
                         </Button.Background>
+
                     </Button>
                     <Button
                         Command="{Binding AddPostCommand}"
@@ -63,82 +76,128 @@
                             </LinearGradientBrush>
                         </Button.Background>
                     </Button>
+                    <Label>
+                        <Label.FormattedText>
+                            <FormattedString>
+
+                                <Span
+                                    Text="See moderators"
+                                    TextColor="Blue"
+                                    TextDecorations="Underline">
+                                    <Span.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding TapCommand}" CommandParameter="" />
+                                    </Span.GestureRecognizers>
+                                </Span>
+
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
                 </VerticalStackLayout>
-            </Grid>
-            <CollectionView Grid.Column="1" ItemsSource="{Binding Posts}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="model:PostDTO">
-                        <Grid>
-                            <Frame>
-                                <Frame.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=GoToPostDetailPageCommand}" CommandParameter="{Binding .}" />
-                                </Frame.GestureRecognizers>
-                                <StackLayout Orientation="Horizontal" Spacing="5">
-                                    <Grid Padding="10">
+
+                <CollectionView
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    ItemsSource="{Binding Posts}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:PostDTO">
+                            <Grid>
+                                <Frame>
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=GoToPostDetailPageCommand}" CommandParameter="{Binding .}" />
+                                    </Frame.GestureRecognizers>
+
+                                    <Grid Padding="-10">
                                         <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-
+                                        <Label FontAttributes="Bold" Text="{Binding Publisher}" />
                                         <Label
+                                            Grid.Column="1"
+                                            FontSize="12"
+                                            HorizontalOptions="End"
+                                            Text="{Binding PostedOn}"
+                                            VerticalOptions="Start" />
+                                        <Label
+                                            Grid.Row="1"
+                                            Grid.ColumnSpan="2"
                                             FontAttributes="Bold"
                                             MinimumWidthRequest="100"
                                             Text="{Binding Title}" />
                                         <Label
-                                            Grid.Row="1"
+                                            Grid.Row="2"
+                                            Grid.ColumnSpan="2"
                                             FontAttributes="Italic"
                                             MinimumWidthRequest="100"
                                             Text="{Binding Text}"
                                             VerticalOptions="End" />
 
-                                    </Grid>
-                                    <StackLayout HorizontalOptions="EndAndExpand" Orientation="Horizontal">
-                                        <ImageButton
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=LikePostCommand}"
-                                            CommandParameter="{Binding .}"
-                                            HeightRequest="5"
-                                            HorizontalOptions="Center"
-                                            Source="like.png"
-                                            VerticalOptions="Center"
-                                            WidthRequest="5" />
-                                        <Label Text="{Binding Likes}" />
-                                        <ImageButton
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=DislikePostCommand}"
-                                            CommandParameter="{Binding .}"
-                                            HorizontalOptions="Center"
-                                            MaximumHeightRequest="10"
-                                            MaximumWidthRequest="10"
-                                            Source="dislike.png"
-                                            VerticalOptions="Center" />
-                                        <Label Text="{Binding Dislikes}" />
-                                        <ImageButton
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=GoToPostDetailPageCommand}"
-                                            CommandParameter="{Binding .}"
-                                            HorizontalOptions="Center"
-                                            MaximumHeightRequest="10"
-                                            MaximumWidthRequest="10"
-                                            Source="reply.png"
-                                            VerticalOptions="Center" />
-                                        <ImageButton
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=DeletePostCommand}"
-                                            CommandParameter="{Binding .}"
-                                            HorizontalOptions="Center"
-                                            IsVisible="{Binding IsOwner}"
-                                            MaximumHeightRequest="10"
-                                            MaximumWidthRequest="10"
-                                            Source="delete.png"
-                                            VerticalOptions="Center" />
-                                    </StackLayout>
-                                </StackLayout>
-                            </Frame>
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
 
-            </CollectionView>
+                                        <StackLayout
+                                            Grid.Row="3"
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="2"
+                                            HorizontalOptions="End"
+                                            Orientation="Horizontal">
+                                            <ImageButton
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=LikePostCommand}"
+                                                CommandParameter="{Binding .}"
+                                                HeightRequest="5"
+                                                HorizontalOptions="Center"
+                                                Source="{mi:FluentFilled ArrowUp20Filled,
+                                                                         IconAutoScaling=True,
+                                                                         IconSize=20}"
+                                                VerticalOptions="Center"
+                                                WidthRequest="5" />
+                                            <Label Text="{Binding Likes}" />
+                                            <ImageButton
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=DislikePostCommand}"
+                                                CommandParameter="{Binding .}"
+                                                HorizontalOptions="Center"
+                                                MaximumHeightRequest="10"
+                                                MaximumWidthRequest="10"
+                                                Source="{mi:FluentFilled Icon=ArrowDown20Filled,
+                                                                         IconAutoScaling=True,
+                                                                         IconSize=20}"
+                                                VerticalOptions="Center" />
+                                            <Label Text="{Binding Dislikes}" />
+                                            <ImageButton
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=GoToPostDetailPageCommand}"
+                                                CommandParameter="{Binding .}"
+                                                HorizontalOptions="Center"
+                                                MaximumHeightRequest="10"
+                                                MaximumWidthRequest="10"
+                                                Source="{mi:FluentFilled ArrowReplyDown16Filled,
+                                                                         IconAutoScaling=True,
+                                                                         IconSize=20}"
+                                                VerticalOptions="Center" />
+                                            <ImageButton
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=DeletePostCommand}"
+                                                CommandParameter="{Binding .}"
+                                                HorizontalOptions="Center"
+                                                IsVisible="{Binding IsOwner}"
+                                                MaximumHeightRequest="10"
+                                                MaximumWidthRequest="10"
+                                                Source="{mi:FluentFilled Broom20Filled,
+                                                                         IconAutoScaling=True,
+                                                                         IconSize=20}"
+                                                VerticalOptions="Center" />
+                                        </StackLayout>
+                                    </Grid>
+
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                </CollectionView>
+            </Grid>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
