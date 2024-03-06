@@ -67,5 +67,53 @@ namespace ZestFrontend.Services
 			response.EnsureSuccessStatusCode();
 			return response;
 		}
+		public async Task<HttpResponseMessage> AddCommunityModerator(string accountId, int communityId)
+		{
+			var url = $"https://localhost:7183/api/CommunityModerators/add/{accountId}/{communityId}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
+			var response = await _httpClient.PostAsync(url, new StringContent("data"));
+			response.EnsureSuccessStatusCode();
+			return response;
+		}
+		public async Task<UserDTO[]> GetModeratorsByCommunity(int communityId)
+		{
+			var url = $"https://localhost:7183/api/CommunityModerators/getModerators/{communityId}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
+			var response = await _httpClient.GetAsync(url);
+			response.EnsureSuccessStatusCode();
+			return await response.Content.ReadFromJsonAsync<UserDTO[]>(); 
+		}
+		public async Task<UserDTO[]> GetModeratorCandidatesByCommunity(int communityId)
+		{
+			var url = $"https://localhost:7183/api/CommunityModerators/getCandidates/{communityId}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
+			var response = await _httpClient.GetAsync(url);
+			response.EnsureSuccessStatusCode();
+			return await response.Content.ReadFromJsonAsync<UserDTO[]>(); 
+		}
+		public async Task<HttpResponseMessage> ApproveCandidate(string accountId, int communityId)
+		{
+			var url = $"https://localhost:7183/api/CommunityModerators/approveCandidate/{accountId}/{communityId}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
+			var response = await _httpClient.PostAsync(url, new StringContent("data"));
+			response.EnsureSuccessStatusCode();
+			return response;
+		}
+		public async Task<bool> IsModerator(string accountId, int communityId)
+		{
+			var url = $"https://localhost:7183/api/CommunityModerators/isModerator/{accountId}/{communityId}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
+			var response = await _httpClient.GetAsync(url);
+			response.EnsureSuccessStatusCode();
+			return await response.Content.ReadFromJsonAsync<bool>();
+		}
+		public async Task<HttpResponseMessage> RemoveModerator(string accountId, int communityId)
+		{
+			var url = $"https://localhost:7183/api/CommunityModerators/removeModerator/{accountId}/{communityId}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
+			var response = await _httpClient.PostAsync(url, new StringContent("data"));
+			response.EnsureSuccessStatusCode();
+			return response;
+		}
 	}
 }

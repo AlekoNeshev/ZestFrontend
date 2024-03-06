@@ -76,22 +76,14 @@
                             </LinearGradientBrush>
                         </Button.Background>
                     </Button>
-                    <Label>
-                        <Label.FormattedText>
-                            <FormattedString>
-
-                                <Span
-                                    Text="See moderators"
-                                    TextColor="Blue"
-                                    TextDecorations="Underline">
-                                    <Span.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding TapCommand}" CommandParameter="" />
-                                    </Span.GestureRecognizers>
-                                </Span>
-
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
+                    <Button Command="{Binding GoToModeratorsDetailPageCommand}" Text="See moderators">
+                        <Button.Background>
+                            <LinearGradientBrush>
+                                <GradientStop Offset="0.0" Color="ForestGreen" />
+                                <GradientStop Offset="1.0" Color="LightBlue" />
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
                 </VerticalStackLayout>
 
                 <CollectionView
