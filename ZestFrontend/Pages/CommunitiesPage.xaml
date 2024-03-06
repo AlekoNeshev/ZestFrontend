@@ -3,6 +3,7 @@
     x:Class="ZestFrontend.CommunitiesPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="CommunitiesPage"
@@ -66,7 +67,9 @@
                 Command="{Binding GoToAddCommunityPageCommand}"
                 HeightRequest="40"
                 HorizontalOptions="Center"
-                Source="your_fab_icon.png"
+                Source="{mi:FluentFilled Add12Filled,
+                                         IconAutoScaling=True,
+                                         IconSize=20}"
                 VerticalOptions="Center"
                 WidthRequest="40" />
         </Frame>

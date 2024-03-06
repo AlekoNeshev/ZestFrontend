@@ -25,7 +25,7 @@ namespace ZestFrontend.ViewModels
         AccountDTO account;
         public async void GetAccountDetails()
         {
-            Account = await service.GetCurrentAccount(authService.Id);
+            Account = await service.GetCurrentAccount(authService.Token);
         }
         [RelayCommand]
         async Task LogoutAsync()

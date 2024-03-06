@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using ZestFrontend.Services;
 using ZestFrontend.ViewModels;
 using MauiIcons.Fluent.Filled;
+using ZestFrontend.Pages;
 
 namespace ZestFrontend;
 
@@ -57,6 +58,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<UsersViewModel>();
 		builder.Services.AddSingleton<UserDetailsViewModel>();
 		builder.Services.AddSingleton<AddCommunityViewModel>();
+		builder.Services.AddSingleton<CommunityModeratorsViewModel>();
 
         builder.Services.AddSingleton<MainPage>();
         builder.Services.AddSingleton<Login>();
@@ -72,6 +74,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<UsersPage>();
 		builder.Services.AddSingleton<UserDetailsPage>();
 		builder.Services.AddSingleton<AddCommunityPage>();
+		builder.Services.AddSingleton<CommunityModeratorsPage>();
 
         builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
         return builder.Build();

@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using ZestFrontend.DTOs;
+using ZestFrontend.Pages;
 using ZestFrontend.Services;
 
 namespace ZestFrontend.ViewModels
@@ -134,6 +135,17 @@ namespace ZestFrontend.ViewModels
 				new Dictionary<string, object>
 			{
 			{"Post", post }
+			});
+		}
+		[RelayCommand]
+		async Task GoToModeratorsDetailPageAsync()
+		{
+			if (Community == null) return;
+
+			await Shell.Current.GoToAsync($"{nameof(CommunityModeratorsPage)}?id={Community.Id}", true,
+				new Dictionary<string, object>
+			{
+			{"Community", Community }
 			});
 		}
 	}

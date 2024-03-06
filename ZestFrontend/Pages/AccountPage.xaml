@@ -11,18 +11,21 @@
             FontSize="Large"
             HorizontalOptions="Center"
             Text="Account Details" />
-        <Label Text="First Name:" />
-        <Label Text="{Binding Account.FirstName}" />
-        <Label Text="Last Name:" />
-        <Label Text="{Binding Account.LastName}" />
+
         <Label Text="Username:" />
         <Label Text="{Binding Account.Username}" />
         <Label Text="Email:" />
         <Label Text="{Binding Account.Email}" />
-        <Label Text="Birthdate:" />
-        <DatePicker Date="{Binding Account.Birthdate}" />
+
         <Label Text="Created On:" />
         <Label Text="{Binding Account.CreatedOn1}" />
-        <Button Command="{Binding LogoutCommand}" Text="Logout" />
+        <Button Command="{Binding LogoutCommand}" Text="Logout">
+            <Button.Background>
+                <LinearGradientBrush>
+                    <GradientStop Offset="0.0" Color="ForestGreen" />
+                    <GradientStop Offset="1.0" Color="LightBlue" />
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
     </StackLayout>
 </ContentPage>

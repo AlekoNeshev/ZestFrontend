@@ -12,10 +12,10 @@ public partial class PostsPage : ContentPage
 		BindingContext = viewModel;
 		this.viewModel = viewModel;
 	}
-	protected override void OnNavigatedTo(NavigatedToEventArgs args)
+	async protected override void OnNavigatedTo(NavigatedToEventArgs args)
 	{
 
-		this.viewModel.onNavigatedTo();
+		await this.viewModel.onNavigatedTo();
 		base.OnNavigatedTo(args);
 	}
 

@@ -107,7 +107,7 @@ namespace ZestFrontend.ViewModels
 			await _signalRConnectionService.AddConnectionToGroup(connection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
 		}
 
-		public async void onNavigatedTo()
+		public async Task onNavigatedTo()
 		{
 			
 			connection.LikesConnection.On<int>("PostLiked", UpdatePost);
