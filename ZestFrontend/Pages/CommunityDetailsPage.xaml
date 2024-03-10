@@ -17,7 +17,7 @@
                 <Grid.ColumnDefinitions>
 
                     <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
-                    <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=9*}" />
+                    <ColumnDefinition Width="{OnIdiom Phone=*, Tablet=2*, Desktop=9*}" />
                     <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
 
                 </Grid.ColumnDefinitions>
@@ -98,7 +98,7 @@
                                         <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=GoToPostDetailPageCommand}" CommandParameter="{Binding .}" />
                                     </Frame.GestureRecognizers>
 
-                                    <Grid Padding="-10">
+                                    <Grid Padding="{OnIdiom Phone=0, Desktop=-10}">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
@@ -140,20 +140,24 @@
                                             <ImageButton
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=LikePostCommand}"
                                                 CommandParameter="{Binding .}"
-                                                HeightRequest="5"
                                                 HorizontalOptions="Center"
+                                                MaximumHeightRequest="{OnIdiom Phone=20,
+                                                                               Desktop=20}"
+                                                MaximumWidthRequest="{OnIdiom Phone=20,
+                                                                              Desktop=20}"
                                                 Source="{mi:FluentFilled ArrowUp20Filled,
                                                                          IconAutoScaling=True,
                                                                          IconSize=20}"
-                                                VerticalOptions="Center"
-                                                WidthRequest="5" />
+                                                VerticalOptions="Center" />
                                             <Label Text="{Binding Likes}" />
                                             <ImageButton
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=DislikePostCommand}"
                                                 CommandParameter="{Binding .}"
                                                 HorizontalOptions="Center"
-                                                MaximumHeightRequest="10"
-                                                MaximumWidthRequest="10"
+                                                MaximumHeightRequest="{OnIdiom Phone=20,
+                                                                               Desktop=20}"
+                                                MaximumWidthRequest="{OnIdiom Phone=20,
+                                                                              Desktop=20}"
                                                 Source="{mi:FluentFilled Icon=ArrowDown20Filled,
                                                                          IconAutoScaling=True,
                                                                          IconSize=20}"
@@ -163,8 +167,10 @@
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=GoToPostDetailPageCommand}"
                                                 CommandParameter="{Binding .}"
                                                 HorizontalOptions="Center"
-                                                MaximumHeightRequest="10"
-                                                MaximumWidthRequest="10"
+                                                MaximumHeightRequest="{OnIdiom Phone=20,
+                                                                               Desktop=20}"
+                                                MaximumWidthRequest="{OnIdiom Phone=20,
+                                                                              Desktop=20}"
                                                 Source="{mi:FluentFilled ArrowReplyDown16Filled,
                                                                          IconAutoScaling=True,
                                                                          IconSize=20}"
@@ -174,8 +180,10 @@
                                                 CommandParameter="{Binding .}"
                                                 HorizontalOptions="Center"
                                                 IsVisible="{Binding IsOwner}"
-                                                MaximumHeightRequest="10"
-                                                MaximumWidthRequest="10"
+                                                MaximumHeightRequest="{OnIdiom Phone=20,
+                                                                               Desktop=20}"
+                                                MaximumWidthRequest="{OnIdiom Phone=20,
+                                                                              Desktop=20}"
                                                 Source="{mi:FluentFilled Broom20Filled,
                                                                          IconAutoScaling=True,
                                                                          IconSize=20}"

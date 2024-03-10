@@ -16,9 +16,9 @@ namespace ZestFrontend.Services
 
 		public HubConnection LikesConnection => _likesConnection;
 
-		public async void Init()
+		public async Task Init()
 		{
-			_likesConnection = BuildLikesHubConnection("https://localhost:7183/likeshub");
+			_likesConnection = BuildLikesHubConnection($"{PortConst.Port_Forward_Http}/likeshub");
 			await StartConnections();
 		}
 		private HubConnection BuildLikesHubConnection(string url)

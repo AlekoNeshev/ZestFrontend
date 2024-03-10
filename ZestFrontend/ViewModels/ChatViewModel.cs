@@ -19,14 +19,21 @@ namespace ZestFrontend.ViewModels
 		AuthService authService;
 		MessageHubConnectionService hubConnection;
 		SignalRConnectionService signalRConnectionService;
+		private Task InitTask;
         public ChatViewModel(MessageService messageService, MessageHubConnectionService messageHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService)
         {
             this.messageService = messageService;
 			this.authService = authService;
 			hubConnection = messageHubConnectionService;
 			this.signalRConnectionService = signalRConnectionService;
+			InitTask = Init();
 			
+		}
+		private async Task Init()
+		{
 			
+			await this.hubConnection.Init();
+			hubConnection.MessageConnection.On<int>("MessageSent", (id) => GetSingleMessage(id));
 		}
 		public ObservableCollection<MessageDTO> Messages { get; private set; } = new();
 		[ObservableProperty]
@@ -42,12 +49,13 @@ namespace ZestFrontend.ViewModels
 		}
 		partial void OnFollowerChanged(FollowerDTO value)
 		{
-			hubConnection.Init();
+			
 			GetMessages();
-			hubConnection.MessageConnection.On<int>("MessageSent",(id) => GetSingleMessage(id));
+			
 		}
 		public async void OnNavigatedTo()
 		{
+			if (InitTask is not null && !InitTask.IsCompleted) await InitTask;
 			int comparisonResult = string.Compare(authService.Id, Follower.FollowerId);
 			string firstHubId, secondHubId;
 
@@ -62,13 +70,31 @@ namespace ZestFrontend.ViewModels
 				secondHubId = authService.Id;
 			}
 			
-			await signalRConnectionService.RemoveConnectionToGroup(hubConnection.MessageConnection.ConnectionId);
 			await signalRConnectionService.AddConnectionToGroup(hubConnection.MessageConnection.ConnectionId, new string[] { $"chat-{firstHubId}{secondHubId}" });
+		}
+		public async void OnNavigatedFrom()
+		{
+			int comparisonResult = string.Compare(authService.Id, Follower.FollowerId);
+			string firstHubId, secondHubId;
+
+			if (comparisonResult >= 0)
+			{
+				firstHubId = authService.Id;
+				secondHubId = Follower.FollowerId;
+			}
+			else
+			{
+				firstHubId = Follower.FollowerId;
+				secondHubId = authService.Id;
+			}
+
+			await signalRConnectionService.RemoveConnectionToGroup(hubConnection.MessageConnection.ConnectionId);
+			
 		}
 		[RelayCommand]
 		async Task SendAsync(string text)
 		{
-			await messageService.SendMessage( Follower.FollowerId, text);
+			await messageService.SendMessage(Follower.FollowerId, text);
 		}
 		public async void GetSingleMessage(int messageId)
 		{

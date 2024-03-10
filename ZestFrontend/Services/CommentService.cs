@@ -25,7 +25,7 @@ namespace ZestFrontend.Services
         public async Task<CommentDTO[]> GetComments(string accountId,int postId)
         {
 
-            var url = $"https://localhost:7183/api/Comments/getCommentsByPost/{postId}";
+            var url = $"{PortConst.Port_Forward_Http}/api/Comments/getCommentsByPost/{postId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -37,7 +37,7 @@ namespace ZestFrontend.Services
         }
         public async Task<HttpResponseMessage> PostComment(int postId, string text,int commentId = 0)
         {
-            var url = $"https://localhost:7183/api/Comments/add/post/{postId}/comment/{commentId}";
+            var url = $"{PortConst.Port_Forward_Http}/api/Comments/add/post/{postId}/comment/{commentId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject(text);
             var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
@@ -46,7 +46,7 @@ namespace ZestFrontend.Services
         }
         public async Task<CommentDTO> GetSingleComment(int id)
         {
-            var url = $"https://localhost:7183/api/Comments/{id}";
+            var url = $"{PortConst.Port_Forward_Http}/api/Comments/{id}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -58,7 +58,7 @@ namespace ZestFrontend.Services
         }
         public async Task<HttpResponseMessage> DeleteComment(int commentId)
         {
-            var url = $"https://localhost:7183/api/Comments/remove/{commentId}";
+            var url = $"{PortConst.Port_Forward_Http}/api/Comments/remove/{commentId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.PutAsync(url, new StringContent("", Encoding.UTF8, "application/json")); response.EnsureSuccessStatusCode();
             return response;

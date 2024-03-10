@@ -1,3 +1,4 @@
+
 using ZestFrontend.ViewModels;
 
 namespace ZestFrontend;
@@ -15,5 +16,10 @@ public partial class ChatPage : ContentPage
 	{
 		viewModel.OnNavigatedTo();
 		base.OnNavigatedTo(args);
+	}
+	protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
+	{
+		viewModel.OnNavigatedFrom();
+		base.OnNavigatedFrom(args);
 	}
 }

@@ -29,7 +29,7 @@ namespace ZestFrontend.ViewModels
 			this.postsService = postsService;
 			this.likesService=likesService;
 			this.authService=authService;
-			connection = new HubConnectionBuilder().WithUrl("https://localhost:7183/likeshub").Build();
+			connection = new HubConnectionBuilder().WithUrl($"{PortConst.Port_Forward_Http}/likeshub").Build();
 			connection.On<int>("SignalLike", (id) => UpdatePost(id));
 			connection.StartAsync();
 		}

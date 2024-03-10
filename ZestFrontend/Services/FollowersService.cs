@@ -21,7 +21,7 @@ namespace ZestFrontend.Services
 		public async Task<HttpResponseMessage> Follow( string followedId)
 		{
 
-			var url = $"https://localhost:7183/api/Followers/add/followed/{followedId}";
+			var url = $"{PortConst.Port_Forward_Http}/api/Followers/add/followed/{followedId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.PostAsync(url, new StringContent("data"));
 			response.EnsureSuccessStatusCode();
@@ -29,7 +29,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<HttpResponseMessage> Unfollow(string followedId)
 		{
-			var url = $"https://localhost:7183/api/Followers/followed/{followedId}";
+			var url = $"{PortConst.Port_Forward_Http}/api/Followers/followed/{followedId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.DeleteAsync(url);
 			response.EnsureSuccessStatusCode();
@@ -37,7 +37,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<FollowerDTO[]> GetFriends()
 		{
-			var url = $"https://localhost:7183/api/Followers/getFriends";
+			var url = $"{PortConst.Port_Forward_Http}/api/Followers/getFriends";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)

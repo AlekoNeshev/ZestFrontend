@@ -21,7 +21,7 @@ namespace ZestFrontend.Services
         }
 		public async Task<MessageDTO> FindById(int id)
 		{
-			var url = $"https://localhost:7183/api/Messages/get/{id}";
+			var url = $"{PortConst.Port_Forward_Http}/api/Messages/get/{id}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)
@@ -33,7 +33,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<MessageDTO[]> GetMessages( string receiverId)
 		{
-			var url = $"https://localhost:7183/api/Messages/get/receiver/{receiverId}";
+			var url = $"{PortConst.Port_Forward_Http}/api/Messages/get/receiver/{receiverId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)
@@ -43,9 +43,9 @@ namespace ZestFrontend.Services
 			else
 				return null;
 		}
-		public async Task<HttpResponseMessage> SendMessage( string receiverId, string text)
+		public async Task<HttpResponseMessage> SendMessage(string receiverId, string text)
 		{
-			var url = $"https://localhost:7183/api/Messages/add/receiver/{receiverId}";
+			var url = $"{PortConst.Port_Forward_Http}/api/Messages/add/receiver/{receiverId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject(text);
 			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));

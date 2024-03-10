@@ -19,9 +19,9 @@ namespace ZestFrontend.Services
 
 		public HubConnection CommentsConnection => _commentsConnection;
 
-		public async void Init()
+		public async Task Init()
 		{
-			_commentsConnection = BuildLikesHubConnection("https://localhost:7183/commentshub");
+			_commentsConnection = BuildLikesHubConnection($"{PortConst.Port_Forward_Http}/commentshub");
 			await StartConnections();
 		}
 		private HubConnection BuildLikesHubConnection(string url)

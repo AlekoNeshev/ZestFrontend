@@ -1,10 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,25 +23,40 @@ namespace ZestFrontend.ViewModels
 		LikesService likesService;
 		AuthService authService;
 		SignalRConnectionService _signalRConnectionService;
-		public PostsViewModel(PostsService postsService, LikesService service, LikesHubConnectionService likesHubConnectionService, SignalRConnectionService signalRConnectionService,AuthService authService)
+		CommunityService _communityService;
+
+		private Task InitTask;
+
+		public PostsViewModel(PostsService postsService, LikesService service, LikesHubConnectionService likesHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService, CommunityService communityService)
 		{
 
 			this.postsService = postsService;
 			this.likesService = service;
 			this.authService=authService;
 			this.connection = likesHubConnectionService;
+			this._communityService = communityService;
 			_signalRConnectionService = signalRConnectionService;
-			 this.connection.Init();
-			GetPosts();
-
-
+			InitTask = Init();
+			
 		}
+
+		private async Task Init()
+		{
+			GetPosts();
+			
+			await this.connection.Init();
+			connection.LikesConnection.On<int>("PostLiked", UpdatePost);
+		}
+
 		[ObservableProperty]
 		string search;
 		[ObservableProperty]
 		bool isRefreshing;
-
+		[ObservableProperty]
+		bool isBtnVisible;
+	
 		public ObservableCollection<PostDTO> Posts { get; } = new();
+		
 		public async void UpdatePost(int id)
 		{
 			var updatedPost = await postsService.GetSinglePost(id);
@@ -66,7 +83,12 @@ namespace ZestFrontend.ViewModels
 			
 
 		}
-		
+	
+		[RelayCommand]
+		async Task ShowFollowedComsAsync()
+		{
+			IsBtnVisible = !IsBtnVisible;
+		}
 		[RelayCommand]
 		async Task DislikePostAsync(PostDTO postDTO)
 		{
@@ -109,9 +131,13 @@ namespace ZestFrontend.ViewModels
 
 		public async Task onNavigatedTo()
 		{
+			if (InitTask is not null && !InitTask.IsCompleted) await InitTask;
 			
-			connection.LikesConnection.On<int>("PostLiked", UpdatePost);
 			await _signalRConnectionService.AddConnectionToGroup(connection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
+		}
+		public async void OnNavigatedFrom()
+		{
+			await _signalRConnectionService.RemoveConnectionToGroup(connection.LikesConnection.ConnectionId);
 		}
 	}
 }

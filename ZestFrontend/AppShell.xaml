@@ -4,8 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:ZestFrontend"
-    BackgroundColor="GreenYellow"
-    Shell.FlyoutBehavior="Disabled">
+    BackgroundColor="GreenYellow">
 
     <Shell.Background>
         <LinearGradientBrush>
@@ -13,10 +12,10 @@
             <GradientStop Offset="1.0" Color="Green" />
         </LinearGradientBrush>
     </Shell.Background>
-    <TabBar>
+    <TabBar IsVisible="True">
 
 
-        <Tab Title="Posts">
+        <Tab Title="Posts" >
             <ShellContent Title="Posts" ContentTemplate="{DataTemplate local:MainPage}" />
         </Tab>
         <Tab Title="Communities">

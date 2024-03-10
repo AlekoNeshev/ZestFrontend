@@ -24,7 +24,7 @@ namespace ZestFrontend.Services
         public async Task<List<PostDTO>> GetPosts(DateTime lastDatel, int minimumSkipCount, int takeCount)
         {
 			string lastDate = lastDatel.ToString("yyyy-MM-ddTHH:mm:ss");
-			var url = $"https://localhost:7183/api/Post/getByDate/{lastDate}/{minimumSkipCount}/{takeCount}";
+			var url = $"{PortConst.Port_Forward_Http}/api/Post/getByDate/{lastDate}/{minimumSkipCount}/{takeCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -36,7 +36,7 @@ namespace ZestFrontend.Services
         }
         public async Task<PostDTO> GetSinglePost(int id)
         {
-            var url = $"https://localhost:7183/api/Post/{id}";
+            var url = $"{PortConst.Port_Forward_Http}/api/Post/{id}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -48,7 +48,7 @@ namespace ZestFrontend.Services
         }
         public async Task<List<PostDTO>> GetPostsByCommunity(int communityId)
         {
-			var url = $"https://localhost:7183/api/Post/getByCommunity/{communityId}";
+			var url = $"{PortConst.Port_Forward_Http}/api/Post/getByCommunity/{communityId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)
@@ -60,7 +60,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<List<PostDTO>> GetPostsBySearch(string text)
 		{
-			var url = $"https://localhost:7183/api/Post/getBySearch/{text}";
+			var url = $"{PortConst.Port_Forward_Http}/api/Post/getBySearch/{text}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)
@@ -72,7 +72,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<HttpResponseMessage> AddPost( string title, string content, int communityId)
 		{
-			var url = $"https://localhost:7183/api/Post/add/{title}/community/{communityId}";
+			var url = $"{PortConst.Port_Forward_Http}/api/Post/add/{title}/community/{communityId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject(content);
 			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
@@ -81,7 +81,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<HttpResponseMessage> DeletePost(int postId)
 		{
-			var url = $"https://localhost:7183/api/Post/remove/{postId}";
+			var url = $"{PortConst.Port_Forward_Http}/api/Post/remove/{postId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.PutAsync(url, new StringContent("", Encoding.UTF8, "application/json"));
 			response.EnsureSuccessStatusCode();

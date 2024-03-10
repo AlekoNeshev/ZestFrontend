@@ -1,29 +1,32 @@
-﻿<?xml version = "1.0" encoding = "UTF-8" ?>
-<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:ZestFrontend"
-             x:Class="ZestFrontend.App">
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Application
+    x:Class="ZestFrontend.App"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:ZestFrontend"
+        xmlns:model="clr-namespace:ZestFrontend.DTOs"
+    xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
-                
+
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="SmallScreenButtonStyle" TargetType="Button">
                 <Setter Property="FontSize" Value="18" />
                 <Setter Property="Padding" Value="10" />
-                <!-- Other button properties -->
+                <!--  Other button properties  -->
             </Style>
 
             <Style x:Key="LargeScreenButtonStyle" TargetType="Button">
                 <Setter Property="FontSize" Value="24" />
                 <Setter Property="Padding" Value="15" />
-                <!-- Other button properties -->
+                <!--  Other button properties  -->
             </Style>
+            
         </ResourceDictionary>
     </Application.Resources>
-    
-    
+
 </Application>
- 
+

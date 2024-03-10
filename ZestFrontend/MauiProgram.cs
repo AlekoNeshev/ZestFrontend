@@ -5,6 +5,7 @@ using ZestFrontend.Services;
 using ZestFrontend.ViewModels;
 using MauiIcons.Fluent.Filled;
 using ZestFrontend.Pages;
+using ZestFrontend.Views;
 
 namespace ZestFrontend;
 
@@ -32,7 +33,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<LoginService>();
 		builder.Services.AddSingleton<PostsService>();
 		builder.Services.AddSingleton<CommunityService>();
-		builder.Services.AddScoped<AuthService>();
+		builder.Services.AddSingleton<AuthService>();
 		builder.Services.AddSingleton<AccountService>();
 	    builder.Services.AddSingleton<LikesService>();
 		builder.Services.AddSingleton<CommentService>();
@@ -50,7 +51,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<CommunitesViewModel>();
 		builder.Services.AddSingleton<CommunityDetailsViewModel>();
 		builder.Services.AddSingleton<AccountViewModel>();
-		builder.Services.AddTransient<PostDetailsViewModel>();
+		builder.Services.AddSingleton<PostDetailsViewModel>();
 		builder.Services.AddSingleton<AddPostViewModel>();
 		builder.Services.AddSingleton<FriendsViewModel>();
 		builder.Services.AddSingleton<ChatViewModel>();
@@ -59,6 +60,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<UserDetailsViewModel>();
 		builder.Services.AddSingleton<AddCommunityViewModel>();
 		builder.Services.AddSingleton<CommunityModeratorsViewModel>();
+		builder.Services.AddSingleton<NavigationViewModel>();
 
         builder.Services.AddSingleton<MainPage>();
         builder.Services.AddSingleton<Login>();
@@ -75,6 +77,8 @@ public static class MauiProgram
 		builder.Services.AddSingleton<UserDetailsPage>();
 		builder.Services.AddSingleton<AddCommunityPage>();
 		builder.Services.AddSingleton<CommunityModeratorsPage>();
+
+		builder.Services.AddTransient<NavigationView>();
 
         builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
         return builder.Build();

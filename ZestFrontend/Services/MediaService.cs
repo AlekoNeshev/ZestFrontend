@@ -22,7 +22,7 @@ namespace ZestFrontend.Services
         }
 		public async Task<byte[]> GetMedia(string name)
 		{
-			var url = $"https://localhost:7183/api/PostRescources/ivan/{name}";
+			var url = $"{PortConst.Port_Forward_Http}/api/PostRescources/ivan/{name}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)
@@ -32,7 +32,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<PostResourcesDTO[]> GetPhotosByPostId(int postId)
 		{
-			var url = $"https://localhost:7183/api/PostRescources/getByPostId/{postId}";
+			var url = $"{PortConst.Port_Forward_Http}/api/PostRescources/getByPostId/{postId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			
@@ -45,7 +45,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<HttpResponseMessage> UploadImage(int postId, FileResult postedFile)
 		{
-			var request = $"https://localhost:7183/api/PostRescources/ivan/{postId}";
+			var request = $"{PortConst.Port_Forward_Http}/api/PostRescources/uploadFile/{postId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var content = new MultipartFormDataContent();
 			if(postedFile != null)

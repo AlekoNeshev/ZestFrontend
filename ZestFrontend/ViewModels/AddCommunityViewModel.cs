@@ -13,7 +13,7 @@ namespace ZestFrontend.ViewModels
     {
         CommunityService communityService;
         AuthService authService;
-        public AddCommunityViewModel(CommunityService communityService, AuthService authService ) 
+        public AddCommunityViewModel(CommunityService communityService, AuthService authService) 
         {
             this.communityService = communityService;
             this.authService = authService;

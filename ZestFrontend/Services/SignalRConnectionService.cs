@@ -19,7 +19,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<HttpResponseMessage> AddConnectionToGroup(string connectionId, string[] groupsId)
 		{
-			var url = $"https://localhost:7183/api/SignalRGroups/addConnectionToGroup/{connectionId}";
+			var url = $"{PortConst.Port_Forward_Http}/api/SignalRGroups/addConnectionToGroup/{connectionId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject(groupsId);
 			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
@@ -28,7 +28,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<HttpResponseMessage> RemoveConnectionToGroup(string connectionId)
 		{
-			var url = $"https://localhost:7183/api/SignalRGroups/removeConnectionToGroup/{connectionId}";
+			var url = $"{PortConst.Port_Forward_Http}/api/SignalRGroups/removeConnectionToGroup/{connectionId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject("");
 			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));

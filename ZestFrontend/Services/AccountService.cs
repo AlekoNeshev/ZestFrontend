@@ -1,4 +1,5 @@
 ﻿
+using Auth0.ManagementApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace ZestFrontend.Services
         public async Task<string[]> CreateAccount(string accessToken, string name, string email)
         {
            
-            var url = $"https://localhost:7183/api/Account/add/{name}/{email}";
+            var url = $"{PortConst.Port_Forward_Http}/api/Account/add/{name}/{email}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 			var response = await _httpClient.PostAsJsonAsync(url, new StringContent("data"));
 			response.EnsureSuccessStatusCode();
@@ -32,7 +33,7 @@ namespace ZestFrontend.Services
 
         public async Task<AccountDTO> GetCurrentAccount(string accessToken)
         {
-            var url = $"https://localhost:7183/api/Account/get";
+            var url = $"{PortConst.Port_Forward_Http}/api/Account/get";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -49,7 +50,7 @@ namespace ZestFrontend.Services
         }
 		public async Task<List<UserDTO>> GetAllAccounts()
 		{
-			var url = $"https://localhost:7183/api/Account/getAll";
+			var url = $"{PortConst.Port_Forward_Http}/api/Account/getAll";
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)
 			{

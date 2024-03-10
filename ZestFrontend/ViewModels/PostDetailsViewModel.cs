@@ -29,7 +29,7 @@ namespace ZestFrontend.ViewModels
 		CommentsHubConnectionService _commentHubConnectionService;
 		CommentService _commentService;
 		MediaService _mediaService;
-
+		private Task TaskInit;
 		
 		public PostDetailsViewModel( PostsService postsService, LikesService likesService, CommentService commentService, MediaService mediaService, LikesHubConnectionService likesHubConnectionService, CommentsHubConnectionService commentHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService)
 		{
@@ -41,11 +41,18 @@ namespace ZestFrontend.ViewModels
 			_likesHubConnectionService=likesHubConnectionService;
 			_commentHubConnectionService=commentHubConnectionService;
 			_signalRConnectionService = signalRConnectionService;
-			_commentHubConnectionService.Init();
+			TaskInit = Init();
 			ReplyCommand = new ReplyCommand(ExecuteReplyCommand);
 			_ = new MauiIcon();
 		}
+		private async Task Init()
+		{
+			if(TaskInit is not null && !TaskInit.IsCompleted) await TaskInit;
+			await this._commentHubConnectionService.Init();
+			_commentHubConnectionService.CommentsConnection.On("CommentPosted", GetComments);
+			_likesHubConnectionService.LikesConnection.On<int>("CommentLiked", UpdateComment);
 
+		}
 		public CarouselView Carousel {  get; set; }
 		public ICommand ReplyCommand { get; }
 		[ObservableProperty]
@@ -59,7 +66,9 @@ namespace ZestFrontend.ViewModels
 		bool isCarouselVisible;
 		[ObservableProperty]
 		bool isMediaPlayerVisible;
-		
+		[ObservableProperty]
+		bool isRefreshing;
+
 		[ObservableProperty]
 		string replyText;
 		public ObservableCollection<PostResourcesDTO> Resources { get; private set; } = new();
@@ -128,14 +137,14 @@ namespace ZestFrontend.ViewModels
 			GetComments();
 			DealWithResource();
 			
-			_commentHubConnectionService.CommentsConnection.On("CommentPosted", GetComments);
-			_likesHubConnectionService.LikesConnection.On<int>("CommentLiked", UpdateComment);
+			
 		}
 		
 		[RelayCommand]
 		async Task RefreshAsync()
 		{
 		    GetComments();
+			IsRefreshing = false;
 		}
 		[RelayCommand]
 		async Task GoBackAsync()
@@ -224,7 +233,7 @@ namespace ZestFrontend.ViewModels
 				IsMediaPlayerVisible = false;
 				PostResourcesDTO[] results = await _mediaService.GetPhotosByPostId(Post.Id);
 
-				Resources = new ObservableCollection<PostResourcesDTO>(results); // Convert the list to an ObservableCollection
+				Resources = new ObservableCollection<PostResourcesDTO>(results); 
 				
 				OnPropertyChanged(nameof(Resources));
 				
@@ -254,12 +263,15 @@ namespace ZestFrontend.ViewModels
 		}
 		public async void OnNavigatedTo()
 		{
+			if (TaskInit is not null && !TaskInit.IsCompleted) await TaskInit;
 			
-			await _signalRConnectionService.RemoveConnectionToGroup(_likesHubConnectionService.LikesConnection.ConnectionId);
-			await _signalRConnectionService.RemoveConnectionToGroup(_commentHubConnectionService.CommentsConnection.ConnectionId);
 			await _signalRConnectionService.AddConnectionToGroup(_likesHubConnectionService.LikesConnection.ConnectionId, new string[] { $"pd-{Post.Id}", Post.Id.ToString() });
 			await _signalRConnectionService.AddConnectionToGroup(_commentHubConnectionService.CommentsConnection.ConnectionId, new string[] { $"message-{Post.Id}" });
 		}
-		
+		public async void OnNavigatedFrom()
+		{
+			await _signalRConnectionService.RemoveConnectionToGroup(_likesHubConnectionService.LikesConnection.ConnectionId);
+			await _signalRConnectionService.RemoveConnectionToGroup(_commentHubConnectionService.CommentsConnection.ConnectionId);
+		}
 	}
 }
