@@ -19,6 +19,7 @@ namespace ZestFrontend.ViewModels
 		AuthService authService;
 		MessageHubConnectionService hubConnection;
 		SignalRConnectionService signalRConnectionService;
+		public event EventHandler NewMessageReceived;
 		private Task InitTask;
         public ChatViewModel(MessageService messageService, MessageHubConnectionService messageHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService)
         {
@@ -100,7 +101,15 @@ namespace ZestFrontend.ViewModels
 		{
 			var message = await messageService.FindById(messageId);
 			message.IsOwner = message.SenderUsername == authService.Username;
-			Messages.Insert(Messages.Count, message);
+
+			Messages.Add(message);
+			Thread.SpinWait(5000);
+			OnNewMessageReceived();
+			
+		}
+		protected virtual void OnNewMessageReceived()
+		{
+			NewMessageReceived?.Invoke(this, EventArgs.Empty);
 		}
 	}
 }

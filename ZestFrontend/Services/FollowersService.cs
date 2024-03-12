@@ -29,7 +29,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<HttpResponseMessage> Unfollow(string followedId)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Followers/followed/{followedId}";
+			var url = $"{PortConst.Port_Forward_Http}/api/Followers/delete/followed/{followedId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.DeleteAsync(url);
 			response.EnsureSuccessStatusCode();

@@ -7,13 +7,7 @@ public partial class AppShell : Shell
 	public AppShell()
 	{
 		InitializeComponent();
-#if WINDOWS || MACCATALYST
-        TabBarIsVisible = true;
-#else
-		TabBarIsVisible = false;
-#endif
 
-		BindingContext = this;
 	
 	    Routing.RegisterRoute(nameof(MainPage), typeof(MainPage));
         Routing.RegisterRoute(nameof(Login), typeof(Login));
@@ -30,13 +24,7 @@ public partial class AppShell : Shell
 		Routing.RegisterRoute(nameof(UserDetailsPage), typeof(UserDetailsPage));
 		Routing.RegisterRoute(nameof(AddCommunityPage), typeof(AddCommunityPage));
 		Routing.RegisterRoute(nameof(CommunityModeratorsPage), typeof(CommunityModeratorsPage));
+		Routing.RegisterRoute(nameof(AccountPage), typeof(AccountPage));
 	}
-	public static readonly BindableProperty TabBarIsVisibleProperty =
-	BindableProperty.Create(nameof(TabBarIsVisible), typeof(bool), typeof(AppShell), default(bool));
 
-	public bool TabBarIsVisible
-	{
-		get => (bool)GetValue(TabBarIsVisibleProperty);
-		set => SetValue(TabBarIsVisibleProperty, value);
-	}
 }

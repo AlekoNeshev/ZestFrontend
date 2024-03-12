@@ -5,7 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
-    xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels">
+    xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+    x:DataType="viewmodel:NavigationViewModel">
     <Grid Grid.Row="1">
         <Grid.ColumnDefinitions>
 
@@ -15,14 +16,63 @@
 
 
         <StackLayout Orientation="Vertical">
+            <Button
+                BackgroundColor="Transparent"
+                Command="{Binding GoToPostsCommand}"
+                ContentLayout="Right, 20"
+                ImageSource="{mi:FluentFilled Book24Filled,
+                                              IconAutoScaling=True,
+                                              IconSize=20}"
+                Text="Posts"
+                TextColor="Black" />
+            <Button
+                BackgroundColor="Transparent"
+                Command="{Binding GoToCommunitiesCommand}"
+                ContentLayout="Right, 20"
+                ImageSource="{mi:FluentFilled CompassNorthwest24Filled,
+                                              IconAutoScaling=True,
+                                              IconSize=20}"
+                Text="Communities"
+                TextColor="Black" />
+            <Button
+                BackgroundColor="Transparent"
+                Command="{Binding GoToChatsCommand}"
+                ContentLayout="Right, 20"
+                ImageSource="{mi:FluentFilled BookContacts24Filled,
+                                              IconAutoScaling=True,
+                                              IconSize=20}"
+                Text="Chats"
+                TextColor="Black" />
+            <Button
+                BackgroundColor="Transparent"
+                Command="{Binding GoToUsersCommand}"
+                ContentLayout="Right, 20"
+                ImageSource="{mi:FluentFilled BookGlobe24Filled,
+                                              IconAutoScaling=True,
+                                              IconSize=20}"
+                Text="Users"
+                TextColor="Black" />
+            <Button
+                BackgroundColor="Transparent"
+                Command="{Binding GoToAccountCommand}"
+                ContentLayout="Right, 20"
+                ImageSource="{mi:FluentFilled BookLetter24Filled,
+                                              IconAutoScaling=True,
+                                              IconSize=20}"
+                Text="Account"
+                TextColor="Black" />
             <StackLayout Orientation="Horizontal">
                 <Button
                     BackgroundColor="Transparent"
                     BorderColor="Transparent"
                     Clicked="ImageButton_Clicked"
                     Command="{Binding ShowFollowedComsCommand}"
+                    ContentLayout="Right, 20"
                     CornerRadius="0"
                     FontSize="13"
+                    ImageSource="{mi:FluentFilled ArrowUp20Filled,
+                                                  IconAutoScaling=True,
+                                                  IconSize=20}"
                     Text="View followed communites"
                     TextColor="Black" />
                 <ImageButton

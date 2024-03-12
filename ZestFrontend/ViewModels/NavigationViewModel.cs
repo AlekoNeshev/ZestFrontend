@@ -36,5 +36,30 @@ namespace ZestFrontend.ViewModels
 		{
 			IsBtnVisible = !IsBtnVisible;
 		}
+		[RelayCommand]
+		async Task GoToPostsAsync()
+		{
+			await Shell.Current.GoToAsync($"{nameof(PostsPage)}");
+		}
+		[RelayCommand]
+		async Task GoToCommunitiesAsync()
+		{
+			await Shell.Current.GoToAsync($"{nameof(CommunitiesPage)}");
+		}
+		[RelayCommand]
+		async Task GoToChatsAsync()
+		{
+			await Shell.Current.GoToAsync($"{nameof(FriendsPage)}");
+		}
+		[RelayCommand]
+		async Task GoToUsersAsync()
+		{
+			await Shell.Current.GoToAsync($"{nameof(UsersPage)}");
+		}
+		[RelayCommand]
+		async Task GoToAccountAsync()
+		{
+			await Shell.Current.GoToAsync($"{nameof(AccountPage)}");
+		}
 	}
 }

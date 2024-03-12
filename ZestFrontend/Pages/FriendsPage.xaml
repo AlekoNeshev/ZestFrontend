@@ -11,8 +11,27 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Command="{Binding RefreshCommand}" Text="Refresh" />
     </ContentPage.ToolbarItems>
-    <Grid>
-        <CollectionView ItemsSource="{Binding Friends}" SelectionMode="None">
+    <Grid x:Name="MyGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
+            <ColumnDefinition Width="{OnIdiom Phone=*, Tablet=2*, Desktop=3*}" />
+            <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <SearchBar
+            Grid.Column="1"
+            Margin="0,10,0,10"
+            HorizontalOptions="Fill"
+            Keyboard="Plain"
+            MaximumWidthRequest="500" />
+        <CollectionView
+            Grid.Row="1"
+            Grid.Column="1"
+            ItemsSource="{Binding Friends}"
+            SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:FollowerDTO">
                     <Grid>

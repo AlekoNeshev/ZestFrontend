@@ -5,27 +5,38 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="AccountPage"
-    x:DataType="viewmodel:AccountViewModel">
-    <StackLayout Padding="20" Spacing="10">
-        <Label
-            FontSize="Large"
-            HorizontalOptions="Center"
-            Text="Account Details" />
+    x:DataType="viewmodel:AccountViewModel"
+    BackgroundColor="GhostWhite">
+    <Grid x:Name="MyGrid" Margin="0,25,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
+            <ColumnDefinition Width="{OnIdiom Phone=*, Tablet=2*, Desktop=3*}" />
+            <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
+        </Grid.ColumnDefinitions>
+        <StackLayout
+            Grid.Column="1"
+            Padding="0,10,0,0"
+            Spacing="10">
+            <Label
+                FontSize="Large"
+                HorizontalOptions="Center"
+                Text="Account Details" />
 
-        <Label Text="Username:" />
-        <Label Text="{Binding Account.Username}" />
-        <Label Text="Email:" />
-        <Label Text="{Binding Account.Email}" />
+            <Label Text="Username:" />
+            <Label Text="{Binding Account.Username}" />
+            <Label Text="Email:" />
+            <Label Text="{Binding Account.Email}" />
 
-        <Label Text="Created On:" />
-        <Label Text="{Binding Account.CreatedOn1}" />
-        <Button Command="{Binding LogoutCommand}" Text="Logout">
-            <Button.Background>
-                <LinearGradientBrush>
-                    <GradientStop Offset="0.0" Color="ForestGreen" />
-                    <GradientStop Offset="1.0" Color="LightBlue" />
-                </LinearGradientBrush>
-            </Button.Background>
-        </Button>
-    </StackLayout>
+            <Label Text="Created On:" />
+            <Label Text="{Binding Account.CreatedOn1}" />
+            <Button Command="{Binding LogoutCommand}" Text="Logout">
+                <Button.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Offset="0.0" Color="ForestGreen" />
+                        <GradientStop Offset="1.0" Color="LightBlue" />
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+        </StackLayout>
+    </Grid>
 </ContentPage>
