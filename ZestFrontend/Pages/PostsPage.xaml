@@ -37,7 +37,32 @@
             <RowDefinition Height="*" />
 
         </Grid.RowDefinitions>
-       
+        <StackLayout Grid.Row="1" Grid.Column="2">
+            <StackLayout Orientation="Horizontal">
+                <Button
+                    BackgroundColor="Transparent"
+                    BorderColor="Transparent"
+                    Clicked="ImageButton_Clicked"
+                    Command="{Binding FilterBtnCommand}"
+                    Text="Filter"
+                    TextColor="Black" />
+                <ImageButton
+                    x:Name="SecondImageButton"
+                    BackgroundColor="Transparent"
+                    Clicked="ImageButton_Clicked"
+                    Command="{Binding FilterBtnCommand}"
+                    Source="{mi:FluentFilled ArrowUp20Filled,
+                                             IconAutoScaling=True,
+                                             IconSize=20}" />
+            </StackLayout>
+
+            <StackLayout IsVisible="{Binding AreFiltersVisible}">
+                <Button Command="{Binding GetLatestPostsCommand}" Text="Latest" />
+                <Button Command="{Binding GetTrendingPostsCommand}" Text="Trending" />
+                <Button Command="{Binding GetFollowedPostsCommand}" Text="Followed" />
+
+            </StackLayout>
+        </StackLayout>
         <SearchBar
             Grid.Column="1"
             Margin="0,10,0,10"

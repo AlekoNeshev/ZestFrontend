@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MauiIcons.Core;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,6 +24,7 @@ namespace ZestFrontend.ViewModels
 		[ObservableProperty]
 		bool isBtnVisible;
 		public ObservableCollection<CommunityDTO> Communities { get; } = new();
+		
 		public async void GetComs()
 		{
 			Communities.Clear();
@@ -31,6 +33,7 @@ namespace ZestFrontend.ViewModels
 				Communities.Add(item);
 			}
 		}
+		
 		[RelayCommand]
 		async Task ShowFollowedComsAsync()
 		{
@@ -42,7 +45,22 @@ namespace ZestFrontend.ViewModels
 			await Shell.Current.GoToAsync($"{nameof(PostsPage)}");
 		}
 		[RelayCommand]
+		async Task GoToTrendingPostsAsync()
+		{
+			await Shell.Current.GoToAsync($"{nameof(PostsPage)}");
+		}
+		[RelayCommand]
+		async Task GoToFollowedPostsAsync()
+		{
+			await Shell.Current.GoToAsync($"{nameof(PostsPage)}");
+		}
+		[RelayCommand]
 		async Task GoToCommunitiesAsync()
+		{
+			await Shell.Current.GoToAsync($"{nameof(CommunitiesPage)}");
+		}
+		[RelayCommand]
+		async Task GoToPopularCommunitiesAsync()
 		{
 			await Shell.Current.GoToAsync($"{nameof(CommunitiesPage)}");
 		}

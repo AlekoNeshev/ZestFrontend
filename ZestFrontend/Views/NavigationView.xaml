@@ -20,7 +20,7 @@
                 BackgroundColor="Transparent"
                 Command="{Binding GoToPostsCommand}"
                 ContentLayout="Right, 20"
-                ImageSource="{mi:FluentFilled Book24Filled,
+                ImageSource="{mi:FluentFilled AppsList24Filled,
                                               IconAutoScaling=True,
                                               IconSize=20}"
                 Text="Posts"
@@ -38,7 +38,7 @@
                 BackgroundColor="Transparent"
                 Command="{Binding GoToChatsCommand}"
                 ContentLayout="Right, 20"
-                ImageSource="{mi:FluentFilled BookContacts24Filled,
+                ImageSource="{mi:FluentFilled ChatMultiple24Filled,
                                               IconAutoScaling=True,
                                               IconSize=20}"
                 Text="Chats"
@@ -47,7 +47,7 @@
                 BackgroundColor="Transparent"
                 Command="{Binding GoToUsersCommand}"
                 ContentLayout="Right, 20"
-                ImageSource="{mi:FluentFilled BookGlobe24Filled,
+                ImageSource="{mi:FluentFilled Globe24Filled,
                                               IconAutoScaling=True,
                                               IconSize=20}"
                 Text="Users"
@@ -56,13 +56,14 @@
                 BackgroundColor="Transparent"
                 Command="{Binding GoToAccountCommand}"
                 ContentLayout="Right, 20"
-                ImageSource="{mi:FluentFilled BookLetter24Filled,
+                ImageSource="{mi:FluentFilled Person24Filled,
                                               IconAutoScaling=True,
                                               IconSize=20}"
                 Text="Account"
                 TextColor="Black" />
             <StackLayout Orientation="Horizontal">
                 <Button
+                    x:Name="ButtonComs"
                     BackgroundColor="Transparent"
                     BorderColor="Transparent"
                     Clicked="ImageButton_Clicked"
@@ -112,7 +113,10 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
+
         </StackLayout>
+
 
     </Grid>
 </ContentView>

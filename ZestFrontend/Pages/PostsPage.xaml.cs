@@ -30,5 +30,22 @@ public partial class PostsPage : ContentPage
 		viewModel.OnNavigatedFrom();
 		base.OnNavigatedFrom(args);
 	}
-	
+
+	private void ImageButton_Clicked(object sender, EventArgs e)
+	{
+		
+
+
+			if (SecondImageButton.Rotation == 0)
+			{
+
+				SecondImageButton.RotateTo(180);
+			}
+			else
+			{
+				SecondImageButton.RotateTo(0);
+			}
+
+		
+	}
 }

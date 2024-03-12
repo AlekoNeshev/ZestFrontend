@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ZestFrontend.DTOs;
+using ZestFrontend.Filters;
 using ZestFrontend.Services;
 
 namespace ZestFrontend.ViewModels
@@ -26,7 +27,7 @@ namespace ZestFrontend.ViewModels
 		CommunityService _communityService;
 
 		private Task InitTask;
-
+		PostsFilterOptions _filter;
 		public PostsViewModel(PostsService postsService, LikesService service, LikesHubConnectionService likesHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService, CommunityService communityService)
 		{
 
@@ -37,13 +38,14 @@ namespace ZestFrontend.ViewModels
 			this._communityService = communityService;
 			_signalRConnectionService = signalRConnectionService;
 			InitTask = Init();
-			
+
 		}
 
 		private async Task Init()
 		{
+			_filter = PostsFilterOptions.Followed;
 			GetPosts();
-			
+
 			await this.connection.Init();
 			connection.LikesConnection.On<int>("PostLiked", UpdatePost);
 		}
@@ -54,9 +56,12 @@ namespace ZestFrontend.ViewModels
 		bool isRefreshing;
 		[ObservableProperty]
 		bool isBtnVisible;
-	
+		[ObservableProperty]
+		bool areFiltersVisible;
+
+
 		public ObservableCollection<PostDTO> Posts { get; } = new();
-		
+
 		public async void UpdatePost(int id)
 		{
 			var updatedPost = await postsService.GetSinglePost(id);
@@ -66,24 +71,88 @@ namespace ZestFrontend.ViewModels
 		}
 		public async void GetPosts()
 		{
-			DateTime lastDate = new DateTime();
-			if (Posts.Count==0)
+			if (_filter != PostsFilterOptions.Last)
 			{
-				lastDate = DateTime.Now;
+
+
+				DateTime lastDate = new DateTime();
+				if (Posts.Count==0)
+				{
+					lastDate = DateTime.Now;
+				}
+				else
+				{
+					lastDate = Posts.Last().PostedOn;
+				}
+				foreach (var post in await postsService.GetPosts(lastDate, Posts.Count, 50))
+				{
+					post.IsOwner = post.Publisher == authService.Username;
+					Posts.Add(post);
+				}
+				_filter = PostsFilterOptions.Last;
 			}
-			else
+		}
+		public async void GetTrendingPosts()
+		{
+			if (_filter != PostsFilterOptions.Trending)
 			{
-				lastDate = Posts.Last().PostedOn;
+				DateTime lastDate = new DateTime();
+				if (Posts.Count==0)
+				{
+					lastDate = DateTime.Now;
+				}
+				else
+				{
+					lastDate = Posts.Last().PostedOn;
+				}
+				foreach (var post in await postsService.GetPosts(lastDate, Posts.Count, 50))
+				{
+					post.IsOwner = post.Publisher == authService.Username;
+					Posts.Add(post);
+				}
+				_filter = PostsFilterOptions.Trending;
 			}
-			foreach (var post in await postsService.GetPosts(lastDate, Posts.Count, 50))
+		}
+		public async void GetFollowedPosts()
+		{
+			if (_filter != PostsFilterOptions.Followed)
 			{
-				post.IsOwner = post.Publisher == authService.Username;
-				Posts.Add(post);
+
+
+				DateTime lastDate = new DateTime();
+				if (Posts.Count==0)
+				{
+					lastDate = DateTime.Now;
+				}
+				else
+				{
+					lastDate = Posts.Last().PostedOn;
+				}
+				foreach (var post in await postsService.GetPosts(lastDate, Posts.Count, 50))
+				{
+					post.IsOwner = post.Publisher == authService.Username;
+					Posts.Add(post);
+				}
+				_filter = PostsFilterOptions.Followed;
 			}
-			
 
 		}
-	
+		[RelayCommand]
+		async Task GetLatestPostsAsync()
+		{
+			GetPosts();
+		}
+		[RelayCommand]
+		async Task GetTrendingPostsAsync()
+		{
+			GetTrendingPosts();
+		}
+		[RelayCommand]
+		async Task GetFollowedPostsAsync()
+		{
+			GetFollowedPosts();
+		}
+
 		[RelayCommand]
 		async Task ShowFollowedComsAsync()
 		{
@@ -124,15 +193,19 @@ namespace ZestFrontend.ViewModels
 		async Task RefreshAsync()
 		{
 			Posts.Clear();
-			 GetPosts();
+			GetPosts();
 			IsRefreshing = false;
 			await _signalRConnectionService.AddConnectionToGroup(connection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
 		}
-
+		[RelayCommand]
+		async Task FilterBtnAsync()
+		{
+			AreFiltersVisible = !AreFiltersVisible;
+		}
 		public async Task onNavigatedTo()
 		{
 			if (InitTask is not null && !InitTask.IsCompleted) await InitTask;
-			
+
 			await _signalRConnectionService.AddConnectionToGroup(connection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
 		}
 		public async void OnNavigatedFrom()

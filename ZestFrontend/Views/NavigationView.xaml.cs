@@ -41,10 +41,11 @@ public partial class NavigationView : ContentView
 
 	private void ImageButton_Clicked(object sender, EventArgs e)
 	{
-
+		
 
 		if (SecondImageButton.Rotation == 0)
 		{
+			
 			SecondImageButton.RotateTo(180);
 		}
 		else
