@@ -14,77 +14,170 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
+        <StackLayout>
+            <StackLayout>
+                <ContentView
+                    Padding="-1,-1,0,0"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+                    <Frame
+                        Padding="0,0,0,0"
+                        BackgroundColor="GhostWhite"
+                        BorderColor="Transparent"
+                        CornerRadius="0">
 
-        <StackLayout Orientation="Vertical">
-            <Button
-                BackgroundColor="Transparent"
-                Command="{Binding GoToPostsCommand}"
-                ContentLayout="Right, 20"
-                ImageSource="{mi:FluentFilled AppsList24Filled,
-                                              IconAutoScaling=True,
-                                              IconSize=20}"
-                Text="Posts"
-                TextColor="Black" />
-            <Button
-                BackgroundColor="Transparent"
-                Command="{Binding GoToCommunitiesCommand}"
-                ContentLayout="Right, 20"
-                ImageSource="{mi:FluentFilled CompassNorthwest24Filled,
-                                              IconAutoScaling=True,
-                                              IconSize=20}"
-                Text="Communities"
-                TextColor="Black" />
-            <Button
-                BackgroundColor="Transparent"
-                Command="{Binding GoToChatsCommand}"
-                ContentLayout="Right, 20"
-                ImageSource="{mi:FluentFilled ChatMultiple24Filled,
-                                              IconAutoScaling=True,
-                                              IconSize=20}"
-                Text="Chats"
-                TextColor="Black" />
-            <Button
-                BackgroundColor="Transparent"
-                Command="{Binding GoToUsersCommand}"
-                ContentLayout="Right, 20"
-                ImageSource="{mi:FluentFilled Globe24Filled,
-                                              IconAutoScaling=True,
-                                              IconSize=20}"
-                Text="Users"
-                TextColor="Black" />
-            <Button
-                BackgroundColor="Transparent"
-                Command="{Binding GoToAccountCommand}"
-                ContentLayout="Right, 20"
-                ImageSource="{mi:FluentFilled Person24Filled,
-                                              IconAutoScaling=True,
-                                              IconSize=20}"
-                Text="Account"
-                TextColor="Black" />
-            <StackLayout Orientation="Horizontal">
-                <Button
-                    x:Name="ButtonComs"
-                    BackgroundColor="Transparent"
-                    BorderColor="Transparent"
-                    Clicked="ImageButton_Clicked"
-                    Command="{Binding ShowFollowedComsCommand}"
-                    ContentLayout="Right, 20"
-                    CornerRadius="0"
-                    FontSize="13"
-                    ImageSource="{mi:FluentFilled ArrowUp20Filled,
-                                                  IconAutoScaling=True,
-                                                  IconSize=20}"
-                    Text="View followed communites"
-                    TextColor="Black" />
-                <ImageButton
-                    x:Name="SecondImageButton"
-                    BackgroundColor="Transparent"
-                    Clicked="ImageButton_Clicked"
-                    Command="{Binding ShowFollowedComsCommand}"
-                    Source="{mi:FluentFilled ArrowUp20Filled,
-                                             IconAutoScaling=True,
-                                             IconSize=20}" />
+                        <Button
+                            Padding="0,0,0,0"
+                            BackgroundColor="Transparent"
+                            BorderColor="Transparent"
+                            Command="{Binding GoToPostsCommand}"
+                            ContentLayout="Right, 20"
+                            ImageSource="{mi:FluentFilled AppsList24Filled,
+                                                          IconAutoScaling=True,
+                                                          IconSize=20}"
+                            Text="Posts"
+                            TextColor="Black" />
+                    </Frame>
+                </ContentView>
+                <ContentView
+                    Padding="-1,-1,0,0"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+                    <Frame
+                        Padding="0,0,0,0"
+                        BackgroundColor="GhostWhite"
+                        BorderColor="Transparent"
+                        CornerRadius="0">
+                        <Button
+                            Padding="0,0,0,0"
+                            BackgroundColor="Transparent"
+                            BorderColor="Transparent"
+                            Command="{Binding GoToCommunitiesCommand}"
+                            ContentLayout="Right, 20"
+                            ImageSource="{mi:FluentFilled CompassNorthwest24Filled,
+                                                          IconAutoScaling=True,
+                                                          IconSize=20}"
+                            Text="Communities"
+                            TextColor="Black" />
+                    </Frame>
+                </ContentView>
+                <ContentView
+                    Padding="-1,-1,0,0"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+                    <Frame
+                        Padding="0,0,0,0"
+                        BackgroundColor="GhostWhite"
+                        BorderColor="Transparent"
+                        CornerRadius="0">
+                        <Button
+                            Padding="0,0,0,0"
+                            BackgroundColor="Transparent"
+                            BorderColor="Transparent"
+                            Command="{Binding GoToChatsCommand}"
+                            ContentLayout="Right, 20"
+                            ImageSource="{mi:FluentFilled ChatMultiple24Filled,
+                                                          IconAutoScaling=True,
+                                                          IconSize=20}"
+                            Text="Chats"
+                            TextColor="Black" />
+                    </Frame>
+                </ContentView>
+                <ContentView
+                    Padding="-1,-1,0,0"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+                    <Frame
+                        Padding="0,0,0,0"
+                        BackgroundColor="GhostWhite"
+                        BorderColor="Transparent"
+                        CornerRadius="0">
+                        <Button
+                            Padding="0,0,0,0"
+                            BackgroundColor="Transparent"
+                            BorderColor="Transparent"
+                            Command="{Binding GoToUsersCommand}"
+                            ContentLayout="Right, 20"
+                            ImageSource="{mi:FluentFilled Globe24Filled,
+                                                          IconAutoScaling=True,
+                                                          IconSize=20}"
+                            Text="Users"
+                            TextColor="Black" />
+                    </Frame>
+                </ContentView>
+                <ContentView
+                    Padding="-1,-1,0,0"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+                    <Frame
+                        Padding="0,0,0,0"
+                        BackgroundColor="GhostWhite"
+                        BorderColor="Transparent"
+                        CornerRadius="0">
+                        <Button
+                            BackgroundColor="Transparent"
+                            BorderColor="Transparent"
+                            Command="{Binding GoToAccountCommand}"
+                            ContentLayout="Right, 20"
+                            ImageSource="{mi:FluentFilled Person24Filled,
+                                                          IconAutoScaling=True,
+                                                          IconSize=20}"
+                            Text="Account"
+                            TextColor="Black" />
+                    </Frame>
+                </ContentView>
             </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <ContentView
+                    Padding="0,-1,-1,0"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+                    <Frame
+                        Padding="0,0,0,0"
+                        BackgroundColor="GhostWhite"
+                        BorderColor="Transparent"
+                        CornerRadius="0">
+                        <Button
+                            x:Name="ButtonComs"
+                            BackgroundColor="Transparent"
+                            BorderColor="Transparent"
+                            Clicked="ImageButton_Clicked"
+                            Command="{Binding ShowFollowedComsCommand}"
+                            ContentLayout="Right, 20"
+                            CornerRadius="0"
+                            FontSize="13"
+                            Text="View followed communites"
+                            TextColor="Black" />
+                    </Frame>
+                </ContentView>
+                <ContentView
+                    Padding="-1,-1,0,0"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+                    <Frame
+                        Padding="0,0,0,0"
+                        BackgroundColor="GhostWhite"
+                        BorderColor="Transparent"
+                        CornerRadius="0">
+                        <ImageButton
+                            x:Name="SecondImageButton"
+                            BackgroundColor="Transparent"
+                            Clicked="ImageButton_Clicked"
+                            Command="{Binding ShowFollowedComsCommand}"
+                            Source="{mi:FluentFilled ArrowUp20Filled,
+                                                     IconAutoScaling=True,
+                                                     IconSize=20}" />
+                    </Frame>
+                </ContentView>
+            </StackLayout>
+
             <CollectionView
                 x:Name="Coms"
                 IsVisible="{Binding IsBtnVisible}"
@@ -97,7 +190,7 @@
                             HorizontalOptions="FillAndExpand"
                             VerticalOptions="FillAndExpand">
                             <Frame
-                                BackgroundColor="Transparent"
+                                BackgroundColor="GhostWhite"
                                 BorderColor="Transparent"
                                 CornerRadius="0">
                                 <Frame.GestureRecognizers>
@@ -115,8 +208,8 @@
             </CollectionView>
 
 
+
+
         </StackLayout>
-
-
     </Grid>
 </ContentView>

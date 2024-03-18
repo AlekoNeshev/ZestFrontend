@@ -71,10 +71,11 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Maui.Essentials" Version="8.0.6" />
+		<PackageReference Include="Microsoft.Maui.Essentials" Version="8.0.7" />
 		<PackageReference Include="MimeTypesMap" Version="1.0.8" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.6" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.7" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.7" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -138,6 +139,10 @@
 	  <PackageReference Update="Microsoft.Maui.Controls" Version="8.0.6" />
 		<PackageReference Update="Microsoft.Maui.Controls.Compatibily" Version="8.0.6" />
 		<PackageReference Update="Microsoft.Maui.Essentials" Version="8.0.6" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.6" />
 	</ItemGroup>
 
 </Project>

@@ -22,10 +22,10 @@ namespace ZestFrontend.Services
             this._authService=authService;
         }
 
-        public async Task<CommentDTO[]> GetComments(string accountId,int postId)
+        public async Task<CommentDTO[]> GetComments(int postId, DateTime lastDatel, int takeCount)
         {
-
-            var url = $"{PortConst.Port_Forward_Http}/api/Comments/getCommentsByPost/{postId}";
+			string lastDate = lastDatel.ToString("yyyy-MM-ddTHH:mm:ss");
+			var url = $"{PortConst.Port_Forward_Http}/api/Comments/getCommentsByPost/{postId}/{lastDate}/{takeCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)

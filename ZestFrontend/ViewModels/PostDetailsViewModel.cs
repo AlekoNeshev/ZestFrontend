@@ -47,7 +47,7 @@ namespace ZestFrontend.ViewModels
 		}
 		private async Task Init()
 		{
-			if(TaskInit is not null && !TaskInit.IsCompleted) await TaskInit;
+			
 			await this._commentHubConnectionService.Init();
 			_commentHubConnectionService.CommentsConnection.On("CommentPosted", GetComments);
 			_likesHubConnectionService.LikesConnection.On<int>("CommentLiked", UpdateComment);
@@ -93,32 +93,43 @@ namespace ZestFrontend.ViewModels
 			UpdateComment(int.Parse(content));
 		}
 
-		public async void GetComments()
+		public async Task GetComments()
 		{
-			Comments.Clear();
-			var comments = await _commentService.GetComments(_authService.Id, Post.Id);
+		
+			DateTime lastDate = new DateTime();
+			if (Comments.Count==0)
+			{
+				lastDate = DateTime.Now;
+			}
+			else
+			{
+				lastDate = Comments.Last().PostedOn;
+			}
+			var comments = await _commentService.GetComments(Post.Id, lastDate, 5);
 			if (comments != null)
 			{
-				foreach (var comment in comments)
+				foreach (var comment in comments.Reverse())
 				{
 					comment.IsOwner = comment.Publisher==_authService.Username;
-					await IsOwner(comment.Replies);
+					await IsOwner(comment.Replies, 0);
 					Comments.Add(comment);
+					
 				}
 			}
 
 		}
-		public async Task IsOwner(IEnumerable<CommentDTO> comments)
+		public async Task IsOwner(IEnumerable<CommentDTO> comments, int level)
 		{
 			foreach (var comment in comments)
 			{
 				
 				comment.IsOwner = comment.Publisher==_authService.Username;
+				comment.AreRepliesVisible = level<=4;
 				if(comment.Replies == null)
 				{
 					return;
 				}
-				await IsOwner(comment.Replies);
+				await IsOwner(comment.Replies, level + 1);
 				
 			}
 
@@ -132,9 +143,10 @@ namespace ZestFrontend.ViewModels
 			AddComment(int.Parse(content));
 
 		}
-		partial void OnPostChanged(PostDTO value)
+		async partial void OnPostChanged(PostDTO value)
 		{
-			GetComments();
+			Comments.Clear();
+			await GetComments();
 			DealWithResource();
 			
 			
@@ -143,7 +155,7 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task RefreshAsync()
 		{
-		    GetComments();
+		   await GetComments();
 			IsRefreshing = false;
 		}
 		[RelayCommand]
@@ -254,12 +266,19 @@ namespace ZestFrontend.ViewModels
 				return;
 			}
 		}
-
+		[RelayCommand]
+		async Task LoadMoreComments()
+		{
+			await GetComments();
+		}
 		private async void ExecuteReplyCommand(ReplyCommandParameter parameter)
 		{
 			var comment = int.Parse(parameter.Comment);
 			var text = parameter.ReplyText;
 			await SendReplyAsync(comment, text);
+			var commentToFind = FindCommentById(comment, Comments);
+			commentToFind.IsReplyVisible = false;
+
 		}
 		public async void OnNavigatedTo()
 		{

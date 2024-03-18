@@ -37,14 +37,14 @@ namespace ZestFrontend.ViewModels
 			this.connection = likesHubConnectionService;
 			this._communityService = communityService;
 			_signalRConnectionService = signalRConnectionService;
+			_filter = PostsFilterOptions.None;
 			InitTask = Init();
 
 		}
 
 		private async Task Init()
 		{
-			_filter = PostsFilterOptions.Followed;
-			GetPosts();
+			await GetPosts();
 
 			await this.connection.Init();
 			connection.LikesConnection.On<int>("PostLiked", UpdatePost);
@@ -65,92 +65,88 @@ namespace ZestFrontend.ViewModels
 		public async void UpdatePost(int id)
 		{
 			var updatedPost = await postsService.GetSinglePost(id);
-			var post = Posts.Where(x => x.Id==id).First();
-			post.Likes = updatedPost.Likes;
-			post.Dislikes = updatedPost.Dislikes;
-		}
-		public async void GetPosts()
-		{
-			if (_filter != PostsFilterOptions.Last)
+			var post = Posts.Where(x => x.Id==id).FirstOrDefault();
+			if (post != null)
 			{
-
-
-				DateTime lastDate = new DateTime();
-				if (Posts.Count==0)
-				{
-					lastDate = DateTime.Now;
-				}
-				else
-				{
-					lastDate = Posts.Last().PostedOn;
-				}
-				foreach (var post in await postsService.GetPosts(lastDate, Posts.Count, 50))
-				{
-					post.IsOwner = post.Publisher == authService.Username;
-					Posts.Add(post);
-				}
-				_filter = PostsFilterOptions.Last;
+				post.Likes = updatedPost.Likes;
+				post.Dislikes = updatedPost.Dislikes;
 			}
 		}
-		public async void GetTrendingPosts()
+		public async Task GetPosts()
 		{
-			if (_filter != PostsFilterOptions.Trending)
+
+			DateTime lastDate = new DateTime();
+			if (Posts.Count==0)
 			{
-				DateTime lastDate = new DateTime();
-				if (Posts.Count==0)
-				{
-					lastDate = DateTime.Now;
-				}
-				else
-				{
-					lastDate = Posts.Last().PostedOn;
-				}
-				foreach (var post in await postsService.GetPosts(lastDate, Posts.Count, 50))
-				{
-					post.IsOwner = post.Publisher == authService.Username;
-					Posts.Add(post);
-				}
-				_filter = PostsFilterOptions.Trending;
+				lastDate = DateTime.Now;
 			}
+			else
+			{
+				lastDate = Posts.Last().PostedOn;
+			}
+			foreach (var post in await postsService.GetPosts(lastDate, 0, 10))
+			{
+				post.IsOwner = post.Publisher == authService.Username;
+				Posts.Add(post);
+			}
+			_filter = PostsFilterOptions.Last;
+
 		}
-		public async void GetFollowedPosts()
+		public async Task GetTrendingPosts()
 		{
-			if (_filter != PostsFilterOptions.Followed)
+			Posts.Clear();
+			var skipIds = Posts.Select(x => x.Id).ToArray();
+
+
+			foreach (var post in await postsService.GetTrendingPostsAsync(50, 0, skipIds))
 			{
-
-
-				DateTime lastDate = new DateTime();
-				if (Posts.Count==0)
-				{
-					lastDate = DateTime.Now;
-				}
-				else
-				{
-					lastDate = Posts.Last().PostedOn;
-				}
-				foreach (var post in await postsService.GetPosts(lastDate, Posts.Count, 50))
-				{
-					post.IsOwner = post.Publisher == authService.Username;
-					Posts.Add(post);
-				}
-				_filter = PostsFilterOptions.Followed;
+				post.IsOwner = post.Publisher == authService.Username;
+				Posts.Add(post);
 			}
+			_filter = PostsFilterOptions.Trending;
+
+		}
+		public async Task GetFollowedPosts()
+		{
+			Posts.Clear();
+			var skipIds = Posts.Select(x => x.Id).ToArray();
+
+
+
+
+			foreach (var post in await postsService.GetFollowedPostsAsync(50, skipIds))
+			{
+				post.IsOwner = post.Publisher == authService.Username;
+				Posts.Add(post);
+			}
+			_filter = PostsFilterOptions.Followed;
+
 
 		}
 		[RelayCommand]
 		async Task GetLatestPostsAsync()
 		{
-			GetPosts();
+			if (_filter != PostsFilterOptions.Last)
+			{
+				Posts.Clear();
+				await GetPosts();
+			}
 		}
 		[RelayCommand]
 		async Task GetTrendingPostsAsync()
 		{
-			GetTrendingPosts();
+			if (_filter != PostsFilterOptions.Trending)
+			{
+				await GetTrendingPosts();
+			}
 		}
 		[RelayCommand]
 		async Task GetFollowedPostsAsync()
 		{
-			GetFollowedPosts();
+			if (_filter != PostsFilterOptions.Followed)
+			{
+				await GetFollowedPosts();
+			}
 		}
 
 		[RelayCommand]
@@ -202,13 +198,21 @@ namespace ZestFrontend.ViewModels
 		{
 			AreFiltersVisible = !AreFiltersVisible;
 		}
+		[RelayCommand]
+		async Task LoadMorePostsAsync()
+		{
+			if (_filter == PostsFilterOptions.Last)
+			{
+				await GetPosts();
+			}
+		}
 		public async Task onNavigatedTo()
 		{
 			if (InitTask is not null && !InitTask.IsCompleted) await InitTask;
 
 			await _signalRConnectionService.AddConnectionToGroup(connection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
 		}
-		public async void OnNavigatedFrom()
+		public async Task OnNavigatedFrom()
 		{
 			await _signalRConnectionService.RemoveConnectionToGroup(connection.LikesConnection.ConnectionId);
 		}

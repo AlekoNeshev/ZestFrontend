@@ -1,21 +1,38 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ZestFrontend.AddCommunityPage"
-             xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
-             xmlns:model="clr-namespace:ZestFrontend.DTOs"
-             x:DataType="viewmodel:AddCommunityViewModel"
-             Title="AddCommunityPage">
-    <StackLayout
-         HorizontalOptions="Center"
-         Spacing="20">
-        <Label Text="Name"/>
-        <Entry Text="{Binding Name, Mode=TwoWay}"/>
+<ContentPage
+    x:Class="ZestFrontend.AddCommunityPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:model="clr-namespace:ZestFrontend.DTOs"
+    xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+    Title="AddCommunityPage"
+    x:DataType="viewmodel:AddCommunityViewModel">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
+            <ColumnDefinition Width="{OnIdiom Phone=*, Tablet=2*, Desktop=3*}" />
+            <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
+        </Grid.ColumnDefinitions>
 
-        <Label Text="Description"/>
-        <Editor Text="{Binding Description, Mode=TwoWay}"/>
-        
+        <StackLayout
+            Grid.Column="1"
+            HorizontalOptions="FillAndExpand"
+            Spacing="20">
+            <Label Text="Name" />
+            <Entry Text="{Binding Name, Mode=TwoWay}" />
 
-        <Button Text="Create Community" Command="{Binding CreateCommunityCommand}"/>
-    </StackLayout>
+            <Label Text="Description" />
+            <Editor AutoSize="TextChanges" Text="{Binding Description, Mode=TwoWay}" />
+
+
+            <Button Command="{Binding CreateCommunityCommand}" Text="Create Community">
+                <Button.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Offset="0.0" Color="ForestGreen" />
+                        <GradientStop Offset="1.0" Color="LightBlue" />
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+        </StackLayout>
+    </Grid>
 </ContentPage>

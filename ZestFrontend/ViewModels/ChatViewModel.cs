@@ -20,7 +20,9 @@ namespace ZestFrontend.ViewModels
 		MessageHubConnectionService hubConnection;
 		SignalRConnectionService signalRConnectionService;
 		public event EventHandler NewMessageReceived;
+		public event EventHandler OnOpenScreen;
 		private Task InitTask;
+		
         public ChatViewModel(MessageService messageService, MessageHubConnectionService messageHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService)
         {
             this.messageService = messageService;
@@ -39,19 +41,32 @@ namespace ZestFrontend.ViewModels
 		public ObservableCollection<MessageDTO> Messages { get; private set; } = new();
 		[ObservableProperty]
 		FollowerDTO follower;
-		public async void GetMessages()
+		[ObservableProperty]
+		bool isLoadingMessages;
+		public async Task GetMessages()
 		{
-			Messages.Clear();
-			foreach (var item in await messageService.GetMessages(Follower.FollowerId))
+			
+			DateTime lastDate = new DateTime();
+			if (Messages.Count==0)
+			{
+				lastDate = DateTime.Now;
+			}
+			else
+			{
+				lastDate = Messages.First().CreatedOn;
+			}
+			var p = await messageService.GetMessages(Follower.FollowerId, lastDate, 40);
+			foreach (var item in p.Reverse())
 			{
 				item.IsOwner = item.SenderUsername == authService.Username;
 				Messages.Add(item);
 			}
 		}
-		partial void OnFollowerChanged(FollowerDTO value)
+		async partial void OnFollowerChanged(FollowerDTO value)
 		{
-			
-			GetMessages();
+			Messages.Clear();
+			await GetMessages();
+			await OnOpen();
 			
 		}
 		public async void OnNavigatedTo()
@@ -97,6 +112,11 @@ namespace ZestFrontend.ViewModels
 		{
 			await messageService.SendMessage(Follower.FollowerId, text);
 		}
+		[RelayCommand]
+		async Task GetMoreMessagesAsync()
+		{
+			await LoadMoreMessages();
+		}
 		public async void GetSingleMessage(int messageId)
 		{
 			var message = await messageService.FindById(messageId);
@@ -107,9 +127,34 @@ namespace ZestFrontend.ViewModels
 			OnNewMessageReceived();
 			
 		}
+		public async Task LoadMoreMessages()
+		{
+			IsLoadingMessages = true;
+			DateTime lastDate = new DateTime();
+			if (Messages.Count==0)
+			{
+				lastDate = DateTime.Now;
+			}
+			else
+			{
+				lastDate = Messages.First().CreatedOn;
+			}
+			var p = await messageService.GetMessages(Follower.FollowerId, lastDate, 40);
+			
+			foreach (var item in p)
+			{
+				item.IsOwner = item.SenderUsername == authService.Username;
+				Messages.Insert(0,item);
+			}
+			IsLoadingMessages = false;
+		}
 		protected virtual void OnNewMessageReceived()
 		{
 			NewMessageReceived?.Invoke(this, EventArgs.Empty);
+		}
+		async protected virtual Task OnOpen()
+		{
+			 OnOpenScreen?.Invoke(this, EventArgs.Empty);
 		}
 	}
 }

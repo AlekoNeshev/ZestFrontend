@@ -48,33 +48,43 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
                                 <ColumnDefinition />
+
                             </Grid.ColumnDefinitions>
                             <Frame Grid.Column="{Binding IsOwner, Converter={StaticResource BoolToLayoutOptionsConverter}}" Background="{Binding IsOwner, Converter={StaticResource UserMessageColorConverter}}">
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:FriendsViewModel}}, Path=GoToChatPageCommand}" CommandParameter="{Binding .}" />
                                 </Frame.GestureRecognizers>
-                                <Grid Padding="10">
+                                <Grid Padding="-10">
 
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
-
+                                        <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
+
                                     </Grid.ColumnDefinitions>
 
                                     <Label
                                         Grid.Column="0"
                                         FontAttributes="Bold"
+                                        HorizontalOptions="Start"
                                         MinimumWidthRequest="100"
                                         Text="{Binding SenderUsername}" />
 
                                     <Label
-                                        Grid.Column="1"
+                                        Grid.Row="1"
+                                        Grid.ColumnSpan="2"
                                         FontAttributes="Bold"
                                         MinimumWidthRequest="100"
                                         Text="{Binding Text}" />
+                                    <Label
+                                        Grid.Column="1"
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="End"
+                                        MinimumWidthRequest="100"
+                                        Text="{Binding CreatedOn}" />
 
                                 </Grid>
                             </Frame>
@@ -98,8 +108,9 @@
                 Grid.Column="1"
                 HorizontalOptions="Fill"
                 Orientation="Horizontal">
-                <Entry
+                <Editor
                     x:Name="CommentEntry"
+                    AutoSize="TextChanges"
                     HorizontalOptions="FillAndExpand"
                     Placeholder="Write a comment" />
                 <Button

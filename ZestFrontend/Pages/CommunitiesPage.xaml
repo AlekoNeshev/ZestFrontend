@@ -25,42 +25,140 @@
             HorizontalOptions="Fill"
             Keyboard="Plain"
             MaximumWidthRequest="500" />
+        <Grid Grid.Row="1" Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackLayout Grid.Column="1">
+                <StackLayout Orientation="Horizontal">
+                    <ContentView
+                        Padding="0,-1,-1,0"
+                        BackgroundColor="LightGray"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand">
+                        <Frame
+                            Padding="0,0,0,0"
+                            BackgroundColor="GhostWhite"
+                            BorderColor="Transparent"
+                            CornerRadius="0">
+                            <Button
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Clicked="ImageButton_Clicked"
+                                Command="{Binding FilterBtnCommand}"
+                                Text="Filter"
+                                TextColor="Black" />
+                        </Frame>
+                    </ContentView>
+                    <ContentView
+                        Padding="-1,-1,-1,0"
+                        BackgroundColor="LightGray"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand">
+                        <Frame
+                            Padding="0,0,0,0"
+                            BackgroundColor="GhostWhite"
+                            BorderColor="Transparent"
+                            CornerRadius="0">
+                            <ImageButton
+                                x:Name="SecondImageButton"
+                                BackgroundColor="Transparent"
+                                Clicked="ImageButton_Clicked"
+                                Command="{Binding FilterBtnCommand}"
+                                Source="{mi:FluentFilled ArrowUp20Filled,
+                                                         IconAutoScaling=True,
+                                                         IconSize=20}" />
+                        </Frame>
+                    </ContentView>
+                </StackLayout>
+
+                <StackLayout IsVisible="{Binding AreFiltersVisible}">
+                    <ContentView
+                        Padding="0,-1,-1,0"
+                        BackgroundColor="LightGray"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand">
+                        <Frame
+                            Padding="0,0,0,0"
+                            BackgroundColor="GhostWhite"
+                            BorderColor="Transparent"
+                            CornerRadius="0">
+
+                            <Button
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Command="{Binding GetAllComsCommand}"
+                                Text="All"
+                                TextColor="Black" />
+                        </Frame>
+                    </ContentView>
+                    <ContentView
+                        Padding="0,-1,-1,0"
+                        BackgroundColor="LightGray"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand">
+                        <Frame
+                            Padding="0,0,0,0"
+                            BackgroundColor="GhostWhite"
+                            BorderColor="Transparent"
+                            CornerRadius="0">
+                            <Button
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Command="{Binding GetPopularComsCommand}"
+                                Text="Popular"
+                                TextColor="Black" />
+                        </Frame>
+                    </ContentView>
+
+                </StackLayout>
+            </StackLayout>
+        </Grid>
         <Grid Grid.Row="1" Grid.Column="1">
             <CollectionView ItemsSource="{Binding Communities}" SelectionMode="None">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:CommunityDTO">
                         <Grid>
-                            <Frame>
-                                <Frame.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunitesViewModel}}, Path=GoToCommunityDetailPageCommand}" CommandParameter="{Binding .}" />
-                                </Frame.GestureRecognizers>
-                                <Grid Padding="10">
+                            <ContentView
+                                Padding="-1,0,-1,-1"
+                                BackgroundColor="LightGray"
+                                HorizontalOptions="FillAndExpand"
+                                VerticalOptions="FillAndExpand">
+                                <Frame BorderColor="Transparent" CornerRadius="0">
 
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition />
-                                        <RowDefinition />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="50" />
-                                    </Grid.ColumnDefinitions>
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunitesViewModel}}, Path=GoToCommunityDetailPageCommand}" CommandParameter="{Binding .}" />
+                                    </Frame.GestureRecognizers>
+                                    <Grid Padding="10">
 
-                                    <Label
-                                        Grid.Column="0"
-                                        FontAttributes="Bold"
-                                        MinimumWidthRequest="100"
-                                        Text="{Binding Name}" />
-                                    <Label
-                                        Grid.Row="1"
-                                        Grid.Column="0"
-                                        FontAttributes="Italic"
-                                        MinimumWidthRequest="100"
-                                        Text="{Binding Description}"
-                                        VerticalOptions="End" />
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="50" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label
+                                            Grid.Column="0"
+                                            FontAttributes="Bold"
+                                            MinimumWidthRequest="100"
+                                            Text="{Binding Name}" />
+                                        <Label
+                                            Grid.Row="1"
+                                            Grid.Column="0"
+                                            FontAttributes="Italic"
+                                            MinimumWidthRequest="100"
+                                            Text="{Binding Description}"
+                                            VerticalOptions="End" />
 
 
-                                </Grid>
-                            </Frame>
+                                    </Grid>
+                                </Frame>
+                            </ContentView>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
@@ -72,7 +170,7 @@
             Grid.Column="1"
             Margin="16"
             Padding="10"
-            BackgroundColor="Beige"
+            BackgroundColor="LightBlue"
             CornerRadius="30"
             HeightRequest="60"
             HorizontalOptions="End"
@@ -82,13 +180,10 @@
                 Aspect="AspectFit"
                 BackgroundColor="Transparent"
                 Command="{Binding GoToAddCommunityPageCommand}"
-                HeightRequest="40"
                 HorizontalOptions="Center"
-                Source="{mi:FluentFilled Add12Filled,
-                                         IconAutoScaling=True,
+                Source="{mi:FluentFilled Add24Filled,
                                          IconSize=20}"
-                VerticalOptions="Center"
-                WidthRequest="40" />
+                VerticalOptions="Center" />
         </Frame>
     </Grid>
 </ContentPage>

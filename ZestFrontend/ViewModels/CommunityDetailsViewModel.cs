@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using ZestFrontend.DTOs;
+using ZestFrontend.Filters;
 using ZestFrontend.Pages;
 using ZestFrontend.Services;
 
@@ -22,23 +23,37 @@ namespace ZestFrontend.ViewModels
         PostsService postsService;
 		LikesService likesService;
 		AuthService authService;
-		HubConnection connection;
-		public CommunityDetailsViewModel(CommunityService communityService, PostsService postsService, LikesService likesService, AuthService authService)
+		SignalRConnectionService _signalRConnectionService;
+		LikesHubConnectionService connection;
+		private Task InitTask;
+		PostsFilterOptions _filter;
+		public CommunityDetailsViewModel(CommunityService communityService, PostsService postsService, LikesService likesService, AuthService authService, LikesHubConnectionService likesHubConnectionService, SignalRConnectionService signalRConnectionService)
 		{ 
 			this.communityService = communityService;
 			this.postsService = postsService;
 			this.likesService=likesService;
 			this.authService=authService;
-			connection = new HubConnectionBuilder().WithUrl($"{PortConst.Port_Forward_Http}/likeshub").Build();
-			connection.On<int>("SignalLike", (id) => UpdatePost(id));
-			connection.StartAsync();
+			this.connection = likesHubConnectionService;
+			_signalRConnectionService = signalRConnectionService;
+			_filter = PostsFilterOptions.None;
+			InitTask = Init();
 		}
+		private async Task Init()
+		{
+			
+			connection.LikesConnection.On<int>("PostLiked", UpdatePost);
+		}
+
 		public async void UpdatePost(int id)
 		{
 			var updatedPost = await postsService.GetSinglePost(id);
-			var post = Posts.Where(x => x.Id==id).First();
-			post.Likes = updatedPost.Likes;
-			post.Dislikes = updatedPost.Dislikes;
+			var post = Posts.Where(x => x.Id==id).FirstOrDefault();
+			if(post != null)
+			{
+				post.Likes = updatedPost.Likes;
+				post.Dislikes = updatedPost.Dislikes;
+			}
+			
 		}
 	
 
@@ -68,17 +83,40 @@ namespace ZestFrontend.ViewModels
 		{
 			await postsService.DeletePost(postDTO.Id);
 		}
-		public async void GetPosts()
+		public async Task GetPosts()
 		{
-			Posts.Clear();
-			var posts = await postsService.GetPostsByCommunity(Community.Id);
-			foreach (var post in posts)
+
+			DateTime lastDate = new DateTime();
+			if (Posts.Count==0)
+			{
+				lastDate = DateTime.Now;
+			}
+			else
+			{
+				lastDate = Posts.Last().PostedOn;
+			}
+			foreach (var post in await postsService.GetPosts(lastDate, Community.Id, 10))
 			{
 				post.IsOwner = post.Publisher == authService.Username;
 				Posts.Add(post);
 			}
+			_filter = PostsFilterOptions.Last;
 		}
-		partial void OnCommunityChanged(CommunityDTO value)
+		public async Task GetTrendingPosts()
+		{
+			Posts.Clear();
+			var skipIds = Posts.Select(x => x.Id).ToArray();
+
+
+			foreach (var post in await postsService.GetTrendingPostsAsync(50, Community.Id, skipIds))
+			{
+				post.IsOwner = post.Publisher == authService.Username;
+				Posts.Add(post);
+			}
+			_filter = PostsFilterOptions.Trending;
+
+		}
+		async partial void OnCommunityChanged(CommunityDTO value)
 		{
 			if (value.IsSubscribed)
 			{
@@ -88,7 +126,8 @@ namespace ZestFrontend.ViewModels
 			{
 				ButtonText = "Follow";
 			}
-			GetPosts();
+			Posts.Clear();
+			await GetPosts();
 		}
 		[RelayCommand]
 		async Task ChangeFollowshipStatusAsync()
@@ -147,6 +186,21 @@ namespace ZestFrontend.ViewModels
 			{
 			{"Community", Community }
 			});
+		}
+		[RelayCommand]
+		async Task LoadMorePostsAsync()
+		{
+			await GetPosts();
+		}
+		public async Task onNavigatedTo()
+		{
+			if (InitTask is not null && !InitTask.IsCompleted) await InitTask;
+
+			await _signalRConnectionService.AddConnectionToGroup(connection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
+		}
+		public async Task OnNavigatedFrom()
+		{
+			await _signalRConnectionService.RemoveConnectionToGroup(connection.LikesConnection.ConnectionId);
 		}
 	}
 }

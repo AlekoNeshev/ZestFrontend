@@ -1,12 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HeyRed.Mime;
+using Microsoft.Maui.Storage;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using ZestFrontend.DTOs;
 using ZestFrontend.Services;
 
@@ -17,13 +20,14 @@ namespace ZestFrontend.ViewModels
 	{
 		PostsService postsService;
 		AuthService authService;
-		FileResult fileResult;
+		List<FileResult> fileResult10;
 		MediaService mediaService;
 		public AddPostViewModel(PostsService postsService , MediaService mediaService, AuthService authService)
         {
             this.postsService = postsService;
 			this.authService = authService;
 			this.mediaService = mediaService;
+			fileResult10 = new List<FileResult>();
         }
 
 		[ObservableProperty]
@@ -32,9 +36,8 @@ namespace ZestFrontend.ViewModels
 		string title;
 		[ObservableProperty]
 		string content;
-		[ObservableProperty]
-		string imageName;
-		
+		public ObservableCollection<string> Images { get; private set; } = new();
+
 		[RelayCommand]
 		async Task CreatePost()
 		{
@@ -44,7 +47,7 @@ namespace ZestFrontend.ViewModels
 			}
 			var response = await postsService.AddPost(Title, Content, Community.Id);
 			var content = await response.Content.ReadAsStringAsync();
-			var imageResponse = await mediaService.UploadImage(int.Parse(content), fileResult);
+			var imageResponse = await mediaService.UploadImage(int.Parse(content), fileResult10.ToArray());
 			if (response.IsSuccessStatusCode && imageResponse.IsSuccessStatusCode) 
 			{
 				await Shell.Current.GoToAsync($"{nameof(CommunityDetailsPage)}?id={Community.Name}", true,
@@ -55,15 +58,50 @@ namespace ZestFrontend.ViewModels
 			}
 		}
 		[RelayCommand]
-		 async Task SelectImageClicked()
+		 async Task SelectVideoClicked()
 		{
-			var fileResult1 = await FilePicker.PickAsync(new PickOptions());
+			Images.Clear();
+			fileResult10.Clear();
+			var pickOptions = new PickOptions
+			{
+				PickerTitle = "Select videos",
+				FileTypes = FilePickerFileType.Videos
+			};
+			var fileResult1 = await FilePicker.PickAsync(pickOptions);
 			if (fileResult1 != null)
 			{
-				//fileResult1.ContentType;
+				fileResult1.ContentType = MimeTypesMap.GetMimeType(fileResult1.FileName);
+				fileResult10 .Add(new FileResult(fileResult1));
+			
+				/*fileResult.
 				fileResult = fileResult1;
-				fileResult.ContentType = MimeTypesMap.GetMimeType(fileResult1.FileName);
-				ImageName = fileResult1.FileName;
+				fileResult.ContentType = MimeTypesMap.GetMimeType(fileResult1.FileName);*/
+				Images.Add(fileResult1.FileName);
+			}
+		}
+		[RelayCommand]
+		async Task SelectImageClicked()
+		{
+			Images.Clear();
+			fileResult10.Clear();
+			var pickOptions = new PickOptions
+			{
+				PickerTitle = "Select images",
+				FileTypes = FilePickerFileType.Images
+			};
+
+			var fileResults = await FilePicker.PickMultipleAsync(pickOptions);
+			if (fileResults != null && fileResults.Count() > 0)
+			{
+				
+				
+				foreach (var fileResult in fileResults)
+				{
+					fileResult.ContentType = MimeTypesMap.GetMimeType(fileResult.FileName);
+					fileResult10.Add (new FileResult(fileResult));
+					
+					Images.Add(fileResult.FileName);
+				}
 			}
 		}
 	}

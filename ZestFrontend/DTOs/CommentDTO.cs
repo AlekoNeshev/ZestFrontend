@@ -15,7 +15,8 @@ namespace ZestFrontend.DTOs
         private int _likes;
         private int _dislikes;
         private bool _isReplyVisible;
-        public int Id { get; set; }
+		private bool _areRepliesVisible = true;
+		public int Id { get; set; }
         public string Publisher 
         { 
             get => _publisher; 
@@ -41,7 +42,12 @@ namespace ZestFrontend.DTOs
 			get => _isReplyVisible;
 			set => SetProperty(ref _isReplyVisible, value);
 		}
-        public bool IsOwner { get; set; }
+		public bool AreRepliesVisible
+		{
+			get => _areRepliesVisible;
+			set => SetProperty(ref _areRepliesVisible, value);
+		}
+		public bool IsOwner { get; set; }
         public ObservableCollection<CommentDTO> Replies { get; set; } = new ObservableCollection<CommentDTO>();
         public DateTime PostedOn { get; set; }
     }

@@ -158,8 +158,9 @@
 
                             <CollectionView
                                 Grid.Row="2"
-                                Margin="0,0,-10,0"
+                                Margin="0,0,-10,-10"
                                 HorizontalOptions="FillAndExpand"
+                                IsVisible="{Binding AreRepliesVisible}"
                                 ItemTemplate="{StaticResource CommentTemplate}"
                                 ItemsSource="{Binding Replies}" />
                         </Grid>
@@ -188,145 +189,153 @@
                 Grid.Column="1"
                 Command="{Binding RefreshCommand}"
                 IsRefreshing="{Binding IsRefreshing}">
-                <ScrollView Orientation="Vertical">
-                    <Grid
-                        RowDefinitions="Auto, Auto, *"
-                        RowSpacing="10"
-                        VerticalOptions="StartAndExpand">
-                        <Frame BorderColor="LightSkyBlue">
-
-                            <Grid Grid.Column="1" Padding="{OnIdiom Phone=0, Desktop=-10}">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-
-                                <Label
-                                    Grid.Column="0"
-                                    FontAttributes="Bold"
-                                    MinimumWidthRequest="100"
-                                    Text="{Binding Post.Title}" />
-                                <Label
-                                    Grid.Row="1"
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="2"
-                                    FontAttributes="None"
-                                    MinimumWidthRequest="100"
-                                    Text="{Binding Post.Text}"
-                                    VerticalOptions="Start" />
-                                <StackLayout
-                                    Grid.Row="4"
-                                    Grid.Column="1"
-                                    HorizontalOptions="End"
-                                    Orientation="Horizontal"
-                                    Spacing="{OnIdiom Phone=3,
-                                                      Desktop=1}">
 
 
-                                    <ImageButton
-                                        Command="{Binding LikePostCommand}"
-                                        HorizontalOptions="StartAndExpand"
-                                        MaximumHeightRequest="{OnIdiom Phone=20,
-                                                                       Desktop=20}"
-                                        MaximumWidthRequest="{OnIdiom Phone=20,
-                                                                      Desktop=20}"
-                                        Source="{mi:FluentFilled ArrowUp20Filled,
-                                                                 IconAutoScaling=True,
-                                                                 IconSize=20}"
-                                        VerticalOptions="EndAndExpand" />
-                                    <Label Text="{Binding Post.Likes}" VerticalOptions="Center" />
 
+                <CollectionView
+                    Grid.Row="2"
+                    Margin="0,0,0,0"
+                    ItemSizingStrategy="MeasureAllItems"
+                    ItemTemplate="{StaticResource CommentTemplate}"
+                    ItemsSource="{Binding Comments}"
+                    ItemsUpdatingScrollMode="KeepScrollOffset"
+                    RemainingItemsThreshold="1"
+                    RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommentsCommand}">
+                    <CollectionView.Header>
+                        <Grid
+                            RowDefinitions="Auto, Auto"
+                            RowSpacing="10"
+                            VerticalOptions="StartAndExpand">
+                            <Frame BorderColor="LightSkyBlue">
 
-                                    <ImageButton
-                                        x:Name="DislikeButton"
-                                        Command="{Binding DislikePostCommand}"
-                                        HorizontalOptions="StartAndExpand"
-                                        MaximumHeightRequest="{OnIdiom Phone=20,
-                                                                       Desktop=20}"
-                                        MaximumWidthRequest="{OnIdiom Phone=20,
-                                                                      Desktop=20}"
-                                        Source="{mi:FluentFilled Icon=ArrowDown20Filled,
-                                                                 IconAutoScaling=True,
-                                                                 IconSize=20}"
-                                        VerticalOptions="Center" />
-                                    <Label Text="{Binding Post.Dislikes}" VerticalOptions="Center" />
+                                <Grid Padding="{OnIdiom Phone=0, Desktop=-10}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
 
-                                    <ImageButton
-                                        Command="{Binding DeletePostCommand}"
-                                        HorizontalOptions="End"
-                                        IsVisible="{Binding Post.IsOwner}"
-                                        MaximumHeightRequest="{OnIdiom Phone=20,
-                                                                       Desktop=20}"
-                                        MaximumWidthRequest="{OnIdiom Phone=20,
-                                                                      Desktop=20}"
-                                        Source="{mi:FluentFilled Broom20Filled,
-                                                                 IconAutoScaling=True,
-                                                                 IconSize=20}"
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label
+                                        Grid.Column="0"
+                                        FontAttributes="Bold"
+                                        MinimumWidthRequest="100"
+                                        Text="{Binding Post.Title}" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="2"
+                                        FontAttributes="None"
+                                        MinimumWidthRequest="100"
+                                        Text="{Binding Post.Text}"
                                         VerticalOptions="Start" />
+                                    <StackLayout
+                                        Grid.Row="4"
+                                        Grid.Column="1"
+                                        HorizontalOptions="End"
+                                        Orientation="Horizontal"
+                                        Spacing="{OnIdiom Phone=3,
+                                                          Desktop=1}">
 
 
-                                </StackLayout>
-                                <CarouselView
-                                    x:Name="Carousel"
-                                    Grid.Row="2"
-                                    Grid.ColumnSpan="2"
-                                    HorizontalOptions="Fill"
-                                    IsVisible="{Binding IsCarouselVisible}"
-                                    ItemsSource="{Binding Resources}"
-                                    Loop="False"
-                                    MaximumHeightRequest="600"
-                                    MaximumWidthRequest="600"
-                                    VerticalOptions="Fill">
-                                    <CarouselView.ItemTemplate>
-                                        <DataTemplate x:DataType="model:PostResourcesDTO">
-                                            <StackLayout>
-                                                <Frame
-                                                    BackgroundColor="Transparent"
-                                                    BorderColor="Transparent"
-                                                    CornerRadius="30">
-                                                    <Image
-                                                        x:Name="Image"
-                                                        Aspect="AspectFit"
-                                                        Source="{Binding Source}" />
-                                                </Frame>
-                                            </StackLayout>
-                                        </DataTemplate>
-                                    </CarouselView.ItemTemplate>
-                                </CarouselView>
-                                <toolkit:MediaElement
-                                    Grid.Row="2"
-                                    Grid.ColumnSpan="2"
-                                    HorizontalOptions="Center"
-                                    IsVisible="{Binding IsMediaPlayerVisible}"
-                                    MaximumHeightRequest="300"
-                                    MaximumWidthRequest="300"
-                                    ShouldShowPlaybackControls="True"
-                                    Source="{Binding Source}" />
-                            </Grid>
+                                        <ImageButton
+                                            Command="{Binding LikePostCommand}"
+                                            HorizontalOptions="StartAndExpand"
+                                            MaximumHeightRequest="{OnIdiom Phone=20,
+                                                                           Desktop=20}"
+                                            MaximumWidthRequest="{OnIdiom Phone=20,
+                                                                          Desktop=20}"
+                                            Source="{mi:FluentFilled ArrowUp20Filled,
+                                                                     IconAutoScaling=True,
+                                                                     IconSize=20}"
+                                            VerticalOptions="EndAndExpand" />
+                                        <Label Text="{Binding Post.Likes}" VerticalOptions="Center" />
 
-                        </Frame>
 
-                        <Label
-                            Grid.Row="1"
-                            FontSize="Large"
-                            HorizontalOptions="Center"
-                            Text="Comments" />
+                                        <ImageButton
+                                            x:Name="DislikeButton"
+                                            Command="{Binding DislikePostCommand}"
+                                            HorizontalOptions="StartAndExpand"
+                                            MaximumHeightRequest="{OnIdiom Phone=20,
+                                                                           Desktop=20}"
+                                            MaximumWidthRequest="{OnIdiom Phone=20,
+                                                                          Desktop=20}"
+                                            Source="{mi:FluentFilled Icon=ArrowDown20Filled,
+                                                                     IconAutoScaling=True,
+                                                                     IconSize=20}"
+                                            VerticalOptions="Center" />
+                                        <Label Text="{Binding Post.Dislikes}" VerticalOptions="Center" />
 
-                        <CollectionView
-                            Grid.Row="2"
-                            Margin="0,0,0,0"
-                            ItemSizingStrategy="MeasureAllItems"
-                            ItemTemplate="{StaticResource CommentTemplate}"
-                            ItemsSource="{Binding Comments}" />
-                    </Grid>
-                </ScrollView>
+                                        <ImageButton
+                                            Command="{Binding DeletePostCommand}"
+                                            HorizontalOptions="End"
+                                            IsVisible="{Binding Post.IsOwner}"
+                                            MaximumHeightRequest="{OnIdiom Phone=20,
+                                                                           Desktop=20}"
+                                            MaximumWidthRequest="{OnIdiom Phone=20,
+                                                                          Desktop=20}"
+                                            Source="{mi:FluentFilled Broom20Filled,
+                                                                     IconAutoScaling=True,
+                                                                     IconSize=20}"
+                                            VerticalOptions="Start" />
+
+
+                                    </StackLayout>
+                                    <CarouselView
+                                        x:Name="Carousel"
+                                        Grid.Row="2"
+                                        Grid.ColumnSpan="2"
+                                        HorizontalOptions="Fill"
+                                        IsVisible="{Binding IsCarouselVisible}"
+                                        ItemsSource="{Binding Resources}"
+                                        Loop="False"
+                                        MaximumHeightRequest="600"
+                                        MaximumWidthRequest="600"
+                                        VerticalOptions="Fill">
+                                        <CarouselView.ItemTemplate>
+                                            <DataTemplate x:DataType="model:PostResourcesDTO">
+                                                <StackLayout>
+                                                    <Frame
+                                                        BackgroundColor="Transparent"
+                                                        BorderColor="Transparent"
+                                                        CornerRadius="30">
+                                                        <Image
+                                                            x:Name="Image"
+                                                            Aspect="AspectFit"
+                                                            Source="{Binding Source}" />
+                                                    </Frame>
+                                                </StackLayout>
+                                            </DataTemplate>
+                                        </CarouselView.ItemTemplate>
+                                    </CarouselView>
+                                    <toolkit:MediaElement
+                                        Grid.Row="2"
+                                        Grid.ColumnSpan="2"
+                                        HorizontalOptions="Center"
+                                        IsVisible="{Binding IsMediaPlayerVisible}"
+                                        MaximumHeightRequest="300"
+                                        MaximumWidthRequest="300"
+                                        ShouldShowPlaybackControls="True"
+                                        Source="{Binding Source}" />
+                                </Grid>
+
+                            </Frame>
+
+                            <Label
+                                Grid.Row="1"
+                                FontSize="Large"
+                                HorizontalOptions="Center"
+                                Text="Comments" />
+                        </Grid>
+                    </CollectionView.Header>
+                </CollectionView>
+
+
             </RefreshView>
             <Grid Grid.Row="1" Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>

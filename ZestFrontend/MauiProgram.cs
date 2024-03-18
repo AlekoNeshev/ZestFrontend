@@ -52,13 +52,13 @@ public static class MauiProgram
 		builder.Services.AddSingleton<CommunityDetailsViewModel>();
 		builder.Services.AddSingleton<AccountViewModel>();
 		builder.Services.AddSingleton<PostDetailsViewModel>();
-		builder.Services.AddSingleton<AddPostViewModel>();
+		builder.Services.AddTransient<AddPostViewModel>();
 		builder.Services.AddSingleton<FriendsViewModel>();
 		builder.Services.AddSingleton<ChatViewModel>();
 		builder.Services.AddSingleton<RegisterNewUserViewModel>();
 		builder.Services.AddSingleton<UsersViewModel>();
 		builder.Services.AddSingleton<UserDetailsViewModel>();
-		builder.Services.AddSingleton<AddCommunityViewModel>();
+		builder.Services.AddTransient<AddCommunityViewModel>();
 		builder.Services.AddSingleton<CommunityModeratorsViewModel>();
 		builder.Services.AddSingleton<NavigationViewModel>();
 

@@ -25,9 +25,9 @@ public partial class PostsPage : ContentPage
 		await this.viewModel.onNavigatedTo();
 		base.OnNavigatedTo(args);
 	}
-	protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
+	async protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
 	{
-		viewModel.OnNavigatedFrom();
+		await viewModel.OnNavigatedFrom();
 		base.OnNavigatedFrom(args);
 	}
 

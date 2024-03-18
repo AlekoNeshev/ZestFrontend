@@ -8,7 +8,7 @@
     Title="UserDetailsPage"
     x:DataType="viewmodel:UserDetailsViewModel"
     BackgroundColor="GhostWhite">
-    <Grid x:Name="MyGrid">
+    <Grid x:Name="MyGrid" Padding="0,74,0,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
             <ColumnDefinition Width="{OnIdiom Phone=*, Tablet=2*, Desktop=3*}" />
@@ -25,16 +25,24 @@
                 <RowDefinition Height="50" />
                 <RowDefinition Height="50" />
             </Grid.RowDefinitions>
-            <Label
+            <StackLayout
                 Grid.Row="0"
                 HorizontalOptions="Center"
-                Text="{Binding User.Username}"
-                VerticalOptions="Center" />
-            <Label
+                Orientation="Horizontal"
+                Spacing="2"
+                VerticalOptions="Center">
+                <Label Text="Username: " />
+                <Label Text="{Binding User.Username}" />
+            </StackLayout>
+            <StackLayout
                 Grid.Row="1"
                 HorizontalOptions="Center"
-                Text="{Binding User.CreatedOn1}"
-                VerticalOptions="Center" />
+                Orientation="Horizontal"
+                Spacing="3"
+                VerticalOptions="Center">
+                <Label Text="Created On:" />
+                <Label Text="{Binding User.CreatedOn1}" />
+            </StackLayout>
 
             <VerticalStackLayout HorizontalOptions="End">
                 <Button

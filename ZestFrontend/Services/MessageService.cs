@@ -31,9 +31,10 @@ namespace ZestFrontend.Services
 			else
 				return null;
 		}
-		public async Task<MessageDTO[]> GetMessages( string receiverId)
+		public async Task<MessageDTO[]> GetMessages( string receiverId, DateTime lastDatel, int takeCount)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Messages/get/receiver/{receiverId}";
+			string date = lastDatel.ToString("yyyy-MM-ddTHH:mm:ss");
+			var url = $"{PortConst.Port_Forward_Http}/api/Messages/get/receiver/{receiverId}/{takeCount}/{date}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)

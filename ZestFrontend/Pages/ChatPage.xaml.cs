@@ -19,16 +19,29 @@ public partial class ChatPage : ContentPage
 		InitializeComponent();
 		var nav = serviceProvider.GetRequiredService<NavigationView>();
 		viewModel.NewMessageReceived += ViewModel_NewMessageReceived;
+		viewModel.OnOpenScreen +=  ViewModel_OnOpenScreen;
 		MyGrid.Children.Add(nav);
 		Messages.Scrolled += Messages_Scrolled;
+
+		
 	}
-	private void Messages_Scrolled(object sender, ItemsViewScrolledEventArgs e)
+	private async void Messages_Scrolled(object sender, ItemsViewScrolledEventArgs e)
 	{
 		// Check if the user is already at the end of the collection (within a small tolerance)
 		const int tolerance = 1; // Adjust the tolerance as needed
 		if (e.LastVisibleItemIndex >= viewModel.Messages.Count - 1 - tolerance)
 		{
 			_isUserAtEndOfCollection = true;
+		}
+		else if (e.FirstVisibleItemIndex == 0) // Adjust the threshold (5 in this case) as needed
+		{
+
+			if (viewModel != null && viewModel.IsLoadingMessages == false)
+			{
+				Messages.Scale.ToString();
+				await viewModel.LoadMoreMessages();
+			}
+			_isUserAtEndOfCollection = false;
 		}
 		else
 		{
@@ -60,13 +73,31 @@ public partial class ChatPage : ContentPage
 				{
 					Messages.ScrollTo(lastIndex, position: ScrollToPosition.MakeVisible, animate: false);
 				}
-				
-
-				
+							
 				
 			});
 		}
 		
+
+	}
+	private void ViewModel_OnOpenScreen(object sender, EventArgs e)
+	{
+		// Access the ScrollView and scroll to the end
+
+		int lastIndex = viewModel.Messages.Count - 1;
+
+		if (lastIndex >= 0)
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				
+					 Messages.ScrollTo(lastIndex, position: ScrollToPosition.MakeVisible, animate: false);
+				
+
+
+			});
+		}
+
 
 	}
 	/*private void Messages_ChildAdded(object sender, ElementEventArgs e)

@@ -8,6 +8,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using ZestFrontend.DTOs;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ZestFrontend.Services
 {
@@ -21,10 +22,10 @@ namespace ZestFrontend.Services
 			_authService = authService;
         }
 
-        public async Task<List<PostDTO>> GetPosts(DateTime lastDatel, int minimumSkipCount, int takeCount)
+        public async Task<List<PostDTO>> GetPosts(DateTime lastDatel, int communityId, int takeCount)
         {
 			string lastDate = lastDatel.ToString("yyyy-MM-ddTHH:mm:ss");
-			var url = $"{PortConst.Port_Forward_Http}/api/Post/getByDate/{lastDate}/{minimumSkipCount}/{takeCount}";
+			var url = $"{PortConst.Port_Forward_Http}/api/Post/getByDate/{lastDate}/{communityId}/{takeCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -87,5 +88,40 @@ namespace ZestFrontend.Services
 			response.EnsureSuccessStatusCode();
 			return response;
 		}
+		public async Task<List<PostDTO>> GetTrendingPostsAsync(int takeCount, int communityId,int[] skipIds = null)
+		{
+			var url = $"{PortConst.Port_Forward_Http}/api/Post/getByTrending/{takeCount}/{communityId}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
+			var body = JsonConvert.SerializeObject(skipIds);
+
+
+
+			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
+
+			if (response.IsSuccessStatusCode)
+			{
+				return await response.Content.ReadFromJsonAsync<List<PostDTO>>();
+			}
+
+			return null;
+		}
+		public async Task<List<PostDTO>> GetFollowedPostsAsync(int takeCount, int[] skipIds = null)
+		{
+			var requestUri = $"{PortConst.Port_Forward_Http}/api/Post/getByFollowed/{takeCount}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
+			var body = JsonConvert.SerializeObject(skipIds);
+
+
+
+			var response = await _httpClient.PostAsync(requestUri, new StringContent(body, Encoding.UTF8, "application/json"));
+
+			if (response.IsSuccessStatusCode)
+			{
+				return await response.Content.ReadFromJsonAsync<List<PostDTO>>();
+			}
+
+			return null;
+		}
+
 	}
 }

@@ -43,15 +43,25 @@ namespace ZestFrontend.Services
 			else
 				return null;
 		}
-		public async Task<HttpResponseMessage> UploadImage(int postId, FileResult postedFile)
+		public async Task<HttpResponseMessage> UploadImage(int postId, FileResult[] postedFiles)
 		{
 			var request = $"{PortConst.Port_Forward_Http}/api/PostRescources/uploadFile/{postId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var content = new MultipartFormDataContent();
-			if(postedFile != null)
-			content.Add(new StreamContent(await postedFile.OpenReadAsync()), "postedFile", postedFile.FileName);
-
 			
+
+			if (postedFiles != null && postedFiles.Length > 0)
+			{
+				for (int i = 0; i < postedFiles.Length; i++)
+				{
+					var file = postedFiles[i];
+					content.Add(new StreamContent(await file.OpenReadAsync()), $"postedFiles", file.FileName);
+				}
+			}
+
+
+
+
 			var response = await _httpClient.PostAsync(request, content);
 
 			

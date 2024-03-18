@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace ZestFrontend.Filters
 {
-    public enum PostsFilterOptions
-    {
-        None,
-        Last, 
-        Trending,
-        Followed
-    }
+	public enum CommunitiesFilterOptions
+	{
+		All, 
+		Popular
+	}
 }
