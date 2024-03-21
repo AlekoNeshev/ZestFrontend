@@ -75,15 +75,40 @@ namespace ZestFrontend.ViewModels
 
 
 		[RelayCommand]
-		async Task DislikePostAsync()
-		{
-			await _likesService.Like( Post.Id, 0, false);
-		}
-		[RelayCommand]
 		async Task LikePostAsync()
 		{
-			await _likesService.Like(Post.Id, 0, true);
+			if (Post.Like == null)
+			{
 
+				await _likesService.Like(Post.Id, 0, true);
+			}
+			else if (Post.Like.Value == true)
+			{
+				await _likesService.RemoveLike(Post.Like.Id, Post.Id, 0);
+			}
+			else if (Post.Like.Value == false)
+			{
+				await _likesService.RemoveLike(Post.Like.Id, Post.Id, 0);
+				await _likesService.Like(Post.Id, 0, true);
+			}
+		}
+		[RelayCommand]
+		async Task DislikePostAsync()
+		{
+			if (Post.Like == null)
+			{
+
+				await _likesService.Like(Post.Id, 0, false);
+			}
+			else if (Post.Like.Value == false)
+			{
+				await _likesService.RemoveLike(Post.Like.Id, Post.Id, 0);
+			}
+			else if (Post.Like.Value == true)
+			{
+				await _likesService.RemoveLike(Post.Like.Id, Post.Id, 0);
+				await _likesService.Like(Post.Id, 0, false);
+			}
 		}
 		[RelayCommand]
 		async Task DeletePostAsync()
@@ -161,17 +186,44 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task GoBackAsync()
 		{
+			GC.Collect();
 			await Shell.Current.GoToAsync("..");
 		}
 		[RelayCommand]
 		async Task LikeCommentAsync(CommentDTO commentDTO)
 		{
-			await _likesService.Like(Post.Id, commentDTO.Id, true);
+			if (commentDTO.Like == null)
+			{
+
+				await _likesService.Like(Post.Id, commentDTO.Id, true);
+			}
+			else if (commentDTO.Like.Value == true)
+			{
+				await _likesService.RemoveLike(commentDTO.Like.Id, Post.Id, commentDTO.Id);
+			}
+			else if (commentDTO.Like.Value == false)
+			{
+				await _likesService.RemoveLike(commentDTO.Like.Id, Post.Id, commentDTO.Id);
+				await _likesService.Like(Post.Id, commentDTO.Id, true);
+			}
 		}
 		[RelayCommand]
 		async Task DislikeCommentAsync(CommentDTO commentDTO)
 		{
-			await _likesService.Like(Post.Id, commentDTO.Id, false);
+			if (commentDTO.Like == null)
+			{
+
+				await _likesService.Like(Post.Id, commentDTO.Id, false);
+			}
+			else if (commentDTO.Like.Value == false)
+			{
+				await _likesService.RemoveLike(commentDTO.Like.Id, Post.Id, commentDTO.Id);
+			}
+			else if (commentDTO.Like.Value == true)
+			{
+				await _likesService.RemoveLike(commentDTO.Like.Id, Post.Id, commentDTO.Id);
+				await _likesService.Like(Post.Id, commentDTO.Id, false);
+			}
 		}
 		[RelayCommand]
 		async Task ReplyCommentAsync(CommentDTO comment)
@@ -219,6 +271,7 @@ namespace ZestFrontend.ViewModels
 			var comment = FindCommentById(id, Comments);
 			comment.Likes = updatedComment.Likes;
 			comment.Dislikes = updatedComment.Dislikes;
+			comment.Like = updatedComment.Like;
 		}
 		public async void AddComment(int id)
 		{
@@ -280,6 +333,7 @@ namespace ZestFrontend.ViewModels
 			commentToFind.IsReplyVisible = false;
 
 		}
+		
 		public async void OnNavigatedTo()
 		{
 			if (TaskInit is not null && !TaskInit.IsCompleted) await TaskInit;
@@ -289,6 +343,7 @@ namespace ZestFrontend.ViewModels
 		}
 		public async void OnNavigatedFrom()
 		{
+		
 			await _signalRConnectionService.RemoveConnectionToGroup(_likesHubConnectionService.LikesConnection.ConnectionId);
 			await _signalRConnectionService.RemoveConnectionToGroup(_commentHubConnectionService.CommentsConnection.ConnectionId);
 		}

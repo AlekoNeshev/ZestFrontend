@@ -11,7 +11,6 @@ public partial class UserDetailsPage : ContentPage
 		BindingContext = userDetailsViewModel;
 		InitializeComponent();
 		var nav = serviceProvider.GetRequiredService<NavigationView>();
-		nav.Paddings(0, 74, 0, 0);
 		MyGrid.Children.Add(nav);
 	}
 }

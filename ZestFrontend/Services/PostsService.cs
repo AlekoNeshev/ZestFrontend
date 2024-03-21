@@ -22,7 +22,7 @@ namespace ZestFrontend.Services
 			_authService = authService;
         }
 
-        public async Task<List<PostDTO>> GetPosts(DateTime lastDatel, int communityId, int takeCount)
+        public async Task<PostDTO[]> GetPosts(DateTime lastDatel, int communityId, int takeCount)
         {
 			string lastDate = lastDatel.ToString("yyyy-MM-ddTHH:mm:ss");
 			var url = $"{PortConst.Port_Forward_Http}/api/Post/getByDate/{lastDate}/{communityId}/{takeCount}";
@@ -30,7 +30,7 @@ namespace ZestFrontend.Services
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadFromJsonAsync<List<PostDTO>>();
+                return await response.Content.ReadFromJsonAsync<PostDTO[]>();
             }
             else
                 return null;

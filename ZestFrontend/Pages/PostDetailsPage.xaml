@@ -14,9 +14,12 @@
     x:DataType="viewmodel:PostDetailsViewModel"
     BackgroundColor="GhostWhite">
 
-
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding GoBackCommand}"/>
+    </Shell.BackButtonBehavior>
     <ContentPage.Resources>
-
+        <local:LikeButtonsColorConverter x:Key="LikeButtonColorConverter" />
+        <local:DislikeButtonColorConverter x:Key="DislikeButtonColorConverter" />
         <ResourceDictionary>
 
             <DataTemplate x:Key="CommentTemplate" x:DataType="model:CommentDTO">
@@ -84,9 +87,7 @@
                                                                        Desktop=10}"
                                         MaximumWidthRequest="{OnIdiom Phone=20,
                                                                       Desktop=10}"
-                                        Source="{mi:FluentFilled ArrowUp20Filled,
-                                                                 IconAutoScaling=True,
-                                                                 IconSize=17}"
+                                        Source="{Binding Like, Converter={StaticResource LikeButtonColorConverter}}"
                                         VerticalOptions="End" />
                                     <Label Text="{Binding Likes}" VerticalOptions="Start" />
                                     <ImageButton
@@ -95,9 +96,7 @@
                                         HeightRequest="{OnIdiom Phone=20,
                                                                 Desktop=10}"
                                         HorizontalOptions="End"
-                                        Source="{mi:FluentFilled Icon=ArrowDown20Filled,
-                                                                 IconAutoScaling=True,
-                                                                 IconSize=17}"
+                                        Source="{Binding Like, Converter={StaticResource DislikeButtonColorConverter}}"
                                         VerticalOptions="Center"
                                         WidthRequest="{OnIdiom Phone=20,
                                                                Desktop=10}" />
@@ -134,21 +133,28 @@
                                 x:Name="SomeName"
                                 Grid.Row="1"
                                 Margin="0,0,0,0"
-                                HorizontalOptions="Start"
+                                HorizontalOptions="FillAndExpand"
                                 IsVisible="{Binding IsReplyVisible}"
                                 MinimumHeightRequest="30"
                                 Orientation="Horizontal"
                                 Spacing="5">
-                                <Entry
+                                <Editor
                                     x:Name="ReplyEntry"
-                                    HorizontalOptions="StartAndExpand"
+                                    AutoSize="TextChanges"
+                                    HorizontalOptions="Start"
+                                    MinimumWidthRequest="400"
                                     Placeholder="Write a reply"
                                     VerticalOptions="StartAndExpand" />
                                 <Label
                                     x:Name="Id"
                                     IsVisible="false"
                                     Text="{Binding Id}" />
-                                <ImageButton Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommand}" Source="{mi:FluentFilled Send20Filled}">
+                                <ImageButton
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommand}"
+                                    HorizontalOptions="Center"
+                                    Source="{mi:FluentFilled Send20Filled,
+                                                             IconAutoScaling=True,
+                                                             IconSize=17}">
                                     <ImageButton.CommandParameter>
                                         <local:ReplyCommandParameter Comment="{Binding Source={x:Reference Id}, Path=Text}" ReplyText="{Binding Source={x:Reference ReplyEntry}, Path=Text}" />
                                     </ImageButton.CommandParameter>
@@ -250,9 +256,7 @@
                                                                            Desktop=20}"
                                             MaximumWidthRequest="{OnIdiom Phone=20,
                                                                           Desktop=20}"
-                                            Source="{mi:FluentFilled ArrowUp20Filled,
-                                                                     IconAutoScaling=True,
-                                                                     IconSize=20}"
+                                            Source="{Binding Post.Like, Converter={StaticResource LikeButtonColorConverter}}"
                                             VerticalOptions="EndAndExpand" />
                                         <Label Text="{Binding Post.Likes}" VerticalOptions="Center" />
 
@@ -265,9 +269,7 @@
                                                                            Desktop=20}"
                                             MaximumWidthRequest="{OnIdiom Phone=20,
                                                                           Desktop=20}"
-                                            Source="{mi:FluentFilled Icon=ArrowDown20Filled,
-                                                                     IconAutoScaling=True,
-                                                                     IconSize=20}"
+                                            Source="{Binding Post.Like, Converter={StaticResource DislikeButtonColorConverter}}"
                                             VerticalOptions="Center" />
                                         <Label Text="{Binding Post.Dislikes}" VerticalOptions="Center" />
 
@@ -348,8 +350,9 @@
                     HorizontalOptions="FillAndExpand"
                     Orientation="Horizontal"
                     Spacing="10">
-                    <Entry
+                    <Editor
                         x:Name="CommentEntry"
+                        AutoSize="TextChanges"
                         HorizontalOptions="FillAndExpand"
                         MinimumWidthRequest="100"
                         Placeholder="Write a comment"
@@ -358,7 +361,8 @@
                         Command="{Binding SendCommand}"
                         CommandParameter="{Binding Text, Source={x:Reference CommentEntry}}"
                         HorizontalOptions="End"
-                        Text="Send">
+                        Text="Send"
+                        VerticalOptions="Center">
                         <Button.Background>
                             <LinearGradientBrush>
                                 <GradientStop Offset="0.0" Color="ForestGreen" />

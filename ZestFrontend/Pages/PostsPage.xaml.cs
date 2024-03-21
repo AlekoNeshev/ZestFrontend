@@ -48,4 +48,9 @@ public partial class PostsPage : ContentPage
 
 		
 	}
+
+	private void IconButton_Clicked(object sender, TouchEventArgs e)
+	{
+
+    }
 }

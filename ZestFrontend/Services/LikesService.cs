@@ -25,5 +25,14 @@ namespace ZestFrontend.Services
             return response;
 
         }
-    }
+		public async Task<HttpResponseMessage> RemoveLike(int likeId, int postId, int commentId)
+		{
+			var url = $"{PortConst.Port_Forward_Http}/api/Likes/remove/like/{likeId}/{postId}/{commentId}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
+			var response = await _httpClient.DeleteAsync(url);
+			response.EnsureSuccessStatusCode();
+			return response;
+
+		}
+	}
 }

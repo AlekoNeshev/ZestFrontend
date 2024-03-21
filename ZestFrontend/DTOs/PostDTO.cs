@@ -12,8 +12,8 @@ namespace ZestFrontend.DTOs
     {
         private int _likes;
         private int _dislikes;
-
-        public int Id { get; set; }
+        private LikeDTO _like;
+		public int Id { get; set; }
         public string Title { get; set; }
         public string Text { get; set; }
         public string Publisher { get; set; }
@@ -27,6 +27,11 @@ namespace ZestFrontend.DTOs
             get => _dislikes;
             set => SetProperty(ref _dislikes, value);
         }
+        public LikeDTO Like
+		{
+			get => _like;
+			set => SetProperty(ref _like, value);
+		}
 		public string ResourceType { get; set; }
         public bool IsOwner { get; set; }
         public DateTime PostedOn { get; set; }

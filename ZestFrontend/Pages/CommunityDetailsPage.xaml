@@ -3,13 +3,17 @@
     x:Class="ZestFrontend.CommunityDetailsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:ZestFrontend.Parameters"
     xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="CommunityDetailsPage"
     x:DataType="viewmodel:CommunityDetailsViewModel"
     BackgroundColor="GhostWhite">
-
+    <ContentPage.Resources>
+        <local:LikeButtonsColorConverter x:Key="LikeButtonColorConverter" />
+        <local:DislikeButtonColorConverter x:Key="DislikeButtonColorConverter" />
+    </ContentPage.Resources>
     <Grid x:Name="MyGrid">
 
         <Grid.ColumnDefinitions>
@@ -162,9 +166,7 @@
                                                                                Desktop=20}"
                                                 MaximumWidthRequest="{OnIdiom Phone=20,
                                                                               Desktop=20}"
-                                                Source="{mi:FluentFilled ArrowUp20Filled,
-                                                                         IconAutoScaling=True,
-                                                                         IconSize=20}"
+                                                Source="{Binding Like, Converter={StaticResource LikeButtonColorConverter}}"
                                                 VerticalOptions="Center" />
                                             <Label Text="{Binding Likes}" />
                                             <ImageButton
@@ -175,9 +177,7 @@
                                                                                Desktop=20}"
                                                 MaximumWidthRequest="{OnIdiom Phone=20,
                                                                               Desktop=20}"
-                                                Source="{mi:FluentFilled Icon=ArrowDown20Filled,
-                                                                         IconAutoScaling=True,
-                                                                         IconSize=20}"
+                                                Source="{Binding Like, Converter={StaticResource DislikeButtonColorConverter}}"
                                                 VerticalOptions="Center" />
                                             <Label Text="{Binding Dislikes}" />
                                             <ImageButton

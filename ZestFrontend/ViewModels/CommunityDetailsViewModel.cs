@@ -52,6 +52,7 @@ namespace ZestFrontend.ViewModels
 			{
 				post.Likes = updatedPost.Likes;
 				post.Dislikes = updatedPost.Dislikes;
+				post.Like = updatedPost.Like;
 			}
 			
 		}
@@ -71,12 +72,38 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task DislikePostAsync(PostDTO postDTO)
 		{
-			await likesService.Like(postDTO.Id, 0, false);
+			if (postDTO.Like == null)
+			{
+
+				await likesService.Like(postDTO.Id, 0, false);
+			}
+			else if (postDTO.Like.Value == false)
+			{
+				await likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
+			}
+			else if (postDTO.Like.Value == true)
+			{
+				await likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
+				await likesService.Like(postDTO.Id, 0, false);
+			}
 		}
 		[RelayCommand]
 		async Task LikePostAsync(PostDTO postDTO)
 		{
-			await likesService.Like(postDTO.Id, 0, true);
+			if (postDTO.Like == null)
+			{
+
+				await likesService.Like(postDTO.Id, 0, true);
+			}
+			else if (postDTO.Like.Value == true)
+			{
+				await likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
+			}
+			else if (postDTO.Like.Value == false)
+			{
+				await likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
+				await likesService.Like(postDTO.Id, 0, true);
+			}
 		}
 		[RelayCommand]
 		async Task DeletePostAsync(PostDTO postDTO)
@@ -191,6 +218,7 @@ namespace ZestFrontend.ViewModels
 		async Task LoadMorePostsAsync()
 		{
 			await GetPosts();
+			await _signalRConnectionService.AddConnectionToGroup(connection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
 		}
 		public async Task onNavigatedTo()
 		{
