@@ -17,10 +17,13 @@ public partial class ChatPage : ContentPage
 		BindingContext = chatViewModel;
 		this.viewModel = chatViewModel;
 		InitializeComponent();
-		var nav = serviceProvider.GetRequiredService<NavigationView>();
+		if (Device.RuntimePlatform == Device.WinUI)
+		{
+			var nav = serviceProvider.GetRequiredService<NavigationView>();
 		viewModel.NewMessageReceived += ViewModel_NewMessageReceived;
 		viewModel.OnOpenScreen +=  ViewModel_OnOpenScreen;
 		MyGrid.Children.Add(nav);
+			}
 		Messages.Scrolled += Messages_Scrolled;
 
 		

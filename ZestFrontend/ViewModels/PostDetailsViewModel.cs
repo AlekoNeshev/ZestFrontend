@@ -173,8 +173,7 @@ namespace ZestFrontend.ViewModels
 			Comments.Clear();
 			await GetComments();
 			DealWithResource();
-			
-			
+
 		}
 		
 		[RelayCommand]
@@ -186,7 +185,6 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task GoBackAsync()
 		{
-			GC.Collect();
 			await Shell.Current.GoToAsync("..");
 		}
 		[RelayCommand]
@@ -334,14 +332,14 @@ namespace ZestFrontend.ViewModels
 
 		}
 		
-		public async void OnNavigatedTo()
+		public async Task OnNavigatedTo()
 		{
 			if (TaskInit is not null && !TaskInit.IsCompleted) await TaskInit;
 			
 			await _signalRConnectionService.AddConnectionToGroup(_likesHubConnectionService.LikesConnection.ConnectionId, new string[] { $"pd-{Post.Id}", Post.Id.ToString() });
 			await _signalRConnectionService.AddConnectionToGroup(_commentHubConnectionService.CommentsConnection.ConnectionId, new string[] { $"message-{Post.Id}" });
 		}
-		public async void OnNavigatedFrom()
+		public async Task OnNavigatedFrom()
 		{
 		
 			await _signalRConnectionService.RemoveConnectionToGroup(_likesHubConnectionService.LikesConnection.ConnectionId);

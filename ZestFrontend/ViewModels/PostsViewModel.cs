@@ -201,6 +201,7 @@ namespace ZestFrontend.ViewModels
 			{
 			{"Post", post }
 			});
+			
 		}
 		[RelayCommand]
 		async Task SearchPosts()

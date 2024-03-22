@@ -12,10 +12,12 @@ public partial class PostsPage : ContentPage
 	{
 		
 		InitializeComponent();
-		var nav = serviceProvider.GetRequiredService<NavigationView>();
-		Grid.SetRow(nav, 1);
-		MyGrid.Children.Add(nav);
-		
+		if (Device.RuntimePlatform == Device.WinUI)
+		{
+			var nav = serviceProvider.GetRequiredService<NavigationView>();
+			Grid.SetRow(nav, 1);
+			MyGrid.Children.Add(nav);
+		}
 		BindingContext = viewModel;
 		this.viewModel = viewModel;
 	}

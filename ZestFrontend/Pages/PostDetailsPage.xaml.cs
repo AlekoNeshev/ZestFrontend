@@ -13,20 +13,24 @@ public partial class PostDetailsPage : ContentPage
 		BindingContext = viewModel;
 		this._viewModel = viewModel;
 		InitializeComponent();
-		var nav = serviceProvider.GetRequiredService<NavigationView>();
-		
-		nav.Paddings(0, 74, 0, 0);
-		MyGrid.Children.Add(nav);
+		if (Device.RuntimePlatform == Device.WinUI)
+		{
+			var nav = serviceProvider.GetRequiredService<NavigationView>();
+
+			nav.Paddings(0, 74, 0, 0);
+
+			MyGrid.Children.Add(nav);
+		}
 	}
 
-	protected override void OnNavigatedTo(NavigatedToEventArgs args)
+	async protected override void OnNavigatedTo(NavigatedToEventArgs args)
 	{
-		_viewModel.OnNavigatedTo();
+		await _viewModel.OnNavigatedTo();
 		base.OnNavigatedTo(args);
 	}
-	protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
+	async protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
 	{
-		_viewModel.OnNavigatedFrom();
+		await _viewModel.OnNavigatedFrom();
 		base.OnNavigatedFrom(args);
 	}
 
