@@ -37,6 +37,10 @@
                         HasShadow="True"
                         HorizontalOptions="FillAndExpand">
 
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=GoToCommentDetailPageCommand}" CommandParameter="{Binding .}" />
+                        </Frame.GestureRecognizers>
+
                         <Grid Padding="{OnIdiom Phone=0, Desktop=-10}" RowSpacing="1">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />

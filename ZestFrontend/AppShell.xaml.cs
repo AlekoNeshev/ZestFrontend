@@ -25,6 +25,7 @@ public partial class AppShell : Shell
 		Routing.RegisterRoute(nameof(AddCommunityPage), typeof(AddCommunityPage));
 		Routing.RegisterRoute(nameof(CommunityModeratorsPage), typeof(CommunityModeratorsPage));
 		Routing.RegisterRoute(nameof(AccountPage), typeof(AccountPage));
+		Routing.RegisterRoute(nameof(CommentDetailsPage), typeof(CommentDetailsPage));
 	}
 
 }

@@ -61,6 +61,7 @@ public static class MauiProgram
 		builder.Services.AddTransient<AddCommunityViewModel>();
 		builder.Services.AddSingleton<CommunityModeratorsViewModel>();
 		builder.Services.AddSingleton<NavigationViewModel>();
+		builder.Services.AddSingleton<CommentDetailsViewModel>();
 
         builder.Services.AddSingleton<MainPage>();
         builder.Services.AddSingleton<Login>();
@@ -77,6 +78,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<UserDetailsPage>();
 		builder.Services.AddSingleton<AddCommunityPage>();
 		builder.Services.AddSingleton<CommunityModeratorsPage>();
+		builder.Services.AddSingleton<CommentDetailsPage>();
 
 		builder.Services.AddTransient<NavigationView>();
 

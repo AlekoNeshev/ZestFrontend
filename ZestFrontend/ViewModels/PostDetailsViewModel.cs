@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ZestFrontend.DTOs;
+using ZestFrontend.Pages;
 using ZestFrontend.Parameters;
 using ZestFrontend.Services;
 
@@ -331,7 +332,19 @@ namespace ZestFrontend.ViewModels
 			commentToFind.IsReplyVisible = false;
 
 		}
-		
+		[RelayCommand]
+		async Task GoToCommentDetailPageAsync(CommentDTO comment)
+		{
+			if (comment == null) return;
+
+			await Shell.Current.GoToAsync($"{nameof(CommentDetailsPage)}?id={comment.Id}", true,
+				new Dictionary<string, object>
+			{
+			{"Comment", comment }
+			});
+
+		}
+
 		public async Task OnNavigatedTo()
 		{
 			if (TaskInit is not null && !TaskInit.IsCompleted) await TaskInit;

@@ -99,6 +99,9 @@
 	  <MauiXaml Update="Pages\ChatPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\CommentDetailsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\CommunitiesPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

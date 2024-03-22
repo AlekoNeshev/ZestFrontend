@@ -9,8 +9,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Windows.Input;
 using ZestFrontend.DTOs;
+using ZestFrontend.Parameters;
 using ZestFrontend.Services;
 
 namespace ZestFrontend.ViewModels
@@ -22,13 +23,15 @@ namespace ZestFrontend.ViewModels
 		AuthService authService;
 		List<FileResult> fileResult10;
 		MediaService mediaService;
+		
 		public AddPostViewModel(PostsService postsService , MediaService mediaService, AuthService authService)
         {
             this.postsService = postsService;
 			this.authService = authService;
 			this.mediaService = mediaService;
 			fileResult10 = new List<FileResult>();
-        }
+			
+		}
 
 		[ObservableProperty]
 		CommunityDTO community;
