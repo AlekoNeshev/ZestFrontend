@@ -8,7 +8,8 @@
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="CommentDetailsPage"
-    x:DataType="viewmodel:CommentDetailsViewModel">
+    x:DataType="viewmodel:CommentDetailsViewModel"
+    BackgroundColor="GhostWhite">
     <ContentPage.Resources>
         <local:LikeButtonsColorConverter x:Key="LikeButtonColorConverter" />
         <local:DislikeButtonColorConverter x:Key="DislikeButtonColorConverter" />
@@ -28,6 +29,10 @@
                         CornerRadius="0"
                         HasShadow="True"
                         HorizontalOptions="FillAndExpand">
+
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommentDetailsViewModel}}, Path=GoToCommentDetailPageCommand}" CommandParameter="{Binding .}" />
+                        </Frame.GestureRecognizers>
 
                         <Grid Padding="{OnIdiom Phone=0, Desktop=-10}" RowSpacing="1">
                             <Grid.RowDefinitions>
@@ -168,154 +173,164 @@
             </DataTemplate>
         </ResourceDictionary>
     </ContentPage.Resources>
-    <ContentView
-    Padding="0,-1,-1,-1"
-    BackgroundColor="LightGray"
-    HorizontalOptions="FillAndExpand"
-    VerticalOptions="FillAndExpand">
+
+    <Grid x:Name="MyGrid" Margin="0,25,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
+            <ColumnDefinition Width="{OnIdiom Phone=*, Tablet=2*, Desktop=3*}" />
+            <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
+        </Grid.ColumnDefinitions>
+
+        <CollectionView
+            Grid.Column="1"
+            Margin="0,0,-10,-10"
+            HorizontalOptions="FillAndExpand"
+            IsVisible="{Binding Comment.AreRepliesVisible}"
+            ItemTemplate="{StaticResource CommentTemplate}"
+            ItemsSource="{Binding Replies}">
+            <CollectionView.Header>
+                <ContentView
+                    Padding="0,-1,-1,-1"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
 
 
 
-        <Frame
-        BorderColor="Transparent"
-        CornerRadius="0"
-        HasShadow="True"
-        HorizontalOptions="FillAndExpand">
+                    <Frame
+                        BorderColor="Transparent"
+                        CornerRadius="0"
+                        HasShadow="True"
+                        HorizontalOptions="FillAndExpand">
 
-            <Grid Padding="{OnIdiom Phone=0, Desktop=-10}" RowSpacing="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+                        <Grid Padding="{OnIdiom Phone=0, Desktop=-10}" RowSpacing="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-
-
-                    <Label FontAttributes="Bold" Text="{Binding Comment.Publisher}" />
-                    <Label
-                    Grid.Row="1"
-                    Grid.ColumnSpan="2"
-                    LineBreakMode="WordWrap"
-                    Text="{Binding Comment.Text}" />
-                    <Label
-                    Grid.Column="1"
-                    FontSize="12"
-                    HorizontalOptions="End"
-                    Text="{Binding Comment.PostedOn}"
-                    VerticalOptions="Start" />
-
-                    <StackLayout
-                    Grid.Row="2"
-                    Grid.Column="0"
-                    HorizontalOptions="Start"
-                    Orientation="Horizontal"
-                    Spacing="{OnIdiom Phone=3,
-                                      Desktop=1}"
-                    VerticalOptions="End">
-
-                        <ImageButton
-                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=LikeCommentCommand}"
-                        CommandParameter="{Binding Comment}"
-                        HorizontalOptions="Center"
-                        MaximumHeightRequest="{OnIdiom Phone=20,
-                                                       Desktop=10}"
-                        MaximumWidthRequest="{OnIdiom Phone=20,
-                                                      Desktop=10}"
-                        Source="{Binding Comment.Like, Converter={StaticResource LikeButtonColorConverter}}"
-                        VerticalOptions="End" />
-                        <Label Text="{Binding Comment.Likes}" VerticalOptions="Start" />
-                        <ImageButton
-                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DislikeCommentCommand}"
-                        CommandParameter="{Binding Comment}"
-                        HeightRequest="{OnIdiom Phone=20,
-                                                Desktop=10}"
-                        HorizontalOptions="End"
-                        Source="{Binding Comment.Like, Converter={StaticResource DislikeButtonColorConverter}}"
-                        VerticalOptions="Center"
-                        WidthRequest="{OnIdiom Phone=20,
-                                               Desktop=10}" />
-                        <Label Text="{Binding Comment.Dislikes}" VerticalOptions="Start" />
-                        <ImageButton
-                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommentCommand}"
-                        CommandParameter="{Binding Comment}"
-                        HorizontalOptions="End"
-                        MaximumHeightRequest="{OnIdiom Phone=20,
-                                                       Desktop=10}"
-                        MaximumWidthRequest="{OnIdiom Phone=20,
-                                                      Desktop=10}"
-                        Source="{mi:FluentFilled ArrowReplyDown16Filled,
-                                                 IconAutoScaling=True,
-                                                 IconSize=17}"
-                        VerticalOptions="Center" />
-                        <ImageButton
-                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DeleteCommentCommand}"
-                        CommandParameter="{Binding Comment}"
-                        HorizontalOptions="End"
-                        IsVisible="{Binding Comment.IsOwner}"
-                        MaximumHeightRequest="{OnIdiom Phone=20,
-                                                       Desktop=15}"
-                        MaximumWidthRequest="{OnIdiom Phone=20,
-                                                      Desktop=15}"
-                        Source="{mi:FluentFilled Broom20Filled,
-                                                 IconAutoScaling=True,
-                                                 IconSize=17}"
-                        VerticalOptions="Center" />
-                    </StackLayout>
-                </Grid>
-
-                <StackLayout
-                x:Name="SomeName"
-                Grid.Row="1"
-                Margin="0,0,0,0"
-                HorizontalOptions="FillAndExpand"
-                IsVisible="{Binding Comment.IsReplyVisible}"
-                MinimumHeightRequest="30"
-                Orientation="Horizontal"
-                Spacing="5">
-                    <Editor
-                    x:Name="ReplyEntry"
-                    AutoSize="TextChanges"
-                    HorizontalOptions="Start"
-                    MinimumWidthRequest="400"
-                    Placeholder="Write a reply"
-                    VerticalOptions="StartAndExpand" />
-                    <Label
-                    x:Name="Id"
-                    IsVisible="false"
-                    Text="{Binding Comment.Id}" />
-                    <ImageButton
-                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommand}"
-                    HorizontalOptions="Center"
-                    Source="{mi:FluentFilled Send20Filled,
-                                             IconAutoScaling=True,
-                                             IconSize=17}">
-                        <ImageButton.CommandParameter>
-                            <local:ReplyCommandParameter Comment="{Binding Source={x:Reference Id}, Path=Text}" ReplyText="{Binding Source={x:Reference ReplyEntry}, Path=Text}" />
-                        </ImageButton.CommandParameter>
-                    </ImageButton>
-                </StackLayout>
+                            <Grid Grid.Row="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
 
-                <CollectionView
-                Grid.Row="2"
-                Margin="0,0,-10,-10"
-                HorizontalOptions="FillAndExpand"
-                IsVisible="{Binding Comment.AreRepliesVisible}"
-                ItemTemplate="{StaticResource CommentTemplate}"
-                ItemsSource="{Binding Comment.Replies}" />
-            </Grid>
 
-        </Frame>
-    </ContentView>
+                                <Label FontAttributes="Bold" Text="{Binding Comment.Publisher}" />
+                                <Label
+                                    Grid.Row="1"
+                                    Grid.ColumnSpan="2"
+                                    LineBreakMode="WordWrap"
+                                    Text="{Binding Comment.Text}" />
+                                <Label
+                                    Grid.Column="1"
+                                    FontSize="12"
+                                    HorizontalOptions="End"
+                                    Text="{Binding Comment.PostedOn}"
+                                    VerticalOptions="Start" />
+
+                                <StackLayout
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    HorizontalOptions="Start"
+                                    Orientation="Horizontal"
+                                    Spacing="{OnIdiom Phone=3,
+                                                      Desktop=1}"
+                                    VerticalOptions="End">
+
+                                    <ImageButton
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=LikeCommentCommand}"
+                                        CommandParameter="{Binding Comment}"
+                                        HorizontalOptions="Center"
+                                        MaximumHeightRequest="{OnIdiom Phone=20,
+                                                                       Desktop=10}"
+                                        MaximumWidthRequest="{OnIdiom Phone=20,
+                                                                      Desktop=10}"
+                                        Source="{Binding Comment.Like, Converter={StaticResource LikeButtonColorConverter}}"
+                                        VerticalOptions="End" />
+                                    <Label Text="{Binding Comment.Likes}" VerticalOptions="Start" />
+                                    <ImageButton
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DislikeCommentCommand}"
+                                        CommandParameter="{Binding Comment}"
+                                        HeightRequest="{OnIdiom Phone=20,
+                                                                Desktop=10}"
+                                        HorizontalOptions="End"
+                                        Source="{Binding Comment.Like, Converter={StaticResource DislikeButtonColorConverter}}"
+                                        VerticalOptions="Center"
+                                        WidthRequest="{OnIdiom Phone=20,
+                                                               Desktop=10}" />
+                                    <Label Text="{Binding Comment.Dislikes}" VerticalOptions="Start" />
+                                    <ImageButton
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommentCommand}"
+                                        CommandParameter="{Binding Comment}"
+                                        HorizontalOptions="End"
+                                        MaximumHeightRequest="{OnIdiom Phone=20,
+                                                                       Desktop=10}"
+                                        MaximumWidthRequest="{OnIdiom Phone=20,
+                                                                      Desktop=10}"
+                                        Source="{mi:FluentFilled ArrowReplyDown16Filled,
+                                                                 IconAutoScaling=True,
+                                                                 IconSize=17}"
+                                        VerticalOptions="Center" />
+                                    <ImageButton
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DeleteCommentCommand}"
+                                        CommandParameter="{Binding Comment}"
+                                        HorizontalOptions="End"
+                                        IsVisible="{Binding Comment.IsOwner}"
+                                        MaximumHeightRequest="{OnIdiom Phone=20,
+                                                                       Desktop=15}"
+                                        MaximumWidthRequest="{OnIdiom Phone=20,
+                                                                      Desktop=15}"
+                                        Source="{mi:FluentFilled Broom20Filled,
+                                                                 IconAutoScaling=True,
+                                                                 IconSize=17}"
+                                        VerticalOptions="Center" />
+                                </StackLayout>
+                            </Grid>
+
+                            <StackLayout
+                                x:Name="SomeName"
+                                Grid.Row="1"
+                                Margin="0,0,0,0"
+                                HorizontalOptions="FillAndExpand"
+                                IsVisible="{Binding Comment.IsReplyVisible}"
+                                MinimumHeightRequest="30"
+                                Orientation="Horizontal"
+                                Spacing="5">
+                                <Editor
+                                    x:Name="ReplyEntry"
+                                    AutoSize="TextChanges"
+                                    HorizontalOptions="Start"
+                                    MinimumWidthRequest="400"
+                                    Placeholder="Write a reply"
+                                    VerticalOptions="StartAndExpand" />
+                                <Label
+                                    x:Name="Id"
+                                    IsVisible="false"
+                                    Text="{Binding Comment.Id}" />
+                                <ImageButton
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommand}"
+                                    HorizontalOptions="Center"
+                                    Source="{mi:FluentFilled Send20Filled,
+                                                             IconAutoScaling=True,
+                                                             IconSize=17}">
+                                    <ImageButton.CommandParameter>
+                                        <local:ReplyCommandParameter Comment="{Binding Source={x:Reference Id}, Path=Text}" ReplyText="{Binding Source={x:Reference ReplyEntry}, Path=Text}" />
+                                    </ImageButton.CommandParameter>
+                                </ImageButton>
+                            </StackLayout>
+                        </Grid>
+                    </Frame>
+                </ContentView>
+            </CollectionView.Header>
+        </CollectionView>
+    </Grid>
+
 </ContentPage>

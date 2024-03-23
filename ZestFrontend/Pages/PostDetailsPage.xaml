@@ -15,7 +15,7 @@
     BackgroundColor="GhostWhite">
 
     <Shell.BackButtonBehavior>
-        <BackButtonBehavior Command="{Binding GoBackCommand}"/>
+        <BackButtonBehavior Command="{Binding GoBackCommand}" />
     </Shell.BackButtonBehavior>
     <ContentPage.Resources>
         <local:LikeButtonsColorConverter x:Key="LikeButtonColorConverter" />
@@ -38,7 +38,7 @@
                         HorizontalOptions="FillAndExpand">
 
                         <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=GoToCommentDetailPageCommand}" CommandParameter="{Binding .}" />
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=GoToCommentDetailPageCommand}" CommandParameter="{Binding .}" />
                         </Frame.GestureRecognizers>
 
                         <Grid Padding="{OnIdiom Phone=0, Desktop=-10}" RowSpacing="1">

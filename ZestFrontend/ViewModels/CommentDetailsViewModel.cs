@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml.Linq;
 using ZestFrontend.DTOs;
+using ZestFrontend.Pages;
 using ZestFrontend.Parameters;
 using ZestFrontend.Partial;
 using ZestFrontend.Services;
@@ -31,11 +32,16 @@ namespace ZestFrontend.ViewModels
 		}
         [ObservableProperty]
         CommentDTO comment;
-
+		public ObservableCollection<CommentDTO> Replies { get; private set; } = new();
 		public ICommand ReplyCommand { get; }
 		async partial void OnCommentChanged(CommentDTO value)
 		{
-			Comment = await _commentService.GetSingleComment(Comment.Id);
+			Replies.Clear();
+			var comment = await _commentService.GetSingleComment(Comment.Id);
+			foreach (var item in comment.Replies)
+			{
+				Replies.Add(item);
+			}
 		}
 		public async Task IsOwner(IEnumerable<CommentDTO> comments, int level)
 		{
@@ -94,6 +100,18 @@ namespace ZestFrontend.ViewModels
 		async Task ReplyCommentAsync(CommentDTO comment)
 		{
 			comment.IsReplyVisible = !comment.IsReplyVisible;
+
+		}
+		[RelayCommand]
+		async Task GoToCommentDetailPageAsync(CommentDTO comment)
+		{
+			if (comment == null) return;
+
+			await Shell.Current.GoToAsync($"{nameof(CommentDetailsPage)}?id={comment.Id}", true,
+				new Dictionary<string, object>
+			{
+			{"Comment", comment }
+			});
 
 		}
 
