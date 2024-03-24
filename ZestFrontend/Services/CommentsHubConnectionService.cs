@@ -41,6 +41,12 @@ namespace ZestFrontend.Services
 		private async Task StartConnections()
 		{
 			await _commentsConnection.StartAsync();
+			_commentsConnection.Closed +=_commentsConnection_Closed;
+		}
+
+		private async Task _commentsConnection_Closed(Exception arg)
+		{
+			await _commentsConnection.StartAsync();
 		}
 	}
 }

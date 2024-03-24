@@ -193,11 +193,13 @@
                                 BackgroundColor="GhostWhite"
                                 BorderColor="Transparent"
                                 CornerRadius="0">
+
                                 <Frame.GestureRecognizers>
                                     <PointerGestureRecognizer
                                         PointerEntered="OnPointerEntered"
                                         PointerExited="OnPointerExited"
                                         PointerMoved="OnPointerMoved" />
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:NavigationViewModel}}, Path=GoToCommunityDetailPageCommand}" CommandParameter="{Binding .}" />
                                 </Frame.GestureRecognizers>
 
                                 <Label Text="{Binding Name}" />

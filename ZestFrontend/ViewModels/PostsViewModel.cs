@@ -25,10 +25,10 @@ namespace ZestFrontend.ViewModels
 		AuthService authService;
 		SignalRConnectionService _signalRConnectionService;
 		CommunityService _communityService;
-
+		CommentsHubConnectionService _commentHubConnectionService;
 		private Task InitTask;
 		PostsFilterOptions _filter;
-		public PostsViewModel(PostsService postsService, LikesService service, LikesHubConnectionService likesHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService, CommunityService communityService)
+		public PostsViewModel(PostsService postsService, LikesService service, LikesHubConnectionService likesHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService, CommunityService communityService, CommentsHubConnectionService commentHubConnectionService)
 		{
 
 			this.postsService = postsService;
@@ -39,7 +39,7 @@ namespace ZestFrontend.ViewModels
 			_signalRConnectionService = signalRConnectionService;
 			_filter = PostsFilterOptions.None;
 			InitTask = Init();
-
+			_commentHubConnectionService=commentHubConnectionService;
 		}
 
 		private async Task Init()
@@ -47,7 +47,9 @@ namespace ZestFrontend.ViewModels
 			await GetPosts();
 
 			await this.connection.Init();
+			await this._commentHubConnectionService.Init();
 			connection.LikesConnection.On<int>("PostLiked", UpdatePost);
+			_commentHubConnectionService.CommentsConnection.On<int>("PostDeleted", UpdatePost);
 		}
 
 		[ObservableProperty]
@@ -71,6 +73,8 @@ namespace ZestFrontend.ViewModels
 				post.Likes = updatedPost.Likes;
 				post.Dislikes = updatedPost.Dislikes;
 				post.Like = updatedPost.Like;
+				post.Title = updatedPost.Title;
+				post.Text = updatedPost.Text;
 			}
 		}
 		public async Task GetPosts()

@@ -38,8 +38,12 @@ namespace ZestFrontend.Services
 		private async Task StartConnections()
 		{
 			await _likesConnection.StartAsync();
+			_likesConnection.Closed += _likesConnection_Closed;
 		}
 
-		
+		private async Task _likesConnection_Closed(Exception arg)
+		{
+			await _likesConnection.StartAsync();
+		}
 	}
 }

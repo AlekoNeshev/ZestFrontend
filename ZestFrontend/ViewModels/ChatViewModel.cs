@@ -37,7 +37,11 @@ namespace ZestFrontend.ViewModels
 			
 			await this.hubConnection.Init();
 			hubConnection.MessageConnection.On<int>("MessageSent", (id) => GetSingleMessage(id));
+			
 		}
+
+		
+
 		public ObservableCollection<MessageDTO> Messages { get; private set; } = new();
 		[ObservableProperty]
 		FollowerDTO follower;

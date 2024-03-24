@@ -41,6 +41,12 @@ namespace ZestFrontend.Services
 		private async Task StartConnections()
 		{
 			await _messageConnection.StartAsync();
+			_messageConnection.Closed += _messageConnection_Closed;
+		}
+
+		private async Task _messageConnection_Closed(Exception arg)
+		{
+			await _messageConnection.StartAsync();
 		}
 	}
 }

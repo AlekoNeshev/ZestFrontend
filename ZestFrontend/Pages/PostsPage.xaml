@@ -224,7 +224,7 @@
                                                 <ColumnDefinition />
                                                 <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
-                                            <Label FontAttributes="Italic" Text="{Binding Publisher}" />
+                                            <Label FontAttributes="Italic" Text="{Binding CommunityName}" />
                                             <Label
                                                 Grid.Row="1"
                                                 Grid.Column="0"

@@ -1,16 +1,9 @@
-﻿using CommunityToolkit.Maui.Views;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MauiIcons.Core;
 using Microsoft.AspNetCore.SignalR.Client;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using ZestFrontend.DTOs;
 using ZestFrontend.Pages;
@@ -49,8 +42,9 @@ namespace ZestFrontend.ViewModels
 		private async Task Init()
 		{
 			
-			await this._commentHubConnectionService.Init();
-			_commentHubConnectionService.CommentsConnection.On("CommentPosted", GetComments);
+			
+			_commentHubConnectionService.CommentsConnection.On<int>("CommentDeleted", UpdateComment);
+			
 			_likesHubConnectionService.LikesConnection.On<int>("CommentLiked", UpdateComment);
 
 		}
@@ -115,8 +109,8 @@ namespace ZestFrontend.ViewModels
 		async Task DeletePostAsync()
 		{
 			var response = await _postsService.DeletePost(Post.Id);
-			var content = await response.Content.ReadAsStringAsync();
-			UpdateComment(int.Parse(content));
+			
+			
 		}
 
 		public async Task GetComments()
@@ -264,6 +258,7 @@ namespace ZestFrontend.ViewModels
 
 			return null; 
 		}
+		
 		public async void UpdateComment(int id)
 		{
 			var updatedComment = await _commentService.GetSingleComment(id);
@@ -271,6 +266,8 @@ namespace ZestFrontend.ViewModels
 			comment.Likes = updatedComment.Likes;
 			comment.Dislikes = updatedComment.Dislikes;
 			comment.Like = updatedComment.Like;
+			comment.Text = updatedComment.Text;
+			comment.Publisher = updatedComment.Publisher;
 		}
 		public async void AddComment(int id)
 		{
@@ -350,7 +347,7 @@ namespace ZestFrontend.ViewModels
 			if (TaskInit is not null && !TaskInit.IsCompleted) await TaskInit;
 			
 			await _signalRConnectionService.AddConnectionToGroup(_likesHubConnectionService.LikesConnection.ConnectionId, new string[] { $"pd-{Post.Id}", Post.Id.ToString() });
-			await _signalRConnectionService.AddConnectionToGroup(_commentHubConnectionService.CommentsConnection.ConnectionId, new string[] { $"message-{Post.Id}" });
+			await _signalRConnectionService.AddConnectionToGroup(_commentHubConnectionService.CommentsConnection.ConnectionId, new string[] { $"comment-{Post.Id}" });
 		}
 		public async Task OnNavigatedFrom()
 		{

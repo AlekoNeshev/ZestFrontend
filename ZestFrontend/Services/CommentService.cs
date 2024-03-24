@@ -51,7 +51,15 @@ namespace ZestFrontend.Services
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadFromJsonAsync<CommentDTO>();
+                var result =  await response.Content.ReadFromJsonAsync<CommentDTO>();
+                if(result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
             }
             else
                 return null;

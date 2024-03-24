@@ -30,10 +30,14 @@ namespace ZestFrontend.ViewModels
 			_likesService = likesService;
 			ReplyCommand = new ReplyCommand(ExecuteReplyCommand);
 		}
+
+		
         [ObservableProperty]
         CommentDTO comment;
 		public ObservableCollection<CommentDTO> Replies { get; private set; } = new();
 		public ICommand ReplyCommand { get; }
+
+		
 		async partial void OnCommentChanged(CommentDTO value)
 		{
 			Replies.Clear();
@@ -42,6 +46,7 @@ namespace ZestFrontend.ViewModels
 			{
 				Replies.Add(item);
 			}
+		
 		}
 		public async Task IsOwner(IEnumerable<CommentDTO> comments, int level)
 		{
@@ -106,7 +111,7 @@ namespace ZestFrontend.ViewModels
 		async Task GoToCommentDetailPageAsync(CommentDTO comment)
 		{
 			if (comment == null) return;
-
+			
 			await Shell.Current.GoToAsync($"{nameof(CommentDetailsPage)}?id={comment.Id}", true,
 				new Dictionary<string, object>
 			{
@@ -171,5 +176,6 @@ namespace ZestFrontend.ViewModels
 
 		}
 
+		
 	}
 }

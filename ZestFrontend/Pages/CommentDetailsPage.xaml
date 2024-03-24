@@ -10,6 +10,7 @@
     Title="CommentDetailsPage"
     x:DataType="viewmodel:CommentDetailsViewModel"
     BackgroundColor="GhostWhite">
+   
     <ContentPage.Resources>
         <local:LikeButtonsColorConverter x:Key="LikeButtonColorConverter" />
         <local:DislikeButtonColorConverter x:Key="DislikeButtonColorConverter" />
