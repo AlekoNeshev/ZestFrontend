@@ -39,8 +39,15 @@
             <CollectionView
                 x:Name="Messages"
                 Grid.Row="1"
+                IsGrouped="True"
                 ItemsSource="{Binding Messages}"
                 ItemsUpdatingScrollMode="KeepScrollOffset">
+                <CollectionView.GroupHeaderTemplate>
+                    <DataTemplate x:DataType="model:MessageGroup">
+                        <Label HorizontalOptions="Start" Text="{Binding Date, StringFormat='{0:MMMM dd, yyyy}'}" />
+                    </DataTemplate>
+
+                </CollectionView.GroupHeaderTemplate>
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:MessageDTO">

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ZestFrontend.DTOs;
 using ZestFrontend.Services;
@@ -36,13 +37,14 @@ namespace ZestFrontend.ViewModels
 		{
 			
 			await this.hubConnection.Init();
-			hubConnection.MessageConnection.On<int>("MessageSent", (id) => GetSingleMessage(id));
+			//hubConnection.MessageConnection.On<int>("MessageSent", (id) => GetSingleMessage(id));
 			
 		}
 
 		
 
-		public ObservableCollection<MessageDTO> Messages { get; private set; } = new();
+		public ObservableCollection<MessageGroup> Messages { get; private set; } = new();
+		
 		[ObservableProperty]
 		FollowerDTO follower;
 		[ObservableProperty]
@@ -57,13 +59,22 @@ namespace ZestFrontend.ViewModels
 			}
 			else
 			{
-				lastDate = Messages.First().CreatedOn;
+				lastDate = Messages.First().FirstOrDefault().CreatedOn;
 			}
 			var p = await messageService.GetMessages(Follower.FollowerId, lastDate, 40);
-			foreach (var item in p.Reverse())
+			
+			var groups = p.GroupBy(m => m.CreatedOn.Date);
+			foreach (var item in groups.Reverse())
 			{
-				item.IsOwner = item.SenderUsername == authService.Username;
-				Messages.Add(item);
+				var messageGroup = new MessageGroup { Date = item.Key };
+
+				foreach (var message in item)
+				{
+					messageGroup.Add(message);
+					message.IsOwner = message.SenderUsername == authService.Username;
+				}
+				Messages.Add(messageGroup);
+
 			}
 		}
 		async partial void OnFollowerChanged(FollowerDTO value)
@@ -126,10 +137,10 @@ namespace ZestFrontend.ViewModels
 			var message = await messageService.FindById(messageId);
 			message.IsOwner = message.SenderUsername == authService.Username;
 
-			Messages.Add(message);
+			Messages.LastOrDefault().Add(message);
 			Thread.SpinWait(5000);
 			OnNewMessageReceived();
-			
+
 		}
 		public async Task LoadMoreMessages()
 		{
@@ -141,14 +152,33 @@ namespace ZestFrontend.ViewModels
 			}
 			else
 			{
-				lastDate = Messages.First().CreatedOn;
+				lastDate = Messages.First().FirstOrDefault().CreatedOn;
 			}
 			var p = await messageService.GetMessages(Follower.FollowerId, lastDate, 40);
-			
+			var groups = p.GroupBy(m => m.CreatedOn.Date);
+			foreach (var item in groups.Reverse())
+			{
+				var messageGroup = new MessageGroup { Date = item.Key };
+				if (Messages.Contains(messageGroup))
+				{
+					var group = Messages.FirstOrDefault(messageGroup);
+					foreach (var message in item)
+					{
+						group.Insert(0, message);
+					}
+				}
+				foreach (var message in item)
+				{
+					messageGroup.Add(message);
+					message.IsOwner = message.SenderUsername == authService.Username;
+				}
+				Messages.Insert(0, messageGroup);
+
+			}
 			foreach (var item in p)
 			{
 				item.IsOwner = item.SenderUsername == authService.Username;
-				Messages.Insert(0,item);
+				//Messages.Insert(0,item);
 			}
 			IsLoadingMessages = false;
 		}
