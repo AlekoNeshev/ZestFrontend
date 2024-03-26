@@ -12,10 +12,13 @@ public partial class CommunityDetailsPage : ContentPage
 		BindingContext = viewModel;
 		_viewModel = viewModel;
 		InitializeComponent();
-		var nav = serviceProvider.GetRequiredService<NavigationView>();
-		nav.RowSpan(4);
-		Grid.SetRow(nav, 1);
-		MyGrid.Children.Add(nav);
+		if (Device.RuntimePlatform == Device.WinUI)
+		{
+			var nav = serviceProvider.GetRequiredService<NavigationView>();
+			nav.RowSpan(4);
+			Grid.SetRow(nav, 1);
+			MyGrid.Children.Add(nav);
+		}
 	}
 	async protected override void OnNavigatedTo(NavigatedToEventArgs args)
 	{

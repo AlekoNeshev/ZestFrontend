@@ -6,8 +6,9 @@
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="AddCommunityPage"
-    x:DataType="viewmodel:AddCommunityViewModel">
-    <Grid>
+    x:DataType="viewmodel:AddCommunityViewModel"
+    BackgroundColor="GhostWhite">
+    <Grid x:Name="MyGrid" Padding="0,64">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
             <ColumnDefinition Width="{OnIdiom Phone=*, Tablet=2*, Desktop=3*}" />

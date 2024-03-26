@@ -10,7 +10,10 @@ public partial class UserDetailsPage : ContentPage
 	{
 		BindingContext = userDetailsViewModel;
 		InitializeComponent();
-		var nav = serviceProvider.GetRequiredService<NavigationView>();
-		MyGrid.Children.Add(nav);
+		if (Device.RuntimePlatform == Device.WinUI)
+		{
+			var nav = serviceProvider.GetRequiredService<NavigationView>();
+			MyGrid.Children.Add(nav);
+		}
+		}
 	}
-}

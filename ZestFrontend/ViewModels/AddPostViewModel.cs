@@ -19,17 +19,17 @@ namespace ZestFrontend.ViewModels
 	[QueryProperty(nameof(Community), "Community")]
 	public partial class AddPostViewModel : ObservableObject
 	{
-		PostsService postsService;
-		AuthService authService;
-		List<FileResult> fileResult10;
-		MediaService mediaService;
+		PostsService _postsService;
+		AuthService _authService;
+		List<FileResult> _fileResult10;
+		MediaService _mediaService;
 		
 		public AddPostViewModel(PostsService postsService , MediaService mediaService, AuthService authService)
         {
-            this.postsService = postsService;
-			this.authService = authService;
-			this.mediaService = mediaService;
-			fileResult10 = new List<FileResult>();
+            this._postsService = postsService;
+			this._authService = authService;
+			this._mediaService = mediaService;
+			_fileResult10 = new List<FileResult>();
 			
 		}
 
@@ -48,9 +48,9 @@ namespace ZestFrontend.ViewModels
 			{
 				return;
 			}
-			var response = await postsService.AddPost(Title, Content, Community.Id);
+			var response = await _postsService.AddPost(Title, Content, Community.Id);
 			var content = await response.Content.ReadAsStringAsync();
-			var imageResponse = await mediaService.UploadImage(int.Parse(content), fileResult10.ToArray());
+			var imageResponse = await _mediaService.UploadImage(int.Parse(content), _fileResult10.ToArray());
 			if (response.IsSuccessStatusCode && imageResponse.IsSuccessStatusCode) 
 			{
 				await Shell.Current.GoToAsync($"{nameof(CommunityDetailsPage)}?id={Community.Name}", true,
@@ -64,7 +64,7 @@ namespace ZestFrontend.ViewModels
 		 async Task SelectVideoClicked()
 		{
 			Images.Clear();
-			fileResult10.Clear();
+			_fileResult10.Clear();
 			var pickOptions = new PickOptions
 			{
 				PickerTitle = "Select videos",
@@ -74,7 +74,7 @@ namespace ZestFrontend.ViewModels
 			if (fileResult1 != null)
 			{
 				fileResult1.ContentType = MimeTypesMap.GetMimeType(fileResult1.FileName);
-				fileResult10 .Add(new FileResult(fileResult1));
+				_fileResult10 .Add(new FileResult(fileResult1));
 			
 				/*fileResult.
 				fileResult = fileResult1;
@@ -86,7 +86,7 @@ namespace ZestFrontend.ViewModels
 		async Task SelectImageClicked()
 		{
 			Images.Clear();
-			fileResult10.Clear();
+			_fileResult10.Clear();
 			var pickOptions = new PickOptions
 			{
 				PickerTitle = "Select images",
@@ -101,7 +101,7 @@ namespace ZestFrontend.ViewModels
 				foreach (var fileResult in fileResults)
 				{
 					fileResult.ContentType = MimeTypesMap.GetMimeType(fileResult.FileName);
-					fileResult10.Add (new FileResult(fileResult));
+					_fileResult10.Add (new FileResult(fileResult));
 					
 					Images.Add(fileResult.FileName);
 				}

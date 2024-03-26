@@ -13,29 +13,29 @@ namespace ZestFrontend.ViewModels
 {
     public partial class AccountViewModel : ObservableObject
     {
-        AccountService service;
-        AuthService authService;
+        AccountService _accountService;
+        AuthService _authService;
         public AccountViewModel(AccountService service, AuthService authService)
         {
-            this.service = service;
-            this.authService = authService;
+            this._accountService = service;
+            this._authService = authService;
             GetAccountDetails();
         }
         [ObservableProperty]
         AccountDTO account;
         public async void GetAccountDetails()
         {
-            Account = await service.GetCurrentAccount(authService.Token);
+            Account = await _accountService.GetCurrentAccount(_authService.Token);
         }
         [RelayCommand]
         async Task LogoutAsync()
         {
             try
             {
-                  await authService.LogoutAsync();
-                authService.Token ="";
-                authService.Username = "";
-                authService.Id = "";
+                  await _authService.LogoutAsync();
+                _authService.Token ="";
+                _authService.Username = "";
+                _authService.Id = "";
 				await Shell.Current.GoToAsync($"{nameof(MainPage)}");
 			}
             catch (Exception ex)

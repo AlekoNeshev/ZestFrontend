@@ -14,12 +14,10 @@ namespace ZestFrontend.ViewModels
 	[QueryProperty(nameof(User), "User")]
 	public partial class UserDetailsViewModel : ObservableObject
 	{
-		FollowersService followersService;
-		AuthService authService;
-        public UserDetailsViewModel(FollowersService followersService, AuthService authService)
+		FollowersService _followersService;
+        public UserDetailsViewModel(FollowersService followersService)
         { 
-            this.followersService = followersService;
-			this.authService = authService;
+            this._followersService = followersService;
         }
         [ObservableProperty]
         UserDTO user;
@@ -42,7 +40,7 @@ namespace ZestFrontend.ViewModels
 			if (User.IsFollowed)
 			{
 
-				var result = await followersService.Unfollow(User.Id);
+				var result = await _followersService.Unfollow(User.Id);
 				if (result.StatusCode == HttpStatusCode.OK)
 				{
 					ButtonText = "Follow";
@@ -52,7 +50,7 @@ namespace ZestFrontend.ViewModels
 			else
 			{
 
-				var result = await followersService.Follow(User.Id);
+				var result = await _followersService.Follow(User.Id);
 				if (result.IsSuccessStatusCode)
 				{
 					ButtonText = "Unfollow";

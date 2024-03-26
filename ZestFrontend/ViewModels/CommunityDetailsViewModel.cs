@@ -19,20 +19,20 @@ namespace ZestFrontend.ViewModels
     [QueryProperty(nameof(Community), "Community")]
     public partial class CommunityDetailsViewModel : ObservableObject
     {
-        CommunityService communityService;
-        PostsService postsService;
-		LikesService likesService;
-		AuthService authService;
+        CommunityService _communityService;
+        PostsService _postsService;
+		LikesService _likesService;
+		AuthService _authService;
 		SignalRConnectionService _signalRConnectionService;
 		LikesHubConnectionService connection;
 		private Task InitTask;
 		PostsFilterOptions _filter;
 		public CommunityDetailsViewModel(CommunityService communityService, PostsService postsService, LikesService likesService, AuthService authService, LikesHubConnectionService likesHubConnectionService, SignalRConnectionService signalRConnectionService)
 		{ 
-			this.communityService = communityService;
-			this.postsService = postsService;
-			this.likesService=likesService;
-			this.authService=authService;
+			this._communityService = communityService;
+			this._postsService = postsService;
+			this._likesService=likesService;
+			this._authService=authService;
 			this.connection = likesHubConnectionService;
 			_signalRConnectionService = signalRConnectionService;
 			_filter = PostsFilterOptions.None;
@@ -46,7 +46,7 @@ namespace ZestFrontend.ViewModels
 
 		public async void UpdatePost(int id)
 		{
-			var updatedPost = await postsService.GetSinglePost(id);
+			var updatedPost = await _postsService.GetSinglePost(id);
 			var post = Posts.Where(x => x.Id==id).FirstOrDefault();
 			if(post != null)
 			{
@@ -75,16 +75,16 @@ namespace ZestFrontend.ViewModels
 			if (postDTO.Like == null)
 			{
 
-				await likesService.Like(postDTO.Id, 0, false);
+				await _likesService.Like(postDTO.Id, 0, false);
 			}
 			else if (postDTO.Like.Value == false)
 			{
-				await likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
+				await _likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
 			}
 			else if (postDTO.Like.Value == true)
 			{
-				await likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
-				await likesService.Like(postDTO.Id, 0, false);
+				await _likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
+				await _likesService.Like(postDTO.Id, 0, false);
 			}
 		}
 		[RelayCommand]
@@ -93,22 +93,22 @@ namespace ZestFrontend.ViewModels
 			if (postDTO.Like == null)
 			{
 
-				await likesService.Like(postDTO.Id, 0, true);
+				await _likesService.Like(postDTO.Id, 0, true);
 			}
 			else if (postDTO.Like.Value == true)
 			{
-				await likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
+				await _likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
 			}
 			else if (postDTO.Like.Value == false)
 			{
-				await likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
-				await likesService.Like(postDTO.Id, 0, true);
+				await _likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
+				await _likesService.Like(postDTO.Id, 0, true);
 			}
 		}
 		[RelayCommand]
 		async Task DeletePostAsync(PostDTO postDTO)
 		{
-			await postsService.DeletePost(postDTO.Id);
+			await _postsService.DeletePost(postDTO.Id);
 		}
 		public async Task GetPosts()
 		{
@@ -122,9 +122,9 @@ namespace ZestFrontend.ViewModels
 			{
 				lastDate = Posts.Last().PostedOn;
 			}
-			foreach (var post in await postsService.GetPosts(lastDate, Community.Id, 10))
+			foreach (var post in await _postsService.GetPosts(lastDate, Community.Id, 10))
 			{
-				post.IsOwner = post.Publisher == authService.Username;
+				post.IsOwner = post.Publisher == _authService.Username;
 				Posts.Add(post);
 			}
 			_filter = PostsFilterOptions.Last;
@@ -135,9 +135,9 @@ namespace ZestFrontend.ViewModels
 			var skipIds = Posts.Select(x => x.Id).ToArray();
 
 
-			foreach (var post in await postsService.GetTrendingPostsAsync(50, Community.Id, skipIds))
+			foreach (var post in await _postsService.GetTrendingPostsAsync(50, Community.Id, skipIds))
 			{
-				post.IsOwner = post.Publisher == authService.Username;
+				post.IsOwner = post.Publisher == _authService.Username;
 				Posts.Add(post);
 			}
 			_filter = PostsFilterOptions.Trending;
@@ -162,7 +162,7 @@ namespace ZestFrontend.ViewModels
 			if (Community.IsSubscribed)
 			{
 				
-				var result = await communityService.Unfollow(Community.Id);
+				var result = await _communityService.Unfollow(Community.Id);
 				if (result.StatusCode == HttpStatusCode.OK)
 				{
 					ButtonText = "Follow";
@@ -172,7 +172,7 @@ namespace ZestFrontend.ViewModels
 			else
 			{
 
-				var result = await communityService.Follow(Community.Id);
+				var result = await _communityService.Follow(Community.Id);
 				if (result.IsSuccessStatusCode)
 				{
 					ButtonText = "Unfollow";

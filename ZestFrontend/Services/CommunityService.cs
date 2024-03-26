@@ -46,6 +46,18 @@ namespace ZestFrontend.Services
 			else
 				return null;
 		}
+		public async Task<List<CommunityDTO>> GetCommunitiesBySearch(string text)
+		{
+			var url = $"{PortConst.Port_Forward_Http}/api/Community/getBySearch/{text}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
+			var response = await _httpClient.GetAsync(url);
+			if (response.IsSuccessStatusCode)
+			{
+				return await response.Content.ReadFromJsonAsync<List<CommunityDTO>>();
+			}
+			else
+				return null;
+		}
 		public async Task<HttpResponseMessage> Follow(int communityId)       
         {
 			var url = $"{PortConst.Port_Forward_Http}/api/CommunityFollowers/account/add/community/{communityId}";

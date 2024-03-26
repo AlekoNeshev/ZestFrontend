@@ -16,28 +16,28 @@ namespace ZestFrontend.ViewModels
 	[QueryProperty(nameof(Follower), "Follower")]
 	public partial class ChatViewModel : ObservableObject
 	{
-        MessageService messageService;
-		AuthService authService;
-		MessageHubConnectionService hubConnection;
-		SignalRConnectionService signalRConnectionService;
+        MessageService _messageService;
+		AuthService _authService;
+		MessageHubConnectionService _messageHubConnection;
+		SignalRConnectionService _signalRConnectionService;
 		public event EventHandler NewMessageReceived;
 		public event EventHandler OnOpenScreen;
 		private Task InitTask;
 		
         public ChatViewModel(MessageService messageService, MessageHubConnectionService messageHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService)
         {
-            this.messageService = messageService;
-			this.authService = authService;
-			hubConnection = messageHubConnectionService;
-			this.signalRConnectionService = signalRConnectionService;
+            this._messageService = messageService;
+			this._authService = authService;
+			_messageHubConnection = messageHubConnectionService;
+			this._signalRConnectionService = signalRConnectionService;
 			InitTask = Init();
 			
 		}
 		private async Task Init()
 		{
 			
-			await this.hubConnection.Init();
-			hubConnection.MessageConnection.On<int>("MessageSent", (id) => GetSingleMessage(id));
+			await this._messageHubConnection.Init();
+			_messageHubConnection.MessageConnection.On<int>("MessageSent", (id) => GetSingleMessage(id));
 			
 		}
 
@@ -61,7 +61,7 @@ namespace ZestFrontend.ViewModels
 			{
 				lastDate = Messages.First().FirstOrDefault().CreatedOn;
 			}
-			var p = await messageService.GetMessages(Follower.FollowerId, lastDate, 40);
+			var p = await _messageService.GetMessages(Follower.FollowerId, lastDate, 40);
 			
 			var groups = p.GroupBy(m => m.CreatedOn.Date);
 			foreach (var item in groups.Reverse())
@@ -71,7 +71,7 @@ namespace ZestFrontend.ViewModels
 				foreach (var message in item.OrderBy(x => x.CreatedOn))
 				{
 					messageGroup.Add(message);
-					message.IsOwner = message.SenderUsername == authService.Username;
+					message.IsOwner = message.SenderUsername == _authService.Username;
 				}
 				Messages.Add(messageGroup);
 
@@ -89,7 +89,7 @@ namespace ZestFrontend.ViewModels
 			{
 				lastDate = Messages.First().FirstOrDefault().CreatedOn;
 			}
-			var p = await messageService.GetMessages(Follower.FollowerId, lastDate, 40);
+			var p = await _messageService.GetMessages(Follower.FollowerId, lastDate, 40);
 			var groups = p.GroupBy(m => m.CreatedOn.Date);
 			foreach (var item in groups)
 			{
@@ -100,7 +100,7 @@ namespace ZestFrontend.ViewModels
 
 					foreach (var message in item.OrderByDescending(x => x.CreatedOn))
 					{
-						message.IsOwner = message.SenderUsername == authService.Username;
+						message.IsOwner = message.SenderUsername == _authService.Username;
 						group.Insert(0, message);
 					}
 				}
@@ -109,7 +109,7 @@ namespace ZestFrontend.ViewModels
 
 					foreach (var message in item.OrderBy(x => x.CreatedOn))
 					{
-						message.IsOwner = message.SenderUsername == authService.Username;
+						message.IsOwner = message.SenderUsername == _authService.Username;
 						messageGroup.Add(message);
 					}
 					Messages.Insert(0, messageGroup);
@@ -129,45 +129,45 @@ namespace ZestFrontend.ViewModels
 		public async void OnNavigatedTo()
 		{
 			if (InitTask is not null && !InitTask.IsCompleted) await InitTask;
-			int comparisonResult = string.Compare(authService.Id, Follower.FollowerId);
+			int comparisonResult = string.Compare(_authService.Id, Follower.FollowerId);
 			string firstHubId, secondHubId;
 
 			if (comparisonResult >= 0)
 			{
-				firstHubId = authService.Id;
+				firstHubId = _authService.Id;
 				secondHubId = Follower.FollowerId;
 			}
 			else
 			{
 				firstHubId = Follower.FollowerId;
-				secondHubId = authService.Id;
+				secondHubId = _authService.Id;
 			}
 			
-			await signalRConnectionService.AddConnectionToGroup(hubConnection.MessageConnection.ConnectionId, new string[] { $"chat-{firstHubId}{secondHubId}" });
+			await _signalRConnectionService.AddConnectionToGroup(_messageHubConnection.MessageConnection.ConnectionId, new string[] { $"chat-{firstHubId}{secondHubId}" });
 		}
 		public async void OnNavigatedFrom()
 		{
-			int comparisonResult = string.Compare(authService.Id, Follower.FollowerId);
+			int comparisonResult = string.Compare(_authService.Id, Follower.FollowerId);
 			string firstHubId, secondHubId;
 
 			if (comparisonResult >= 0)
 			{
-				firstHubId = authService.Id;
+				firstHubId = _authService.Id;
 				secondHubId = Follower.FollowerId;
 			}
 			else
 			{
 				firstHubId = Follower.FollowerId;
-				secondHubId = authService.Id;
+				secondHubId = _authService.Id;
 			}
 
-			await signalRConnectionService.RemoveConnectionToGroup(hubConnection.MessageConnection.ConnectionId);
+			await _signalRConnectionService.RemoveConnectionToGroup(_messageHubConnection.MessageConnection.ConnectionId);
 			
 		}
 		[RelayCommand]
 		async Task SendAsync(string text)
 		{
-			await messageService.SendMessage(Follower.FollowerId, text);
+			await _messageService.SendMessage(Follower.FollowerId, text);
 		}
 		[RelayCommand]
 		async Task GetMoreMessagesAsync()
@@ -176,8 +176,8 @@ namespace ZestFrontend.ViewModels
 		}
 		public async void GetSingleMessage(int messageId)
 		{
-			var message = await messageService.FindById(messageId);
-			message.IsOwner = message.SenderUsername == authService.Username;
+			var message = await _messageService.FindById(messageId);
+			message.IsOwner = message.SenderUsername == _authService.Username;
 			if(Messages.LastOrDefault().Date.Date == message.CreatedOn.Date)
 			{
 				Messages.LastOrDefault().Add(message);

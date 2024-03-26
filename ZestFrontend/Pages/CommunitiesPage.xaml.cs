@@ -9,9 +9,12 @@ public partial class CommunitiesPage : ContentPage
 	{
 		BindingContext = viewModel;
 		InitializeComponent();
-		var nav = serviceProvider.GetRequiredService<NavigationView>();
-		Grid.SetRow(nav, 1);
-		MyGrid.Children.Add(nav);
+		if (Device.RuntimePlatform == Device.WinUI)
+		{
+			var nav = serviceProvider.GetRequiredService<NavigationView>();
+			Grid.SetRow(nav, 1);
+			MyGrid.Children.Add(nav);
+		}
 	}
 	private void ImageButton_Clicked(object sender, EventArgs e)
 	{

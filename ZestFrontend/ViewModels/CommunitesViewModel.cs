@@ -14,13 +14,13 @@ namespace ZestFrontend.ViewModels
 {
     public partial class CommunitesViewModel : ObservableObject
     {
-        CommunityService communityService;
-        AuthService authService;
+        CommunityService _communityService;
+        AuthService _authService;
 		CommunitiesFilterOptions _filter;
 		public CommunitesViewModel(CommunityService communityService, AuthService authService) 
         { 
-            this.communityService = communityService;
-            this.authService = authService;
+            this._communityService = communityService;
+            this._authService = authService;
             _filter = CommunitiesFilterOptions.Popular;
             GetCommunities();
         }
@@ -35,7 +35,7 @@ namespace ZestFrontend.ViewModels
             if (_filter != CommunitiesFilterOptions.All)
             {
 
-                foreach (var item in await communityService.GetCommunities())
+                foreach (var item in await _communityService.GetCommunities())
                 {
                     Communities.Add(item);
 
@@ -43,6 +43,19 @@ namespace ZestFrontend.ViewModels
                 _filter = CommunitiesFilterOptions.All;
             }
         }
+		public async Task GetCommunitiesBySearchAsync(string text)
+		{
+			Communities.Clear();
+			
+
+				foreach (var item in await _communityService.GetCommunitiesBySearch(text))
+				{
+					Communities.Add(item);
+
+				}
+				
+			
+		}
 		public async void GetPopularCommunities()
 		{
             
@@ -52,7 +65,7 @@ namespace ZestFrontend.ViewModels
 			{
 
 
-				foreach (var item in await communityService.GetTrendingCommunitiesAsync(50, skipIds))
+				foreach (var item in await _communityService.GetTrendingCommunitiesAsync(50, skipIds))
 				{
 					Communities.Add(item);
 
@@ -90,6 +103,11 @@ namespace ZestFrontend.ViewModels
         async Task GetPopularComsAsync()
         {
             GetPopularCommunities();
+        }
+        [RelayCommand]
+        async Task SearchCommunitiesAsync(string text)
+        {
+            await GetCommunitiesBySearchAsync(text);
         }
 	}
 }

@@ -1,4 +1,5 @@
 
+using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.DependencyInjection;
 using ZestFrontend.ViewModels;
 using ZestFrontend.Views;
@@ -11,9 +12,11 @@ public partial class CommentDetailsPage : ContentPage
 	{
 		BindingContext = commentDetailsViewModel;
 		InitializeComponent();
-		var nav = serviceProvider.GetRequiredService<NavigationView>();
-
-		
-		MyGrid.Children.Add(nav);
+		if (Device.RuntimePlatform == Device.WinUI)
+		{
+			var nav = serviceProvider.GetRequiredService<NavigationView>();
+			nav.Padding(0, 64);
+			MyGrid.Children.Add(nav);
+		}
 	}
 }

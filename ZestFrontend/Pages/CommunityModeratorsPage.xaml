@@ -6,7 +6,8 @@
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="CommunityModeratorsViewModel"
-    x:DataType="viewmodel:CommunityModeratorsViewModel">
+    x:DataType="viewmodel:CommunityModeratorsViewModel"
+    BackgroundColor="GhostWhite">
     <Grid>
         <VerticalStackLayout>
             <Label

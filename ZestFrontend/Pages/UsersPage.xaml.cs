@@ -11,13 +11,12 @@ public partial class UsersPage : ContentPage
 		BindingContext = usersViewModel;
 		this.viewModel = usersViewModel;
 		InitializeComponent();
-		var nav = serviceProvider.GetRequiredService<NavigationView>();
-		Grid.SetRow(nav, 1);
-		MyGrid.Children.Add(nav);
+		if (Device.RuntimePlatform == Device.WinUI)
+		{
+			var nav = serviceProvider.GetRequiredService<NavigationView>();
+			Grid.SetRow(nav, 1);
+			MyGrid.Children.Add(nav);
+		}
 	}
-	protected override void OnNavigatedTo(NavigatedToEventArgs args)
-	{
-		viewModel.OnNavaigated();
-		base.OnNavigatedTo(args);
-	}
+	
 }

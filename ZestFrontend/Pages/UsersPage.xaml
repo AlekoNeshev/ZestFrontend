@@ -23,11 +23,12 @@
         </Grid.RowDefinitions>
 
         <SearchBar
+            x:Name="searchBar"
             Grid.Column="1"
             Margin="0,10,0,10"
             MaximumWidthRequest="500"
             SearchCommand="{Binding SearchUsersCommand}"
-            Text="{Binding Search}" />
+            SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
 
         <CollectionView
             Grid.Row="1"

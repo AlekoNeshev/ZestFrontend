@@ -15,34 +15,29 @@ namespace ZestFrontend.ViewModels
     public partial class UsersViewModel : ObservableObject
     {
 
-		AuthService authService;
-		AccountService accountService;
-		FollowersService followersService;
+		AuthService _authService;
+		AccountService _accountService;
+		FollowersService _followersService;
 		
         public UsersViewModel( AccountService accountService, FollowersService followersService, AuthService authService)
         {
-            this.accountService = accountService;
-			this.authService = authService;
-			this.followersService = followersService;
+            this._accountService = accountService;
+			this._authService = authService;
+			this._followersService = followersService;
 			GetUsers();
         }
-        [ObservableProperty]
-		string search;
+       
 		[ObservableProperty]
 		bool isButtonVisible;
 		public ObservableCollection<UserDTO> Users { get; } = new();
 		
-		public async void GetUsers()
+		public async Task GetUsers()
 		{
-		
-			foreach (var user in await accountService.GetAllAccounts())
+			foreach (var user in await _accountService.GetAllAccounts())
 			{
 				Users.Add(user);
 			}
-			
-
-		}
-		
+		}	
 		
 		[RelayCommand]
 		async Task GoToUserDetailPageAsync(UserDTO user)
@@ -55,24 +50,22 @@ namespace ZestFrontend.ViewModels
 			{"User", user }
 			});
 		}
+		
 		[RelayCommand]
-		async Task SearchUsersAsync()
+		async Task SearchUsersAsync(string text)
 		{
 		   Users.Clear();
-			/*foreach (var item in await a.GetPostsBySearch(Search))
+			foreach (var item in await _accountService.GetAccountsBySearch(text, _authService.Token))
 			{
-				Accounts.Add(item);
-			}*/
+				Users.Add(item);
+			}
 		}
-		public void OnNavaigated()
-		{
-
-		}
+		
 		[RelayCommand]
 		async Task RefreshAsync()
 		{
 			Users.Clear();
-			GetUsers();
+			await GetUsers();
 		}
 	}
 }

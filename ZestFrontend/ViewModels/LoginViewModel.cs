@@ -18,16 +18,16 @@ namespace ZestFrontend.ViewModels
     
       public partial class LoginViewModel : ObservableObject
     {
-        LoginService loginService;
-        AuthService authService;
-        AccountService accountService;
-        HttpClient httpClient;
+        LoginService _loginService;
+        AuthService _authService;
+        AccountService _accountService;
+        HttpClient _httpClient;
 		public LoginViewModel(LoginService service,  AccountService accountService, HttpClient httpClient, AuthService authService) 
         {
-            this.loginService = service;
-            this.authService = authService;
-       this.httpClient = httpClient;
-            this.accountService = accountService;
+            this._loginService = service;
+            this._authService = authService;
+       this._httpClient = httpClient;
+            this._accountService = accountService;
         }
 
         [ObservableProperty]
@@ -45,23 +45,23 @@ namespace ZestFrontend.ViewModels
             if (!string.IsNullOrEmpty(audience))
                 extraParameters.Add("audience", audience);
 
-            var result = await authService.LoginAsync(extraParameters);
-            authService.Token = result.AccessToken;
+            var result = await _authService.LoginAsync(extraParameters);
+            _authService.Token = result.AccessToken;
             var handler = new JwtSecurityTokenHandler();
-            var token = handler.ReadJwtToken(authService.Token);
+            var token = handler.ReadJwtToken(_authService.Token);
 			var usernameClaim = token.Claims.FirstOrDefault(c => c.Type == "username");
 			var username = usernameClaim?.Value;
             try
             {
-                var m = await accountService.GetCurrentAccount(result.AccessToken);
+                var m = await _accountService.GetCurrentAccount(result.AccessToken);
             }
             catch(Exception ex)
             {
                 Console.WriteLine(ex);
             }
-			var account = await accountService.GetCurrentAccount(result.AccessToken);
-			httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authService.Token);
-			var response = await httpClient.GetAsync("https://dev-kckk4xk2mvwnhizd.us.auth0.com/userinfo");
+			var account = await _accountService.GetCurrentAccount(result.AccessToken);
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
+			var response = await _httpClient.GetAsync("https://dev-kckk4xk2mvwnhizd.us.auth0.com/userinfo");
 			if (response.IsSuccessStatusCode)
 			{
 				var userProfile = await response.Content.ReadAsStringAsync();
@@ -74,14 +74,14 @@ namespace ZestFrontend.ViewModels
                 var user = result.User;
                 var name = username;
                 var email = user.FindFirst(c => c.Type == "email")?.Value;
-                var info = await accountService.CreateAccount(authService.Token, name, email);
-                authService.Id = info[0];
-                authService.Username = info[1];
+                var info = await _accountService.CreateAccount(_authService.Token, name, email);
+                _authService.Id = info[0];
+                _authService.Username = info[1];
             }
             else 
             {
-				authService.Id = account.Id;
-				authService.Username = account.Username;
+				_authService.Id = account.Id;
+				_authService.Username = account.Username;
 			}
            
 

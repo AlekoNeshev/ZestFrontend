@@ -10,9 +10,12 @@ public partial class AccountPage : ContentPage
 	{
 		BindingContext = viewModel;
 		InitializeComponent();
-		var nav = serviceProvider.GetRequiredService<NavigationView>();
-		
-		Grid.SetRow(nav, 1);
-		MyGrid.Children.Add(nav);
+		if (Device.RuntimePlatform == Device.WinUI)
+		{
+			var nav = serviceProvider.GetRequiredService<NavigationView>();
+			nav.Paddings(0, 39);
+			Grid.SetRow(nav, 1);
+			MyGrid.Children.Add(nav);
+		}
 	}
 }

@@ -59,5 +59,17 @@ namespace ZestFrontend.Services
 			else
 				return null;
 		}
+		public async Task<List<UserDTO>> GetAccountsBySearch(string text, string accessToken)
+		{
+			var url = $"{PortConst.Port_Forward_Http}/api/Account/getBySearch/{text}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+			var response = await _httpClient.GetAsync(url);
+			if (response.IsSuccessStatusCode)
+			{
+				return await response.Content.ReadFromJsonAsync<List<UserDTO>>();
+			}
+			else
+				return null;
+		}
 	}
 }

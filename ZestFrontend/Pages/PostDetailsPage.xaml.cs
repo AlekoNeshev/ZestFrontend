@@ -17,7 +17,7 @@ public partial class PostDetailsPage : ContentPage
 		{
 			var nav = serviceProvider.GetRequiredService<NavigationView>();
 
-			nav.Paddings(0, 74, 0, 0);
+			nav.Paddings(0, 64, 0, 0);
 
 			MyGrid.Children.Add(nav);
 		}

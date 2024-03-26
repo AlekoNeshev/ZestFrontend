@@ -21,12 +21,14 @@ public partial class ChatPage : ContentPage
 		if (Device.RuntimePlatform == Device.WinUI)
 		{
 			var nav = serviceProvider.GetRequiredService<NavigationView>();
-			viewModel.NewMessageReceived += ViewModel_NewMessageReceived;
-			viewModel.OnOpenScreen +=  ViewModel_OnOpenScreen;
+
+			nav.Paddings(0, 64, 0, 0);
+
 			MyGrid.Children.Add(nav);
 		}
 		Messages.Scrolled += Messages_Scrolled;
-
+		viewModel.NewMessageReceived += ViewModel_NewMessageReceived;
+		viewModel.OnOpenScreen +=  ViewModel_OnOpenScreen;
 	}
 	private async void Messages_Scrolled(object sender, ItemsViewScrolledEventArgs e)
 	{

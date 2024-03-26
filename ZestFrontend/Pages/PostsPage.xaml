@@ -163,13 +163,14 @@
             </StackLayout>
         </Grid>
         <SearchBar
+            x:Name="searchBar"
             Grid.Column="1"
             Margin="0,10,0,10"
             HorizontalOptions="Fill"
             Keyboard="Plain"
             MaximumWidthRequest="500"
             SearchCommand="{Binding SearchPostsCommand}"
-            Text="{Binding Search}" />
+            SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
 
 
         <RefreshView

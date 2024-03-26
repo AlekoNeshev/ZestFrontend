@@ -20,11 +20,14 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <SearchBar
+            x:Name="searchBar"
             Grid.Column="1"
             Margin="0,10,0,10"
             HorizontalOptions="Fill"
             Keyboard="Plain"
-            MaximumWidthRequest="500" />
+            MaximumWidthRequest="500"
+            SearchCommand="{Binding SearchCommunitiesCommand}"
+            SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
         <Grid Grid.Row="1" Grid.Column="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
