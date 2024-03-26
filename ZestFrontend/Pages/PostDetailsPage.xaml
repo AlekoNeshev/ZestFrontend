@@ -328,6 +328,13 @@
                                         MaximumWidthRequest="300"
                                         ShouldShowPlaybackControls="True"
                                         Source="{Binding Source}" />
+                                    <Button
+                                        Grid.Row="3"
+                                        BackgroundColor="Transparent"
+                                        BorderColor="Transparent"
+                                        Command="{Binding FilterCommentsCommand}"
+                                        Text="See moderators"
+                                        TextColor="Grey" />
                                 </Grid>
 
                             </Frame>
@@ -337,6 +344,7 @@
                                 FontSize="Large"
                                 HorizontalOptions="Center"
                                 Text="Comments" />
+
                         </Grid>
                     </CollectionView.Header>
                 </CollectionView>

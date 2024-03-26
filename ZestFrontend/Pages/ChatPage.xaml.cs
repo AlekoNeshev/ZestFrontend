@@ -2,6 +2,7 @@
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Internals;
+using System;
 using ZestFrontend.DTOs;
 using ZestFrontend.ViewModels;
 using ZestFrontend.Views;
@@ -20,23 +21,22 @@ public partial class ChatPage : ContentPage
 		if (Device.RuntimePlatform == Device.WinUI)
 		{
 			var nav = serviceProvider.GetRequiredService<NavigationView>();
-		viewModel.NewMessageReceived += ViewModel_NewMessageReceived;
-		viewModel.OnOpenScreen +=  ViewModel_OnOpenScreen;
-		MyGrid.Children.Add(nav);
-			}
+			viewModel.NewMessageReceived += ViewModel_NewMessageReceived;
+			viewModel.OnOpenScreen +=  ViewModel_OnOpenScreen;
+			MyGrid.Children.Add(nav);
+		}
 		Messages.Scrolled += Messages_Scrolled;
 
-		
 	}
 	private async void Messages_Scrolled(object sender, ItemsViewScrolledEventArgs e)
 	{
-		// Check if the user is already at the end of the collection (within a small tolerance)
-		const int tolerance = 1; // Adjust the tolerance as needed
-		if (e.LastVisibleItemIndex >= viewModel.Messages.Count - 1 - tolerance)
+		const int tolerance = 1;
+
+		if (e.LastVisibleItemIndex >= viewModel.Messages.Select(x => x.Count).Sum() - 1 - tolerance)
 		{
 			_isUserAtEndOfCollection = true;
 		}
-		else if (e.FirstVisibleItemIndex == 0) // Adjust the threshold (5 in this case) as needed
+		else if (e.FirstVisibleItemIndex == 0)
 		{
 
 			if (viewModel != null && viewModel.IsLoadingMessages == false)
@@ -64,57 +64,31 @@ public partial class ChatPage : ContentPage
 
 	private void ViewModel_NewMessageReceived(object sender, EventArgs e)
 	{
-		// Access the ScrollView and scroll to the end
+		int lastGroupIndex = viewModel.Messages.Count - 1;
+		var lastItemIndex = viewModel.Messages.LastOrDefault().LastOrDefault();
 
-		int lastIndex = viewModel.Messages.Count - 1;
-
-		if (lastIndex >= 0)
+		if (lastGroupIndex >= 0 && lastItemIndex != null)
 		{
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				if (_isUserAtEndOfCollection)
 				{
-					Messages.ScrollTo(lastIndex, position: ScrollToPosition.MakeVisible, animate: false);
+					Messages.ScrollTo(lastItemIndex, position: ScrollToPosition.MakeVisible, animate: false);
 				}
-							
-				
 			});
 		}
-		
-
 	}
 	private void ViewModel_OnOpenScreen(object sender, EventArgs e)
 	{
-		// Access the ScrollView and scroll to the end
+		int lastGroupIndex = viewModel.Messages.Count - 1;
+		var lastItemIndex = viewModel.Messages.LastOrDefault().LastOrDefault();
 
-		int lastIndex = viewModel.Messages.Count - 1;
-
-		if (lastIndex >= 0)
+		if (lastGroupIndex >= 0 && lastItemIndex != null)
 		{
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				
-					 Messages.ScrollTo(lastIndex, position: ScrollToPosition.MakeVisible, animate: false);
-				
-
-
+				Messages.ScrollTo(lastItemIndex, position: ScrollToPosition.MakeVisible, animate: false);
 			});
 		}
-
-
 	}
-	/*private void Messages_ChildAdded(object sender, ElementEventArgs e)
-	{
-		try
-		{
-
-			ChatViewModel viewModel = BindingContext as ChatViewModel;
-			MessageDTO monkey = viewModel.Messages.LastOrDefault();
-			Messages.ScrollTo(monkey);
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine(ex.ToString());
-		}
-	}*/
 }

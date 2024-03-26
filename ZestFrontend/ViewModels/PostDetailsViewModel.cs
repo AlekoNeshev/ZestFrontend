@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 using ZestFrontend.DTOs;
+using ZestFrontend.Filters;
 using ZestFrontend.Pages;
 using ZestFrontend.Parameters;
 using ZestFrontend.Services;
@@ -23,6 +24,7 @@ namespace ZestFrontend.ViewModels
 		CommentsHubConnectionService _commentHubConnectionService;
 		CommentService _commentService;
 		MediaService _mediaService;
+		CommentFilter _filter;
 		private Task TaskInit;
 		
 		public PostDetailsViewModel( PostsService postsService, LikesService likesService, CommentService commentService, MediaService mediaService, LikesHubConnectionService likesHubConnectionService, CommentsHubConnectionService commentHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService)
@@ -38,6 +40,7 @@ namespace ZestFrontend.ViewModels
 			TaskInit = Init();
 			ReplyCommand = new ReplyCommand(ExecuteReplyCommand);
 			_ = new MauiIcon();
+			_filter = CommentFilter.All;
 		}
 		private async Task Init()
 		{
@@ -63,6 +66,8 @@ namespace ZestFrontend.ViewModels
 		bool isMediaPlayerVisible;
 		[ObservableProperty]
 		bool isRefreshing;
+		[ObservableProperty]
+		string filter;
 
 		[ObservableProperty]
 		string replyText;
@@ -136,6 +141,23 @@ namespace ZestFrontend.ViewModels
 					
 				}
 			}
+			_filter = CommentFilter.All;
+			Filter = _filter.ToString();
+		}
+		public async Task GetTrendingComments()
+		{
+			Comments.Clear();
+			var skipIds = Comments.Select(x => x.Id).ToArray();
+
+
+			foreach (var comment in await _commentService.GetTrendingPostsAsync(50, Post.Id, skipIds))
+			{
+				comment.IsOwner = comment.Publisher==_authService.Username;
+				await IsOwner(comment.Replies, 0);
+				Comments.Add(comment);
+			}
+			_filter = CommentFilter.Trending;
+			Filter = _filter.ToString();
 
 		}
 		public async Task IsOwner(IEnumerable<CommentDTO> comments, int level)
@@ -318,7 +340,22 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task LoadMoreComments()
 		{
-			await GetComments();
+			if (_filter == CommentFilter.All)
+				await GetComments();
+			else
+				await GetTrendingComments();
+		}
+		[RelayCommand]
+		async Task FilterCommentsAsync()
+		{
+			if(_filter == CommentFilter.Trending)
+			{
+				await GetComments();
+			}
+			else
+			{
+				await GetTrendingComments();
+			}
 		}
 		private async void ExecuteReplyCommand(ReplyCommandParameter parameter)
 		{

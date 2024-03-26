@@ -71,5 +71,22 @@ namespace ZestFrontend.Services
 			var response = await _httpClient.PutAsync(url, new StringContent("", Encoding.UTF8, "application/json")); response.EnsureSuccessStatusCode();
             return response;
         }
-    }
+		public async Task<List<CommentDTO>> GetTrendingPostsAsync(int takeCount, int postId, int[] skipIds = null)
+		{
+			var url = $"{PortConst.Port_Forward_Http}/api/Comments/getByTrending/{takeCount}/{postId}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
+			var body = JsonConvert.SerializeObject(skipIds);
+
+
+
+			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
+
+			if (response.IsSuccessStatusCode)
+			{
+				return await response.Content.ReadFromJsonAsync<List<CommentDTO>>();
+			}
+
+			return null;
+		}
+	}
 }
