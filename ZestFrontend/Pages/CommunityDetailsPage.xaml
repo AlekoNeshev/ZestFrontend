@@ -14,6 +14,9 @@
         <local:LikeButtonsColorConverter x:Key="LikeButtonColorConverter" />
         <local:DislikeButtonColorConverter x:Key="DislikeButtonColorConverter" />
     </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding RefreshCommand}" Text="Refresh" />
+    </ContentPage.ToolbarItems>
     <Grid x:Name="MyGrid">
 
         <Grid.ColumnDefinitions>
@@ -70,13 +73,93 @@
                 Command="{Binding GoToModeratorsDetailPageCommand}"
                 Text="See moderators"
                 TextColor="Grey" />
+
+            <StackLayout Orientation="Horizontal">
+                <ContentView
+                    Padding="0,-1,-1,0"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+                    <Frame
+                        Padding="0,0,0,0"
+                        BackgroundColor="GhostWhite"
+                        BorderColor="Transparent"
+                        CornerRadius="0">
+                        <Button
+                            BackgroundColor="Transparent"
+                            BorderColor="Transparent"
+                            Clicked="ImageButton_Clicked"
+                            Command="{Binding FilterBtnCommand}"
+                            Text="Filter"
+                            TextColor="Black" />
+                    </Frame>
+                </ContentView>
+                <ContentView
+                    Padding="-1,-1,-1,0"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+                    <Frame
+                        Padding="0,0,0,0"
+                        BackgroundColor="GhostWhite"
+                        BorderColor="Transparent"
+                        CornerRadius="0">
+                        <ImageButton
+                            x:Name="SecondImageButton"
+                            BackgroundColor="Transparent"
+                            Clicked="ImageButton_Clicked"
+                            Command="{Binding FilterBtnCommand}"
+                            Source="{mi:FluentFilled ArrowUp20Filled,
+                                                     IconAutoScaling=True,
+                                                     IconSize=20}" />
+                    </Frame>
+                </ContentView>
+            </StackLayout>
+            <StackLayout IsVisible="{Binding AreFiltersVisible}">
+                <ContentView
+                    Padding="0,-1,-1,0"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+                    <Frame
+                        Padding="0,0,0,0"
+                        BackgroundColor="GhostWhite"
+                        BorderColor="Transparent"
+                        CornerRadius="0">
+                        <Button
+                            BackgroundColor="Transparent"
+                            BorderColor="Transparent"
+                            Command="{Binding GetLatestPostsCommand}"
+                            Text="Latest"
+                            TextColor="Black" />
+                    </Frame>
+                </ContentView>
+                <ContentView
+                    Padding="0,-1,-1,0"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+                    <Frame
+                        Padding="0,0,0,0"
+                        BackgroundColor="GhostWhite"
+                        BorderColor="Transparent"
+                        CornerRadius="0">
+                        <Button
+                            BackgroundColor="Transparent"
+                            BorderColor="Transparent"
+                            Command="{Binding GetTrendingPostsCommand}"
+                            Text="Trending"
+                            TextColor="Black" />
+                    </Frame>
+                </ContentView>
+
+            </StackLayout>
         </VerticalStackLayout>
-        <RefreshView Grid.Row="1" Grid.Column="1">
-
-
-
-
-
+        <RefreshView
+            Grid.Row="1"
+            Grid.Column="1"
+            Command="{Binding RefreshCommand}"
+            IsRefreshing="{Binding IsRefreshing}">
 
             <CollectionView
                 ItemsSource="{Binding Posts}"

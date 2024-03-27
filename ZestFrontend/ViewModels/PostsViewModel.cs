@@ -99,7 +99,7 @@ namespace ZestFrontend.ViewModels
 		}
 		public async Task GetTrendingPosts()
 		{
-			Posts.Clear();
+			
 			var skipIds = Posts.Select(x => x.Id).ToArray();
 
 
@@ -113,11 +113,8 @@ namespace ZestFrontend.ViewModels
 		}
 		public async Task GetFollowedPosts()
 		{
-			Posts.Clear();
+			
 			var skipIds = Posts.Select(x => x.Id).ToArray();
-
-
-
 
 			foreach (var post in await _postsService.GetFollowedPostsAsync(50, skipIds))
 			{
@@ -142,6 +139,7 @@ namespace ZestFrontend.ViewModels
 		{
 			if (_filter != PostsFilterOptions.Trending)
 			{
+				Posts.Clear();
 				await GetTrendingPosts();
 			}
 		}
@@ -150,6 +148,7 @@ namespace ZestFrontend.ViewModels
 		{
 			if (_filter != PostsFilterOptions.Followed)
 			{
+				Posts.Clear();
 				await GetFollowedPosts();
 			}
 		}
@@ -210,18 +209,48 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task SearchPosts(string text)
 		{
-			Posts.Clear();
-			foreach (var item in await _postsService.GetPostsBySearch(text))
+			if (!string.IsNullOrWhiteSpace(text))
 			{
-				Posts.Add(item);
+				Posts.Clear();
+				foreach (var item in await _postsService.GetPostsBySearch(text))
+				{
+					Posts.Add(item);
+				}
+			}
+			else if(_filter == PostsFilterOptions.Last)
+			{
+				Posts.Clear();
+				await GetPosts();
+			}
+			else if(_filter == PostsFilterOptions.Trending)
+			{
+				Posts.Clear();
+				await GetTrendingPosts();
+			}
+			else if(_filter == PostsFilterOptions.Followed)
+			{
+				Posts.Clear();
+				await GetFollowedPosts();
 			}
 			await _signalRConnectionService.AddConnectionToGroup(_likesConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
 		}
 		[RelayCommand]
 		async Task RefreshAsync()
 		{
+			
 			Posts.Clear();
-			GetPosts();
+			if(_filter == PostsFilterOptions.Last)
+			{
+				await GetPosts();
+			}
+			else if(_filter == PostsFilterOptions.Trending)
+			{
+				await GetTrendingPosts();
+			}
+			else if(_filter == PostsFilterOptions.Followed)
+			{
+				await GetFollowedPosts();
+			}
 			IsRefreshing = false;
 			await _signalRConnectionService.AddConnectionToGroup(_likesConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
 		}
@@ -236,6 +265,14 @@ namespace ZestFrontend.ViewModels
 			if (_filter == PostsFilterOptions.Last)
 			{
 				await GetPosts();
+			}
+			else if(_filter == PostsFilterOptions.Trending)
+			{
+				await GetTrendingPosts();
+			}
+			else if(_filter == PostsFilterOptions.Followed)
+			{
+				await GetFollowedPosts();
 			}
 			await _signalRConnectionService.AddConnectionToGroup(_likesConnection.LikesConnection.ConnectionId, Posts.TakeLast(10).Select(x => x.Id.ToString()).ToArray());
 		}

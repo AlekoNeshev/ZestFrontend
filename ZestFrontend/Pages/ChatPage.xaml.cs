@@ -93,4 +93,8 @@ public partial class ChatPage : ContentPage
 			});
 		}
 	}
+	private void Button_Clicked(object sender, EventArgs e)
+	{
+		CommentEntry.Text = string.Empty;
+	}
 }

@@ -29,31 +29,30 @@
             MaximumWidthRequest="500"
             SearchCommand="{Binding SearchUsersCommand}"
             SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
-
-        <CollectionView
+        <RefreshView
             Grid.Row="1"
             Grid.Column="1"
-            HorizontalOptions="CenterAndExpand"
-            ItemsSource="{Binding Users}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:UserDTO">
-                    <Grid>
-                        <Frame>
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:UsersViewModel}}, Path=GoToUserDetailPageCommand}" CommandParameter="{Binding .}" />
-                            </Frame.GestureRecognizers>
-                            <HorizontalStackLayout>
-                                <Label
-                                    FontAttributes="Bold"
-                                    MinimumWidthRequest="100"
-                                    Text="{Binding Username}" />
-                            </HorizontalStackLayout>
-                        </Frame>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-
-        </CollectionView>
-
+            Command="{Binding RefreshCommand}"
+            IsRefreshing="{Binding IsRefreshing}">
+            <CollectionView HorizontalOptions="CenterAndExpand" ItemsSource="{Binding Users}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:UserDTO">
+                        <Grid>
+                            <Frame>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:UsersViewModel}}, Path=GoToUserDetailPageCommand}" CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                                <HorizontalStackLayout>
+                                    <Label
+                                        FontAttributes="Bold"
+                                        MinimumWidthRequest="100"
+                                        Text="{Binding Username}" />
+                                </HorizontalStackLayout>
+                            </Frame>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
     </Grid>
 </ContentPage>

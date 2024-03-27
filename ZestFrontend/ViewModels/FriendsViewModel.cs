@@ -22,7 +22,9 @@ namespace ZestFrontend.ViewModels
 			GetFriends();
         }
 		public ObservableCollection<FollowerDTO> Friends { get; private set; } = new();
-		public async void GetFriends()
+		[ObservableProperty]
+		bool isRefreshing;
+		public async Task GetFriends()
 		{
 			foreach (var item in await _followersService.GetFriends())
 			{
@@ -44,7 +46,25 @@ namespace ZestFrontend.ViewModels
 		async Task RefreshAsync()
 		{
 			Friends.Clear();
-			GetFriends();
+			await GetFriends();
+			IsRefreshing = false;
+		}
+		[RelayCommand]
+		async Task SearchFollowersAsync(string text)
+		{
+			if (!string.IsNullOrWhiteSpace(text))
+			{
+				Friends.Clear();
+				foreach (var item in await _followersService.GetAccountsBySearch(text))
+				{
+					Friends.Add(item);
+				}
+			}
+			else
+			{
+				Friends.Clear();
+				await GetFriends();
+			}
 		}
 	}
 }

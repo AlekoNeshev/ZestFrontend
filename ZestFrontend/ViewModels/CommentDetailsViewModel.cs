@@ -1,58 +1,72 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.SignalR.Client;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml.Linq;
 using ZestFrontend.DTOs;
 using ZestFrontend.Pages;
 using ZestFrontend.Parameters;
-using ZestFrontend.Partial;
 using ZestFrontend.Services;
 
 namespace ZestFrontend.ViewModels
 {
 	[QueryProperty(nameof(Comment), "Comment")]
+	[QueryProperty(nameof(PostId), "postId")]
 	public partial class CommentDetailsViewModel : ObservableObject
 	{
         private readonly CommentService _commentService;
 		private readonly AuthService _authService;
 		private readonly LikesService _likesService;
-        public CommentDetailsViewModel(CommentService commentService, AuthService authService, LikesService likesService)
+		LikesHubConnectionService _likesHubConnectionService;
+		CommentsHubConnectionService _commentHubConnectionService;
+		SignalRConnectionService _signalRConnectionService;
+        public CommentDetailsViewModel(CommentService commentService, AuthService authService, LikesService likesService, LikesHubConnectionService likesHubConnectionService, CommentsHubConnectionService commentsHubConnectionService, SignalRConnectionService signalRConnectionService)
         {
             _commentService = commentService;
 			_authService = authService;
 			_likesService = likesService;
+			_likesHubConnectionService = likesHubConnectionService;
+			_commentHubConnectionService = commentsHubConnectionService;
+			_signalRConnectionService = signalRConnectionService;
+			_commentHubConnectionService.CommentsConnection.On<int>("CommentDeleted", UpdateComment);
+			_likesHubConnectionService.LikesConnection.On<int>("CommentLiked", UpdateComment);
 			ReplyCommand = new ReplyCommand(ExecuteReplyCommand);
 		}
-
-		
+	
         [ObservableProperty]
         CommentDTO comment;
+
+		private int postId;
+		
+		public int PostId
+		{
+			get => postId;
+			set
+			{
+				postId = value;
+				OnPropertyChanged();
+			}
+		}
+
 		public ObservableCollection<CommentDTO> Replies { get; private set; } = new();
 		public ICommand ReplyCommand { get; }
-
-		
+	
 		async partial void OnCommentChanged(CommentDTO value)
 		{
 			Replies.Clear();
 			var comment = await _commentService.GetSingleComment(Comment.Id);
 			foreach (var item in comment.Replies)
 			{
+				item.IsOwner = comment.Publisher==_authService.Username;
+				await IsOwner(item.Replies, 0);
 				Replies.Add(item);
 			}
-		
 		}
 		public async Task IsOwner(IEnumerable<CommentDTO> comments, int level)
 		{
 			foreach (var comment in comments)
 			{
-
 				comment.IsOwner = comment.Publisher==_authService.Username;
 				comment.AreRepliesVisible = level<=4;
 				if (comment.Replies == null)
@@ -60,9 +74,7 @@ namespace ZestFrontend.ViewModels
 					return;
 				}
 				await IsOwner(comment.Replies, level + 1);
-
 			}
-
 		}
 		
 		[RelayCommand]
@@ -71,34 +83,33 @@ namespace ZestFrontend.ViewModels
 			if (commentDTO.Like == null)
 			{
 
-				await _likesService.Like(0, commentDTO.Id, true);
+				await _likesService.Like(PostId, commentDTO.Id, true);
 			}
 			else if (commentDTO.Like.Value == true)
 			{
-				await _likesService.RemoveLike(commentDTO.Like.Id, 0, commentDTO.Id);
+				await _likesService.RemoveLike(commentDTO.Like.Id, PostId, commentDTO.Id);
 			}
 			else if (commentDTO.Like.Value == false)
 			{
-				await _likesService.RemoveLike(commentDTO.Like.Id, 0, commentDTO.Id);
-				await _likesService.Like(0, commentDTO.Id, true); //Needs fixing
+				await _likesService.RemoveLike(commentDTO.Like.Id, PostId, commentDTO.Id);
+				await _likesService.Like(PostId, commentDTO.Id, true); 
 			}
 		}
 		[RelayCommand]
-		async Task DislikeCommentAsync(CommentDTO commentDTO) //Same
+		async Task DislikeCommentAsync(CommentDTO commentDTO) 
 		{
 			if (commentDTO.Like == null)
 			{
-
-				await _likesService.Like(0, commentDTO.Id, false); //Same
+				await _likesService.Like(PostId, commentDTO.Id, false); 
 			}
 			else if (commentDTO.Like.Value == false)
 			{
-				await _likesService.RemoveLike(commentDTO.Like.Id, 0, commentDTO.Id);
+				await _likesService.RemoveLike(commentDTO.Like.Id, PostId, commentDTO.Id);
 			}
 			else if (commentDTO.Like.Value == true)
 			{
-				await _likesService.RemoveLike(commentDTO.Like.Id, 0, commentDTO.Id);
-				await _likesService.Like(0, commentDTO.Id, false);
+				await _likesService.RemoveLike(commentDTO.Like.Id, PostId, commentDTO.Id);
+				await _likesService.Like(PostId, commentDTO.Id, false);
 			}
 		}
 		[RelayCommand]
@@ -115,36 +126,48 @@ namespace ZestFrontend.ViewModels
 			await Shell.Current.GoToAsync($"{nameof(CommentDetailsPage)}?id={comment.Id}", true,
 				new Dictionary<string, object>
 			{
-			{"Comment", comment }
+			{"Comment", comment },
+			{"Post", PostId }
 			});
 
 		}
 
 		public async Task SendReplyAsync(int comment, string text)
 		{
-			var response = await _commentService.PostComment(0, text, comment); //Same
-
-
+			var response = await _commentService.PostComment(postId, text, comment);
 			var content = await response.Content.ReadAsStringAsync();
 			string[] parts = content.Trim('[', ']').Split(',');
 			int firstNumber = int.Parse(parts[0]);
 			int secondNumber = int.Parse(parts[1]);
 			var reply = await _commentService.GetSingleComment(firstNumber);
 			reply.IsOwner = reply.Publisher == _authService.Username;
-			var commentToFind = FindCommentById(secondNumber, Comment.Replies);
-			commentToFind.Replies.Add(reply);
+			if (Comment.Id == secondNumber)
+			{
+				Comment.Replies.Add(reply);
+			}
+			else
+			{
+				var commentToFind = FindCommentById(secondNumber, Replies, 0);
+				var commentDto = (CommentDTO)commentToFind[0];
+				var commentLevel = (int)commentToFind[1];
+				commentDto.Replies.Add(reply);
+				if (commentLevel >= 4)
+				{
+					commentDto.AreRepliesVisible = false;
+				}
+			}
 
 		}
-		public CommentDTO FindCommentById(int id, IEnumerable<CommentDTO> comments)
+		public object[] FindCommentById(int id, IEnumerable<CommentDTO> comments, int level)
 		{
 			foreach (var comment in comments)
 			{
 				if (comment.Id == id)
 				{
-					return comment;
+					return new object[] { comment, level };
 				}
 
-				var foundInReplies = FindCommentById(id, comment.Replies);
+				var foundInReplies = FindCommentById(id, comment.Replies, level + 1);
 				if (foundInReplies != null)
 				{
 					return foundInReplies;
@@ -156,26 +179,49 @@ namespace ZestFrontend.ViewModels
 		public async void UpdateComment(int id)
 		{
 			var updatedComment = await _commentService.GetSingleComment(id);
-			var comment = FindCommentById(id, Comment.Replies);
-			comment.Likes = updatedComment.Likes;
-			comment.Dislikes = updatedComment.Dislikes;
-			comment.Like = updatedComment.Like;
+			if (id == Comment.Id)
+			{
+				Comment.Likes = updatedComment.Likes;
+				Comment.Dislikes = updatedComment.Dislikes;
+				Comment.Like = updatedComment.Like;
+				Comment.Text = updatedComment.Text;
+				Comment.Publisher = updatedComment.Publisher;
+			}
+			else
+			{
+				var comment = (CommentDTO)FindCommentById(id, Replies, 0)[0];
+				if (comment != null)
+				{
+					comment.Likes = updatedComment.Likes;
+					comment.Dislikes = updatedComment.Dislikes;
+					comment.Like = updatedComment.Like;
+					comment.Text = updatedComment.Text;
+					comment.Publisher = updatedComment.Publisher;
+				}
+			}
 		}
 		[RelayCommand]
 		async Task DeleteCommentAsync(CommentDTO commentDTO)
 		{
-			await _commentService.DeleteComment(commentDTO.Id);
+			await _commentService.DeleteComment(commentDTO.Id, PostId);
 		}
 		private async void ExecuteReplyCommand(ReplyCommandParameter parameter)
 		{
 			var comment = int.Parse(parameter.Comment);
 			var text = parameter.ReplyText;
 			await SendReplyAsync(comment, text);
-			var commentToFind = FindCommentById(comment, Comment.Replies);
-			commentToFind.IsReplyVisible = false;
+			if (Comment.Id == comment)
+			{
+				Comment.IsReplyVisible = false;
+			}
+			else
+			{
+				var commentToFind = (CommentDTO)FindCommentById(comment, Replies, 0)[0];
+				commentToFind.IsReplyVisible = false;
+			}
+			
 
 		}
 
-		
 	}
 }

@@ -23,7 +23,6 @@ public partial class PostsPage : ContentPage
 	}
 	async protected override void OnNavigatedTo(NavigatedToEventArgs args)
 	{
-
 		await this.viewModel.onNavigatedTo();
 		base.OnNavigatedTo(args);
 	}
@@ -34,25 +33,15 @@ public partial class PostsPage : ContentPage
 	}
 
 	private void ImageButton_Clicked(object sender, EventArgs e)
-	{
-		
-
-
-			if (SecondImageButton.Rotation == 0)
-			{
-
-				SecondImageButton.RotateTo(180);
-			}
-			else
-			{
-				SecondImageButton.RotateTo(0);
-			}
-
-		
+	{	
+		if (SecondImageButton.Rotation == 0)
+		{
+			SecondImageButton.RotateTo(180);
+		}
+		else
+		{
+			SecondImageButton.RotateTo(0);
+		}		
 	}
 
-	private void IconButton_Clicked(object sender, TouchEventArgs e)
-	{
-
-    }
 }

@@ -9,6 +9,9 @@
     Title="CommunitiesPage"
     x:DataType="viewmodel:CommunitesViewModel"
     BackgroundColor="GhostWhite">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding RefreshCommand}" Text="Refresh" />
+    </ContentPage.ToolbarItems>
     <Grid x:Name="MyGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
@@ -115,58 +118,81 @@
                                 TextColor="Black" />
                         </Frame>
                     </ContentView>
-
+                    <ContentView
+                        Padding="0,-1,-1,0"
+                        BackgroundColor="LightGray"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand">
+                        <Frame
+                            Padding="0,0,0,0"
+                            BackgroundColor="GhostWhite"
+                            BorderColor="Transparent"
+                            CornerRadius="0">
+                            <Button
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Command="{Binding GetFollowedComsCommand}"
+                                Text="Followed"
+                                TextColor="Black" />
+                        </Frame>
+                    </ContentView>
                 </StackLayout>
             </StackLayout>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="1">
-            <CollectionView ItemsSource="{Binding Communities}" SelectionMode="None">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="model:CommunityDTO">
-                        <Grid>
-                            <ContentView
-                                Padding="-1,0,-1,-1"
-                                BackgroundColor="LightGray"
-                                HorizontalOptions="FillAndExpand"
-                                VerticalOptions="FillAndExpand">
-                                <Frame BorderColor="Transparent" CornerRadius="0">
+            <RefreshView Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
+                <CollectionView
+                    ItemsSource="{Binding Communities}"
+                    RemainingItemsThreshold="1"
+                    RemainingItemsThresholdReachedCommand="{Binding LoadMoreComsCommand}"
+                    SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:CommunityDTO">
+                            <Grid>
+                                <ContentView
+                                    Padding="-1,0,-1,-1"
+                                    BackgroundColor="LightGray"
+                                    HorizontalOptions="FillAndExpand"
+                                    VerticalOptions="FillAndExpand">
+                                    <Frame BorderColor="Transparent" CornerRadius="0">
 
-                                    <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunitesViewModel}}, Path=GoToCommunityDetailPageCommand}" CommandParameter="{Binding .}" />
-                                    </Frame.GestureRecognizers>
-                                    <Grid Padding="10">
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunitesViewModel}}, Path=GoToCommunityDetailPageCommand}" CommandParameter="{Binding .}" />
+                                        </Frame.GestureRecognizers>
+                                        <Grid Padding="10">
 
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition />
-                                            <RowDefinition />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="50" />
-                                        </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition />
+                                                <RowDefinition />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="50" />
+                                            </Grid.ColumnDefinitions>
 
-                                        <Label
-                                            Grid.Column="0"
-                                            FontAttributes="Bold"
-                                            MinimumWidthRequest="100"
-                                            Text="{Binding Name}" />
-                                        <Label
-                                            Grid.Row="1"
-                                            Grid.Column="0"
-                                            FontAttributes="Italic"
-                                            MinimumWidthRequest="100"
-                                            Text="{Binding Description}"
-                                            VerticalOptions="End" />
+                                            <Label
+                                                Grid.Column="0"
+                                                FontAttributes="Bold"
+                                                MinimumWidthRequest="100"
+                                                Text="{Binding Name}" />
+                                            <Label
+                                                Grid.Row="1"
+                                                Grid.Column="0"
+                                                FontAttributes="Italic"
+                                                MinimumWidthRequest="100"
+                                                Text="{Binding Description}"
+                                                VerticalOptions="End" />
 
 
-                                    </Grid>
-                                </Frame>
-                            </ContentView>
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
+                                        </Grid>
+                                    </Frame>
+                                </ContentView>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
 
-            </CollectionView>
+                </CollectionView>
+            </RefreshView>
         </Grid>
         <Frame
             Grid.Row="1"

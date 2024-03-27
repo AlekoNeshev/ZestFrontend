@@ -22,7 +22,6 @@ public partial class CommunityDetailsPage : ContentPage
 	}
 	async protected override void OnNavigatedTo(NavigatedToEventArgs args)
 	{
-
 		await this._viewModel.onNavigatedTo();
 		base.OnNavigatedTo(args);
 	}
@@ -31,8 +30,15 @@ public partial class CommunityDetailsPage : ContentPage
 		await _viewModel.OnNavigatedFrom();
 		base.OnNavigatedFrom(args);
 	}
-	private void ScrollView_Scrolled(object sender, ScrolledEventArgs e)
+	private void ImageButton_Clicked(object sender, EventArgs e)
 	{
-	
-    }
+		if (SecondImageButton.Rotation == 0)
+		{
+			SecondImageButton.RotateTo(180);
+		}
+		else
+		{
+			SecondImageButton.RotateTo(0);
+		}
+	}
 }

@@ -19,7 +19,7 @@ namespace ZestFrontend.ViewModels
 		AccountService _accountService;
 		FollowersService _followersService;
 		
-        public UsersViewModel( AccountService accountService, FollowersService followersService, AuthService authService)
+        public UsersViewModel(AccountService accountService, FollowersService followersService, AuthService authService)
         {
             this._accountService = accountService;
 			this._authService = authService;
@@ -29,6 +29,8 @@ namespace ZestFrontend.ViewModels
        
 		[ObservableProperty]
 		bool isButtonVisible;
+		[ObservableProperty]
+		bool isRefreshing;
 		public ObservableCollection<UserDTO> Users { get; } = new();
 		
 		public async Task GetUsers()
@@ -54,10 +56,18 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task SearchUsersAsync(string text)
 		{
-		   Users.Clear();
-			foreach (var item in await _accountService.GetAccountsBySearch(text, _authService.Token))
+			if (!string.IsNullOrWhiteSpace(text))
 			{
-				Users.Add(item);
+				Users.Clear();
+				foreach (var item in await _accountService.GetAccountsBySearch(text, _authService.Token))
+				{
+					Users.Add(item);
+				}
+			}
+			else
+			{
+				Users.Clear();
+				await GetUsers();
 			}
 		}
 		
@@ -66,6 +76,7 @@ namespace ZestFrontend.ViewModels
 		{
 			Users.Clear();
 			await GetUsers();
+			IsRefreshing = false;
 		}
 	}
 }

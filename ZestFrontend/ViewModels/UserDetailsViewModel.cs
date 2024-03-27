@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -15,14 +16,26 @@ namespace ZestFrontend.ViewModels
 	public partial class UserDetailsViewModel : ObservableObject
 	{
 		FollowersService _followersService;
-        public UserDetailsViewModel(FollowersService followersService)
+		CommunityService _communityService;
+        public UserDetailsViewModel(FollowersService followersService, CommunityService communityService)
         { 
             this._followersService = followersService;
+			this._communityService = communityService;
         }
         [ObservableProperty]
         UserDTO user;
 		[ObservableProperty]
 		string buttonText;
+		public ObservableCollection<CommunityDTO> Communities { get; } = new();
+
+		public async void GetComs()
+		{
+			Communities.Clear();
+			foreach (var item in await _communityService.GetCommunitiesByAccount(User.Id))
+			{
+				Communities.Add(item);
+			}
+		}
 		partial void OnUserChanged(UserDTO value)
 		{
 			if (value.IsFollowed)
@@ -33,6 +46,7 @@ namespace ZestFrontend.ViewModels
 			{
 				ButtonText = "Follow";
 			}
+			GetComs();
 		}
 		[RelayCommand]
 		async Task ChangeFollowshipStatusAsync()

@@ -22,9 +22,9 @@ namespace ZestFrontend.Services
 			_authService = authService;
         }
 
-        public async Task<List<CommunityDTO>> GetCommunitiesByAccount()
+        public async Task<List<CommunityDTO>> GetCommunitiesByAccount(string accountId)
         {
-            var url = $"{PortConst.Port_Forward_Http}/api/Community/GetByAccountId/{_authService.Id}";
+            var url = $"{PortConst.Port_Forward_Http}/api/Community/GetByAccountId/{accountId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -34,9 +34,9 @@ namespace ZestFrontend.Services
             else
                 return null;
         }
-		public async Task<List<CommunityDTO>> GetCommunities()
+		public async Task<List<CommunityDTO>> GetCommunities(int skipCount, int takeCount)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Community/getAll";
+			var url = $"{PortConst.Port_Forward_Http}/api/Community/getAll/{takeCount}/{skipCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)

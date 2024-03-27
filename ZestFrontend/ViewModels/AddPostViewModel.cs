@@ -20,14 +20,12 @@ namespace ZestFrontend.ViewModels
 	public partial class AddPostViewModel : ObservableObject
 	{
 		PostsService _postsService;
-		AuthService _authService;
 		List<FileResult> _fileResult10;
 		MediaService _mediaService;
 		
-		public AddPostViewModel(PostsService postsService , MediaService mediaService, AuthService authService)
+		public AddPostViewModel(PostsService postsService , MediaService mediaService)
         {
             this._postsService = postsService;
-			this._authService = authService;
 			this._mediaService = mediaService;
 			_fileResult10 = new List<FileResult>();
 			
@@ -48,16 +46,19 @@ namespace ZestFrontend.ViewModels
 			{
 				return;
 			}
+			var isSuccesfull = false;
 			var response = await _postsService.AddPost(Title, Content, Community.Id);
 			var content = await response.Content.ReadAsStringAsync();
-			var imageResponse = await _mediaService.UploadImage(int.Parse(content), _fileResult10.ToArray());
-			if (response.IsSuccessStatusCode && imageResponse.IsSuccessStatusCode) 
+			isSuccesfull = response.IsSuccessStatusCode;
+			if(_fileResult10.Count > 0)
 			{
-				await Shell.Current.GoToAsync($"{nameof(CommunityDetailsPage)}?id={Community.Name}", true,
-				new Dictionary<string, object>
+				var imageResponse = await _mediaService.UploadImage(int.Parse(content), _fileResult10.ToArray());
+				isSuccesfull = imageResponse.IsSuccessStatusCode;
+			}
+			
+			if (isSuccesfull) 
 			{
-			{"Community", Community }
-			});
+				await Shell.Current.GoToAsync("..");
 			}
 		}
 		[RelayCommand]
@@ -75,10 +76,6 @@ namespace ZestFrontend.ViewModels
 			{
 				fileResult1.ContentType = MimeTypesMap.GetMimeType(fileResult1.FileName);
 				_fileResult10 .Add(new FileResult(fileResult1));
-			
-				/*fileResult.
-				fileResult = fileResult1;
-				fileResult.ContentType = MimeTypesMap.GetMimeType(fileResult1.FileName);*/
 				Images.Add(fileResult1.FileName);
 			}
 		}
@@ -95,9 +92,7 @@ namespace ZestFrontend.ViewModels
 
 			var fileResults = await FilePicker.PickMultipleAsync(pickOptions);
 			if (fileResults != null && fileResults.Count() > 0)
-			{
-				
-				
+			{			
 				foreach (var fileResult in fileResults)
 				{
 					fileResult.ContentType = MimeTypesMap.GetMimeType(fileResult.FileName);

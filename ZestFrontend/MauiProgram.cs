@@ -70,13 +70,13 @@ public static class MauiProgram
 		builder.Services.AddSingleton<CommunityDetailsPage>();
 		builder.Services.AddSingleton<AccountPage>();
 		builder.Services.AddSingleton<PostDetailsPage>();
-		builder.Services.AddSingleton<AddPostPage>();
+		builder.Services.AddTransient<AddPostPage>();
 		builder.Services.AddSingleton<FriendsPage>();
 		builder.Services.AddSingleton<ChatPage>();
 		builder.Services.AddSingleton<RegisterNewUser>();
 		builder.Services.AddSingleton<UsersPage>();
 		builder.Services.AddSingleton<UserDetailsPage>();
-		builder.Services.AddSingleton<AddCommunityPage>();
+		builder.Services.AddTransient<AddCommunityPage>();
 		builder.Services.AddSingleton<CommunityModeratorsPage>();
 		builder.Services.AddTransient<CommentDetailsPage>();
 

@@ -10,11 +10,12 @@
     Title="CommentDetailsPage"
     x:DataType="viewmodel:CommentDetailsViewModel"
     BackgroundColor="GhostWhite">
-   
+
     <ContentPage.Resources>
         <local:LikeButtonsColorConverter x:Key="LikeButtonColorConverter" />
         <local:DislikeButtonColorConverter x:Key="DislikeButtonColorConverter" />
         <ResourceDictionary>
+
 
             <DataTemplate x:Key="CommentTemplate" x:DataType="model:CommentDTO">
                 <ContentView
@@ -78,7 +79,7 @@
                                     VerticalOptions="End">
 
                                     <ImageButton
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=LikeCommentCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommentDetailsViewModel}}, Path=LikeCommentCommand}"
                                         CommandParameter="{Binding .}"
                                         HorizontalOptions="Center"
                                         MaximumHeightRequest="{OnIdiom Phone=20,
@@ -89,7 +90,7 @@
                                         VerticalOptions="End" />
                                     <Label Text="{Binding Likes}" VerticalOptions="Start" />
                                     <ImageButton
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DislikeCommentCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommentDetailsViewModel}}, Path=DislikeCommentCommand}"
                                         CommandParameter="{Binding .}"
                                         HeightRequest="{OnIdiom Phone=20,
                                                                 Desktop=10}"
@@ -100,7 +101,7 @@
                                                                Desktop=10}" />
                                     <Label Text="{Binding Dislikes}" VerticalOptions="Start" />
                                     <ImageButton
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommentCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommentDetailsViewModel}}, Path=ReplyCommentCommand}"
                                         CommandParameter="{Binding .}"
                                         HorizontalOptions="End"
                                         MaximumHeightRequest="{OnIdiom Phone=20,
@@ -112,7 +113,7 @@
                                                                  IconSize=17}"
                                         VerticalOptions="Center" />
                                     <ImageButton
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DeleteCommentCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommentDetailsViewModel}}, Path=DeleteCommentCommand}"
                                         CommandParameter="{Binding .}"
                                         HorizontalOptions="End"
                                         IsVisible="{Binding IsOwner}"
@@ -148,7 +149,7 @@
                                     IsVisible="false"
                                     Text="{Binding Id}" />
                                 <ImageButton
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommand}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommentDetailsViewModel}}, Path=ReplyCommand}"
                                     HorizontalOptions="Center"
                                     Source="{mi:FluentFilled Send20Filled,
                                                              IconAutoScaling=True,
@@ -191,12 +192,10 @@
             ItemsSource="{Binding Replies}">
             <CollectionView.Header>
                 <ContentView
-                    Padding="0,-1,-1,-1"
-                    BackgroundColor="LightGray"
+                    Padding="0,-1,-1,0"
+                    BackgroundColor="LightBlue"
                     HorizontalOptions="FillAndExpand"
                     VerticalOptions="FillAndExpand">
-
-
 
                     <Frame
                         BorderColor="Transparent"
@@ -247,7 +246,7 @@
                                     VerticalOptions="End">
 
                                     <ImageButton
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=LikeCommentCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommentDetailsViewModel}}, Path=LikeCommentCommand}"
                                         CommandParameter="{Binding Comment}"
                                         HorizontalOptions="Center"
                                         MaximumHeightRequest="{OnIdiom Phone=20,
@@ -258,7 +257,7 @@
                                         VerticalOptions="End" />
                                     <Label Text="{Binding Comment.Likes}" VerticalOptions="Start" />
                                     <ImageButton
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DislikeCommentCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommentDetailsViewModel}}, Path=DislikeCommentCommand}"
                                         CommandParameter="{Binding Comment}"
                                         HeightRequest="{OnIdiom Phone=20,
                                                                 Desktop=10}"
@@ -269,7 +268,7 @@
                                                                Desktop=10}" />
                                     <Label Text="{Binding Comment.Dislikes}" VerticalOptions="Start" />
                                     <ImageButton
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommentCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommentDetailsViewModel}}, Path=ReplyCommentCommand}"
                                         CommandParameter="{Binding Comment}"
                                         HorizontalOptions="End"
                                         MaximumHeightRequest="{OnIdiom Phone=20,
@@ -281,7 +280,7 @@
                                                                  IconSize=17}"
                                         VerticalOptions="Center" />
                                     <ImageButton
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DeleteCommentCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommentDetailsViewModel}}, Path=DeleteCommentCommand}"
                                         CommandParameter="{Binding Comment}"
                                         HorizontalOptions="End"
                                         IsVisible="{Binding Comment.IsOwner}"
@@ -317,7 +316,7 @@
                                     IsVisible="false"
                                     Text="{Binding Comment.Id}" />
                                 <ImageButton
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommand}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommentDetailsViewModel}}, Path=ReplyCommand}"
                                     HorizontalOptions="Center"
                                     Source="{mi:FluentFilled Send20Filled,
                                                              IconAutoScaling=True,

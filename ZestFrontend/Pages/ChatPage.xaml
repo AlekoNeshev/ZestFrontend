@@ -122,6 +122,7 @@
                     Placeholder="Write a comment" />
                 <Button
                     BackgroundColor="CadetBlue"
+                    Clicked="Button_Clicked"
                     Command="{Binding SendCommand}"
                     CommandParameter="{Binding Text, Source={x:Reference CommentEntry}}"
                     Text="Send" />

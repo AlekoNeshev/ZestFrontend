@@ -9,6 +9,7 @@ namespace ZestFrontend.Filters
 	public enum CommunitiesFilterOptions
 	{
 		All, 
-		Popular
+		Popular,
+		Followed
 	}
 }

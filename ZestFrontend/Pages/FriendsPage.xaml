@@ -21,49 +21,52 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
+
         <SearchBar
+            x:Name="searchBar"
             Grid.Column="1"
             Margin="0,10,0,10"
             HorizontalOptions="Fill"
             Keyboard="Plain"
-            MaximumWidthRequest="500" />
-        <CollectionView
+            MaximumWidthRequest="500"
+            SearchCommand="{Binding SearchFollowersCommand}"
+            SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
+
+        <RefreshView
             Grid.Row="1"
             Grid.Column="1"
-            ItemsSource="{Binding Friends}"
-            SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:FollowerDTO">
-                    <Grid>
-                        <Frame BorderColor="LightGreen">
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:FriendsViewModel}}, Path=GoToChatPageCommand}" CommandParameter="{Binding .}" />
-                            </Frame.GestureRecognizers>
-                            <Grid Padding="10">
+            Command="{Binding RefreshCommand}"
+            IsRefreshing="{Binding IsRefreshing}">
+            <CollectionView ItemsSource="{Binding Friends}" SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:FollowerDTO">
+                        <Grid>
+                            <Frame BorderColor="LightGreen">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:FriendsViewModel}}, Path=GoToChatPageCommand}" CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                                <Grid Padding="10">
 
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
 
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="50" />
-                                </Grid.ColumnDefinitions>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="50" />
+                                    </Grid.ColumnDefinitions>
 
-                                <Label
-                                    Grid.Column="0"
-                                    FontAttributes="Bold"
-                                    MinimumWidthRequest="100"
-                                    Text="{Binding FollowerUsername}" />
-
-
-
-                            </Grid>
-                        </Frame>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-
-        </CollectionView>
+                                    <Label
+                                        Grid.Column="0"
+                                        FontAttributes="Bold"
+                                        MinimumWidthRequest="100"
+                                        Text="{Binding FollowerUsername}" />
+                                </Grid>
+                            </Frame>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
     </Grid>
 </ContentPage>

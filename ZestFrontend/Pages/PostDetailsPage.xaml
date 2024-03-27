@@ -17,6 +17,9 @@
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding GoBackCommand}" />
     </Shell.BackButtonBehavior>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding RefreshCommand}" Text="Refresh" />
+    </ContentPage.ToolbarItems>
     <ContentPage.Resources>
         <local:LikeButtonsColorConverter x:Key="LikeButtonColorConverter" />
         <local:DislikeButtonColorConverter x:Key="DislikeButtonColorConverter" />
@@ -28,8 +31,6 @@
                     BackgroundColor="LightGray"
                     HorizontalOptions="FillAndExpand"
                     VerticalOptions="FillAndExpand">
-
-
 
                     <Frame
                         BorderColor="Transparent"
@@ -58,8 +59,6 @@
                                     <ColumnDefinition />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-
-
 
                                 <Label FontAttributes="Bold" Text="{Binding Publisher}" />
                                 <Label
@@ -165,7 +164,6 @@
                                 </ImageButton>
                             </StackLayout>
 
-
                             <CollectionView
                                 Grid.Row="2"
                                 Margin="0,0,-10,-10"
@@ -193,14 +191,10 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-
-
             <RefreshView
                 Grid.Column="1"
                 Command="{Binding RefreshCommand}"
                 IsRefreshing="{Binding IsRefreshing}">
-
-
 
                 <CollectionView
                     Grid.Row="2"
@@ -252,7 +246,6 @@
                                         Spacing="{OnIdiom Phone=3,
                                                           Desktop=1}">
 
-
                                         <ImageButton
                                             Command="{Binding LikePostCommand}"
                                             HorizontalOptions="StartAndExpand"
@@ -289,7 +282,6 @@
                                                                      IconAutoScaling=True,
                                                                      IconSize=20}"
                                             VerticalOptions="Start" />
-
 
                                     </StackLayout>
                                     <CarouselView
@@ -328,15 +320,7 @@
                                         MaximumWidthRequest="300"
                                         ShouldShowPlaybackControls="True"
                                         Source="{Binding Source}" />
-                                    <Button
-                                        Grid.Row="3"
-                                        BackgroundColor="Transparent"
-                                        BorderColor="Transparent"
-                                        Command="{Binding FilterCommentsCommand}"
-                                        Text="See moderators"
-                                        TextColor="Grey" />
                                 </Grid>
-
                             </Frame>
 
                             <Label
@@ -344,12 +328,20 @@
                                 FontSize="Large"
                                 HorizontalOptions="Center"
                                 Text="Comments" />
+                            <Button
+                                Grid.Row="3"
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Command="{Binding FilterCommentsCommand}"
+                                HorizontalOptions="End"
+                                Text="Filter"
+                                TextColor="Grey"
+                                VerticalOptions="End" />
 
                         </Grid>
                     </CollectionView.Header>
                 </CollectionView>
-
-
+                
             </RefreshView>
             <Grid Grid.Row="1" Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>
@@ -370,6 +362,7 @@
                         Placeholder="Write a comment"
                         VerticalOptions="CenterAndExpand" />
                     <Button
+                        Clicked="Button_Clicked"
                         Command="{Binding SendCommand}"
                         CommandParameter="{Binding Text, Source={x:Reference CommentEntry}}"
                         HorizontalOptions="End"
@@ -386,5 +379,4 @@
             </Grid>
         </Grid>
     </ContentPage.Content>
-
 </ContentPage>

@@ -40,9 +40,6 @@ namespace ZestFrontend.ViewModels
 			_messageHubConnection.MessageConnection.On<int>("MessageSent", (id) => GetSingleMessage(id));
 			
 		}
-
-		
-
 		public ObservableCollection<MessageGroup> Messages { get; private set; } = new();
 		
 		[ObservableProperty]

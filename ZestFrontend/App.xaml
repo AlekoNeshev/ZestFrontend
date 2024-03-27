@@ -14,17 +14,7 @@
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
                 <mds:MaterialStyles />
             </ResourceDictionary.MergedDictionaries>
-            <Style x:Key="SmallScreenButtonStyle" TargetType="Button">
-                <Setter Property="FontSize" Value="18" />
-                <Setter Property="Padding" Value="10" />
-                <!--  Other button properties  -->
-            </Style>
-
-            <Style x:Key="LargeScreenButtonStyle" TargetType="Button">
-                <Setter Property="FontSize" Value="24" />
-                <Setter Property="Padding" Value="15" />
-                <!--  Other button properties  -->
-            </Style>
+           
 
         </ResourceDictionary>
     </Application.Resources>

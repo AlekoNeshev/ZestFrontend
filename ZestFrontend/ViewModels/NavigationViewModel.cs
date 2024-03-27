@@ -16,9 +16,11 @@ namespace ZestFrontend.ViewModels
 	public partial class NavigationViewModel : ObservableObject
 	{
 		private CommunityService _communityService;
-		public NavigationViewModel(CommunityService communityService) 
+		AuthService _authService;
+		public NavigationViewModel(CommunityService communityService, AuthService authService) 
 		{
 			this._communityService = communityService;
+			this._authService = authService;
 			GetComs();
 		}
 		[ObservableProperty]
@@ -28,7 +30,7 @@ namespace ZestFrontend.ViewModels
 		public async void GetComs()
 		{
 			Communities.Clear();
-			foreach (var item in await _communityService.GetCommunitiesByAccount())
+			foreach (var item in await _communityService.GetCommunitiesByAccount(_authService.Id))
 			{
 				Communities.Add(item);
 			}

@@ -35,18 +35,17 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <Grid x:Name="MyGrid">
-
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
             <ColumnDefinition Width="{OnIdiom Phone=*, Tablet=2*, Desktop=3*}" />
             <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
         </Grid.ColumnDefinitions>
+        
         <Grid.RowDefinitions>
-
             <RowDefinition x:Name="Row" Height="Auto" />
             <RowDefinition Height="*" />
-
         </Grid.RowDefinitions>
+        
         <Grid Grid.Row="1" Grid.Column="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -54,8 +53,6 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <StackLayout Grid.Column="1">
-
-
                 <StackLayout>
                     <StackLayout Orientation="Horizontal">
                         <ContentView
@@ -97,7 +94,6 @@
                                                              IconSize=20}" />
                             </Frame>
                         </ContentView>
-
                     </StackLayout>
 
                     <StackLayout IsVisible="{Binding AreFiltersVisible}">
@@ -155,11 +151,8 @@
                                     TextColor="Black" />
                             </Frame>
                         </ContentView>
-
                     </StackLayout>
                 </StackLayout>
-
-
             </StackLayout>
         </Grid>
         <SearchBar
@@ -171,7 +164,6 @@
             MaximumWidthRequest="500"
             SearchCommand="{Binding SearchPostsCommand}"
             SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
-
 
         <RefreshView
             Grid.Row="1"
@@ -201,7 +193,6 @@
                                     BorderColor="Transparent"
                                     CornerRadius="0"
                                     InputTransparent="False">
-
 
                                     <Frame.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=GoToPostDetailPageCommand}" CommandParameter="{Binding .}" />
@@ -259,7 +250,6 @@
                                                                   Desktop=1}"
                                                 VerticalOptions="EndAndExpand">
 
-
                                                 <ImageButton
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=LikePostCommand}"
                                                     CommandParameter="{Binding .}"
@@ -271,8 +261,6 @@
                                                     Source="{Binding Like, Converter={StaticResource LikeButtonColorConverter}}"
                                                     VerticalOptions="Center" />
                                                 <Label Text="{Binding Likes}" VerticalOptions="Start" />
-
-
 
                                                 <ImageButton
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=DislikePostCommand}"
@@ -299,9 +287,6 @@
                                                                              IconAutoScaling=True,
                                                                              IconSize=20}"
                                                     VerticalOptions="Center" />
-
-
-
                                             </StackLayout>
                                         </Grid>
                                     </Grid>
@@ -310,10 +295,7 @@
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
-
             </CollectionView>
         </RefreshView>
     </Grid>
-
-
 </ContentPage>

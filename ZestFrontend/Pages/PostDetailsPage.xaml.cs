@@ -34,4 +34,8 @@ public partial class PostDetailsPage : ContentPage
 		base.OnNavigatedFrom(args);
 	}
 
+	private void Button_Clicked(object sender, EventArgs e)
+	{
+		CommentEntry.Text = string.Empty;
+	}
 }
