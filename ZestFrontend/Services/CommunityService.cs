@@ -22,9 +22,9 @@ namespace ZestFrontend.Services
 			_authService = authService;
         }
 
-        public async Task<List<CommunityDTO>> GetCommunitiesByAccount(string accountId)
+        public async Task<List<CommunityDTO>> GetCommunitiesByAccount(string accountId, int takeCount, int skipCount)
         {
-            var url = $"{PortConst.Port_Forward_Http}/api/Community/GetByAccountId/{accountId}";
+            var url = $"{PortConst.Port_Forward_Http}/api/Community/GetByAccountId/{accountId}/{takeCount}/{skipCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -46,11 +46,13 @@ namespace ZestFrontend.Services
 			else
 				return null;
 		}
-		public async Task<List<CommunityDTO>> GetCommunitiesBySearch(string text)
+		public async Task<List<CommunityDTO>> GetCommunitiesBySearch(string text, int takeCount, int[] skipIds = null)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Community/getBySearch/{text}";
+			var url = $"{PortConst.Port_Forward_Http}/api/Community/getBySearch/{text}/{takeCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
-			var response = await _httpClient.GetAsync(url);
+			var body = JsonConvert.SerializeObject(skipIds);
+
+			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
 			if (response.IsSuccessStatusCode)
 			{
 				return await response.Content.ReadFromJsonAsync<List<CommunityDTO>>();

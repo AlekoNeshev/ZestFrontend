@@ -25,10 +25,10 @@ namespace ZestFrontend.ViewModels
 		AuthService _authService;
 		SignalRConnectionService _signalRConnectionService;
 		CommunityService _communityService;
-		CommentsHubConnectionService _commentHubConnectionService;
+		DeleteHubConnectionService _commentHubConnectionService;
 		private Task InitTask;
 		PostsFilterOptions _filter;
-		public PostsViewModel(PostsService postsService, LikesService service, LikesHubConnectionService likesHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService, CommunityService communityService, CommentsHubConnectionService commentHubConnectionService)
+		public PostsViewModel(PostsService postsService, LikesService service, LikesHubConnectionService likesHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService, CommunityService communityService, DeleteHubConnectionService commentHubConnectionService)
 		{
 
 			this._postsService = postsService;
@@ -49,7 +49,7 @@ namespace ZestFrontend.ViewModels
 			await this._likesConnection.Init();
 			await this._commentHubConnectionService.Init();
 			_likesConnection.LikesConnection.On<int>("PostLiked", UpdatePost);
-			_commentHubConnectionService.CommentsConnection.On<int>("PostDeleted", UpdatePost);
+			_commentHubConnectionService.DeleteConnection.On<int>("PostDeleted", UpdatePost);
 		}
 
 		[ObservableProperty]
@@ -61,6 +61,8 @@ namespace ZestFrontend.ViewModels
 		[ObservableProperty]
 		bool areFiltersVisible;
 
+		[ObservableProperty]
+		string searchText;
 
 		public ObservableCollection<PostDTO> Posts { get; } = new();
 
@@ -89,7 +91,7 @@ namespace ZestFrontend.ViewModels
 			{
 				lastDate = Posts.Last().PostedOn;
 			}
-			foreach (var post in await _postsService.GetPosts(lastDate, 0, 10))
+			foreach (var post in await _postsService.GetPosts(lastDate, 0, 40))
 			{
 				post.IsOwner = post.Publisher == _authService.Username;
 				Posts.Add(post);
@@ -99,11 +101,11 @@ namespace ZestFrontend.ViewModels
 		}
 		public async Task GetTrendingPosts()
 		{
-			
+
 			var skipIds = Posts.Select(x => x.Id).ToArray();
 
 
-			foreach (var post in await _postsService.GetTrendingPostsAsync(50, 0, skipIds))
+			foreach (var post in await _postsService.GetTrendingPostsAsync(40, 0, skipIds))
 			{
 				post.IsOwner = post.Publisher == _authService.Username;
 				Posts.Add(post);
@@ -113,10 +115,10 @@ namespace ZestFrontend.ViewModels
 		}
 		public async Task GetFollowedPosts()
 		{
-			
+
 			var skipIds = Posts.Select(x => x.Id).ToArray();
 
-			foreach (var post in await _postsService.GetFollowedPostsAsync(50, skipIds))
+			foreach (var post in await _postsService.GetFollowedPostsAsync(40, skipIds))
 			{
 				post.IsOwner = post.Publisher == _authService.Username;
 				Posts.Add(post);
@@ -132,6 +134,14 @@ namespace ZestFrontend.ViewModels
 			{
 				Posts.Clear();
 				await GetPosts();
+				if (_likesConnection.LikesConnection.ConnectionId != null)
+				{
+					await _signalRConnectionService.RemoveConnectionToGroup(_likesConnection.LikesConnection.ConnectionId);
+					await _signalRConnectionService.AddConnectionToGroup(_likesConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
+				}
+				SearchText = string.Empty;
+				_authService.Groups.Clear();
+				_authService.Groups.AddRange(Posts.Select(x => x.Id.ToString()).ToList());
 			}
 		}
 		[RelayCommand]
@@ -141,6 +151,14 @@ namespace ZestFrontend.ViewModels
 			{
 				Posts.Clear();
 				await GetTrendingPosts();
+				if (_likesConnection.LikesConnection.ConnectionId != null)
+				{
+					await _signalRConnectionService.RemoveConnectionToGroup(_likesConnection.LikesConnection.ConnectionId);
+					await _signalRConnectionService.AddConnectionToGroup(_likesConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
+				}
+				SearchText = string.Empty;
+				_authService.Groups.Clear();
+				_authService.Groups.AddRange(Posts.Select(x => x.Id.ToString()).ToList());
 			}
 		}
 		[RelayCommand]
@@ -150,6 +168,14 @@ namespace ZestFrontend.ViewModels
 			{
 				Posts.Clear();
 				await GetFollowedPosts();
+				if (_likesConnection.LikesConnection.ConnectionId != null)
+				{
+					await _signalRConnectionService.RemoveConnectionToGroup(_likesConnection.LikesConnection.ConnectionId);
+					await _signalRConnectionService.AddConnectionToGroup(_likesConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
+				}
+				SearchText = string.Empty;
+				_authService.Groups.Clear();
+				_authService.Groups.AddRange(Posts.Select(x => x.Id.ToString()).ToList());
 			}
 		}
 
@@ -181,14 +207,14 @@ namespace ZestFrontend.ViewModels
 		{
 			if (postDTO.Like == null)
 			{
-				
+
 				await _likesService.Like(postDTO.Id, 0, true);
 			}
-			else if(postDTO.Like.Value == true) 
+			else if (postDTO.Like.Value == true)
 			{
 				await _likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
 			}
-			else if(postDTO.Like.Value == false)
+			else if (postDTO.Like.Value == false)
 			{
 				await _likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
 				await _likesService.Like(postDTO.Id, 0, true);
@@ -204,55 +230,66 @@ namespace ZestFrontend.ViewModels
 			{
 			{"Post", post }
 			});
-			
+
 		}
 		[RelayCommand]
-		async Task SearchPosts(string text)
+		async Task SearchPosts()
 		{
-			if (!string.IsNullOrWhiteSpace(text))
+			if (!string.IsNullOrWhiteSpace(SearchText))
 			{
 				Posts.Clear();
-				foreach (var item in await _postsService.GetPostsBySearch(text))
+				foreach (var item in await _postsService.GetPostsBySearch(SearchText, 40, Posts.Select(x=>x.Id).ToArray()))
 				{
 					Posts.Add(item);
 				}
 			}
-			else if(_filter == PostsFilterOptions.Last)
+			else if (_filter == PostsFilterOptions.Last)
 			{
 				Posts.Clear();
 				await GetPosts();
 			}
-			else if(_filter == PostsFilterOptions.Trending)
+			else if (_filter == PostsFilterOptions.Trending)
 			{
 				Posts.Clear();
 				await GetTrendingPosts();
 			}
-			else if(_filter == PostsFilterOptions.Followed)
+			else if (_filter == PostsFilterOptions.Followed)
 			{
 				Posts.Clear();
 				await GetFollowedPosts();
 			}
-			await _signalRConnectionService.AddConnectionToGroup(_likesConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
+			if (_likesConnection.LikesConnection.ConnectionId != null)
+			{
+				await _signalRConnectionService.AddConnectionToGroup(_likesConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
+			}
+			_authService.Groups.Clear();
+			_authService.Groups.AddRange(Posts.Select(x => x.Id.ToString()).ToList());
 		}
 		[RelayCommand]
 		async Task RefreshAsync()
 		{
-			
+
 			Posts.Clear();
-			if(_filter == PostsFilterOptions.Last)
+			if (_filter == PostsFilterOptions.Last)
 			{
 				await GetPosts();
 			}
-			else if(_filter == PostsFilterOptions.Trending)
+			else if (_filter == PostsFilterOptions.Trending)
 			{
 				await GetTrendingPosts();
 			}
-			else if(_filter == PostsFilterOptions.Followed)
+			else if (_filter == PostsFilterOptions.Followed)
 			{
 				await GetFollowedPosts();
 			}
 			IsRefreshing = false;
-			await _signalRConnectionService.AddConnectionToGroup(_likesConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
+			if (_likesConnection.LikesConnection.ConnectionId != null)
+			{
+				await _signalRConnectionService.RemoveConnectionToGroup(_likesConnection.LikesConnection.ConnectionId);
+				await _signalRConnectionService.AddConnectionToGroup(_likesConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
+			}
+			_authService.Groups.Clear();
+			_authService.Groups.AddRange(Posts.Select(x => x.Id.ToString()).ToList());
 		}
 		[RelayCommand]
 		async Task FilterBtnAsync()
@@ -266,25 +303,36 @@ namespace ZestFrontend.ViewModels
 			{
 				await GetPosts();
 			}
-			else if(_filter == PostsFilterOptions.Trending)
+			else if (_filter == PostsFilterOptions.Trending)
 			{
 				await GetTrendingPosts();
 			}
-			else if(_filter == PostsFilterOptions.Followed)
+			else if (_filter == PostsFilterOptions.Followed)
 			{
 				await GetFollowedPosts();
 			}
-			await _signalRConnectionService.AddConnectionToGroup(_likesConnection.LikesConnection.ConnectionId, Posts.TakeLast(10).Select(x => x.Id.ToString()).ToArray());
+			if (_likesConnection.LikesConnection.ConnectionId != null)
+			{
+				await _signalRConnectionService.AddConnectionToGroup(_likesConnection.LikesConnection.ConnectionId, Posts.TakeLast(40).Select(x => x.Id.ToString()).ToArray());
+			}
+			_authService.Groups.AddRange(Posts.TakeLast(40).Select(x => x.Id.ToString()).ToList());
 		}
 		public async Task onNavigatedTo()
 		{
 			if (InitTask is not null && !InitTask.IsCompleted) await InitTask;
-
-			await _signalRConnectionService.AddConnectionToGroup(_likesConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
+			if (_likesConnection.LikesConnection.ConnectionId != null)
+			{
+				await _signalRConnectionService.AddConnectionToGroup(_likesConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
+			}
+			_authService.Groups.AddRange(Posts.Select(x => x.Id.ToString()).ToList());
 		}
 		public async Task OnNavigatedFrom()
 		{
-			await _signalRConnectionService.RemoveConnectionToGroup(_likesConnection.LikesConnection.ConnectionId);
+			if (_likesConnection.LikesConnection.ConnectionId != null)
+			{
+				await _signalRConnectionService.RemoveConnectionToGroup(_likesConnection.LikesConnection.ConnectionId);
+			}
+			_authService.Groups.Clear();
 		}
 	}
 }

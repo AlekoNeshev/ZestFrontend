@@ -30,7 +30,7 @@
             Keyboard="Plain"
             MaximumWidthRequest="500"
             SearchCommand="{Binding SearchCommunitiesCommand}"
-            SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
+            Text="{Binding SearchText, Mode=TwoWay}" />
         <Grid Grid.Row="1" Grid.Column="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />

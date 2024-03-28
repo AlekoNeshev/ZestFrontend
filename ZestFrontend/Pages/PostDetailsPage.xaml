@@ -314,10 +314,11 @@
                                     <toolkit:MediaElement
                                         Grid.Row="2"
                                         Grid.ColumnSpan="2"
+                                        Aspect="AspectFit"
                                         HorizontalOptions="Center"
                                         IsVisible="{Binding IsMediaPlayerVisible}"
-                                        MaximumHeightRequest="300"
-                                        MaximumWidthRequest="300"
+                                        MaximumHeightRequest="600"
+                                        MaximumWidthRequest="600"
                                         ShouldShowPlaybackControls="True"
                                         Source="{Binding Source}" />
                                 </Grid>
@@ -341,7 +342,7 @@
                         </Grid>
                     </CollectionView.Header>
                 </CollectionView>
-                
+
             </RefreshView>
             <Grid Grid.Row="1" Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>

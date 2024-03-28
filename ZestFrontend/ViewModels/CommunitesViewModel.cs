@@ -30,6 +30,8 @@ namespace ZestFrontend.ViewModels
 		bool areFiltersVisible;
 		[ObservableProperty]
 		bool isRefreshing;
+		[ObservableProperty]
+		string searchText;
 
 		public async Task GetCommunities()
 		{
@@ -43,7 +45,7 @@ namespace ZestFrontend.ViewModels
 		{
 			Communities.Clear();
 
-			foreach (var item in await _communityService.GetCommunitiesBySearch(text))
+			foreach (var item in await _communityService.GetCommunitiesBySearch(text, 50, Communities.Select(x => x.Id).ToArray()))
 			{
 				Communities.Add(item);
 			}
@@ -61,8 +63,8 @@ namespace ZestFrontend.ViewModels
 		}
 		public async Task GetFollowedCommunities()
 		{
-			Communities.Clear();
-			foreach (var item in await _communityService.GetCommunitiesByAccount(_authService.Id))
+			
+			foreach (var item in await _communityService.GetCommunitiesByAccount(_authService.Id, 50, Communities.Count))
 			{
 				Communities.Add(item);
 			}
@@ -117,11 +119,11 @@ namespace ZestFrontend.ViewModels
 			}
 		}
 		[RelayCommand]
-		async Task SearchCommunitiesAsync(string text)
+		async Task SearchCommunitiesAsync()
 		{
-			if (!string.IsNullOrWhiteSpace(text))
+			if (!string.IsNullOrWhiteSpace(SearchText))
 			{
-				await GetCommunitiesBySearchAsync(text);
+				await GetCommunitiesBySearchAsync(SearchText);
 			}
 			else if (_filter == CommunitiesFilterOptions.All)
 			{
@@ -167,6 +169,10 @@ namespace ZestFrontend.ViewModels
 			else if(_filter == CommunitiesFilterOptions.Popular)
 			{
 				await GetPopularCommunities();
+			}
+			else if (_filter == CommunitiesFilterOptions.Followed)
+			{
+				await GetFollowedCommunities();
 			}
 		}
 	}

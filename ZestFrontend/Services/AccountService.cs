@@ -1,18 +1,12 @@
-﻿
-using Auth0.ManagementApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using ZestFrontend.DTOs;
 
 namespace ZestFrontend.Services
 {
-    public class AccountService
+	public class AccountService
     {
         HttpClient _httpClient;
 
@@ -59,11 +53,13 @@ namespace ZestFrontend.Services
 			else
 				return null;
 		}
-		public async Task<List<UserDTO>> GetAccountsBySearch(string text, string accessToken)
+		public async Task<List<UserDTO>> GetAccountsBySearch(string text, string accessToken, int takeCount, string[] skipIds = null)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Account/getBySearch/{text}";
+			var url = $"{PortConst.Port_Forward_Http}/api/Account/getBySearch/{text}/{takeCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-			var response = await _httpClient.GetAsync(url);
+			var body = Newtonsoft.Json.JsonConvert.SerializeObject(skipIds);
+
+			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
 			if (response.IsSuccessStatusCode)
 			{
 				return await response.Content.ReadFromJsonAsync<List<UserDTO>>();

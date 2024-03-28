@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -47,11 +48,13 @@ namespace ZestFrontend.Services
 			else
 				return null;
 		}
-		public async Task<List<FollowerDTO>> GetAccountsBySearch(string text)
+		public async Task<List<FollowerDTO>> GetAccountsBySearch(string text, int takeCount, string[] skipIds = null)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Followers/getBySearch/{text}";
+			var url = $"{PortConst.Port_Forward_Http}/api/Followers/getBySearch/{text}/{takeCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
-			var response = await _httpClient.GetAsync(url);
+			var body = JsonConvert.SerializeObject(skipIds);
+
+			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
 			if (response.IsSuccessStatusCode)
 			{
 				return await response.Content.ReadFromJsonAsync<List<FollowerDTO>>();

@@ -31,6 +31,8 @@ namespace ZestFrontend.ViewModels
 		bool isButtonVisible;
 		[ObservableProperty]
 		bool isRefreshing;
+		[ObservableProperty]
+		string searchText;
 		public ObservableCollection<UserDTO> Users { get; } = new();
 		
 		public async Task GetUsers()
@@ -54,12 +56,12 @@ namespace ZestFrontend.ViewModels
 		}
 		
 		[RelayCommand]
-		async Task SearchUsersAsync(string text)
+		async Task SearchUsersAsync()
 		{
-			if (!string.IsNullOrWhiteSpace(text))
+			if (!string.IsNullOrWhiteSpace(SearchText))
 			{
 				Users.Clear();
-				foreach (var item in await _accountService.GetAccountsBySearch(text, _authService.Token))
+				foreach (var item in await _accountService.GetAccountsBySearch(SearchText, _authService.Token, 50, Users.Select(x => x.Id).ToArray()))
 				{
 					Users.Add(item);
 				}

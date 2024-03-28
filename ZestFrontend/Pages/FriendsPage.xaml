@@ -30,7 +30,7 @@
             Keyboard="Plain"
             MaximumWidthRequest="500"
             SearchCommand="{Binding SearchFollowersCommand}"
-            SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
+            Text="{Binding SearchText, Mode=TwoWay}" />
 
         <RefreshView
             Grid.Row="1"

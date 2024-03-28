@@ -7,22 +7,22 @@ using System.Threading.Tasks;
 
 namespace ZestFrontend.Services
 {
-	public class MessageHubConnectionService
+	public class DeleteHubConnectionService
 	{
-		private HubConnection _messageConnection;
+		private HubConnection _deleteConnection;
 		private readonly AuthService _authService;
 		private SignalRConnectionService _signalRConnectionService;
-		public MessageHubConnectionService(AuthService authService, SignalRConnectionService signalRConnectionService)
+		public DeleteHubConnectionService(AuthService authService, SignalRConnectionService signalRConnectionService )
 		{
 			_authService=authService;
 			_signalRConnectionService=signalRConnectionService;
 		}
 
-		public HubConnection MessageConnection => _messageConnection;
+		public HubConnection DeleteConnection => _deleteConnection;
 
 		public async Task Init()
 		{
-			_messageConnection = BuildLikesHubConnection($"{PortConst.Port_Forward_Http}/messagehub");
+			_deleteConnection = BuildLikesHubConnection($"{PortConst.Port_Forward_Http}/deletehub");
 			await StartConnections();
 		}
 		private HubConnection BuildLikesHubConnection(string url)
@@ -41,16 +41,16 @@ namespace ZestFrontend.Services
 
 		private async Task StartConnections()
 		{
-			await _messageConnection.StartAsync();
-			_messageConnection.Closed += _messageConnection_Closed;
+			await _deleteConnection.StartAsync();
+			_deleteConnection.Closed +=_commentsConnection_Closed;
 		}
 
-		private async Task _messageConnection_Closed(Exception arg)
+		private async Task _commentsConnection_Closed(Exception arg)
 		{
-			await _messageConnection.StartAsync();
+			await _deleteConnection.StartAsync();
 			if (_authService.Groups.Count != 0)
 			{
-				await _signalRConnectionService.AddConnectionToGroup(MessageConnection.ConnectionId, _authService.Groups.Where(x => x.Contains("message")).ToArray());
+				await _signalRConnectionService.AddConnectionToGroup(DeleteConnection.ConnectionId, _authService.Groups.Where(x => x.Contains("pdd")).ToArray());
 			}
 		}
 	}

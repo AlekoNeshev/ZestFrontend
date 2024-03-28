@@ -123,44 +123,7 @@ namespace ZestFrontend.ViewModels
 			await OnOpen();
 			
 		}
-		public async void OnNavigatedTo()
-		{
-			if (InitTask is not null && !InitTask.IsCompleted) await InitTask;
-			int comparisonResult = string.Compare(_authService.Id, Follower.FollowerId);
-			string firstHubId, secondHubId;
-
-			if (comparisonResult >= 0)
-			{
-				firstHubId = _authService.Id;
-				secondHubId = Follower.FollowerId;
-			}
-			else
-			{
-				firstHubId = Follower.FollowerId;
-				secondHubId = _authService.Id;
-			}
-			
-			await _signalRConnectionService.AddConnectionToGroup(_messageHubConnection.MessageConnection.ConnectionId, new string[] { $"chat-{firstHubId}{secondHubId}" });
-		}
-		public async void OnNavigatedFrom()
-		{
-			int comparisonResult = string.Compare(_authService.Id, Follower.FollowerId);
-			string firstHubId, secondHubId;
-
-			if (comparisonResult >= 0)
-			{
-				firstHubId = _authService.Id;
-				secondHubId = Follower.FollowerId;
-			}
-			else
-			{
-				firstHubId = Follower.FollowerId;
-				secondHubId = _authService.Id;
-			}
-
-			await _signalRConnectionService.RemoveConnectionToGroup(_messageHubConnection.MessageConnection.ConnectionId);
-			
-		}
+		
 		[RelayCommand]
 		async Task SendAsync(string text)
 		{
@@ -199,6 +162,49 @@ namespace ZestFrontend.ViewModels
 		async protected virtual Task OnOpen()
 		{
 			 OnOpenScreen?.Invoke(this, EventArgs.Empty);
+		}
+		public async void OnNavigatedTo()
+		{
+			if (InitTask is not null && !InitTask.IsCompleted) await InitTask;
+			int comparisonResult = string.Compare(_authService.Id, Follower.FollowerId);
+			string firstHubId, secondHubId;
+
+			if (comparisonResult >= 0)
+			{
+				firstHubId = _authService.Id;
+				secondHubId = Follower.FollowerId;
+			}
+			else
+			{
+				firstHubId = Follower.FollowerId;
+				secondHubId = _authService.Id;
+			}
+			if(_messageHubConnection.MessageConnection.ConnectionId!= null)
+			{
+				await _signalRConnectionService.AddConnectionToGroup(_messageHubConnection.MessageConnection.ConnectionId, new string[] { $"chat-{firstHubId}{secondHubId}" });
+			}
+			_authService.Groups.Add($"chat-{firstHubId}{secondHubId}");
+		}
+		public async void OnNavigatedFrom()
+		{
+			int comparisonResult = string.Compare(_authService.Id, Follower.FollowerId);
+			string firstHubId, secondHubId;
+
+			if (comparisonResult >= 0)
+			{
+				firstHubId = _authService.Id;
+				secondHubId = Follower.FollowerId;
+			}
+			else
+			{
+				firstHubId = Follower.FollowerId;
+				secondHubId = _authService.Id;
+			}
+			if (_messageHubConnection.MessageConnection.ConnectionId!= null)
+			{
+				await _signalRConnectionService.RemoveConnectionToGroup(_messageHubConnection.MessageConnection.ConnectionId);
+			}
+			_authService.Groups.Clear();
 		}
 	}
 }

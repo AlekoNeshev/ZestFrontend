@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:icon="clr-namespace:IconPacks.IconKind;assembly=IconPacks.Material"
     xmlns:local="clr-namespace:ZestFrontend.Parameters"
-    xmlns:md="clr-namespace:ZestFrontend.Button"
     xmlns:mdc="clr-namespace:Material.Components.Maui;assembly=Material.Components.Maui"
     xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
@@ -40,12 +39,12 @@
             <ColumnDefinition Width="{OnIdiom Phone=*, Tablet=2*, Desktop=3*}" />
             <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
         </Grid.ColumnDefinitions>
-        
+
         <Grid.RowDefinitions>
             <RowDefinition x:Name="Row" Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <Grid Grid.Row="1" Grid.Column="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -163,7 +162,7 @@
             Keyboard="Plain"
             MaximumWidthRequest="500"
             SearchCommand="{Binding SearchPostsCommand}"
-            SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
+            Text="{Binding SearchText, Mode=TwoWay}" />
 
         <RefreshView
             Grid.Row="1"

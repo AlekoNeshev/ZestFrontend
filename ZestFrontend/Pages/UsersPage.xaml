@@ -28,7 +28,7 @@
             Margin="0,10,0,10"
             MaximumWidthRequest="500"
             SearchCommand="{Binding SearchUsersCommand}"
-            SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
+            Text="{Binding SearchText, Mode=TwoWay}" />
         <RefreshView
             Grid.Row="1"
             Grid.Column="1"

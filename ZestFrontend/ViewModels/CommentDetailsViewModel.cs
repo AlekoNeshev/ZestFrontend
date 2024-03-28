@@ -19,17 +19,17 @@ namespace ZestFrontend.ViewModels
 		private readonly AuthService _authService;
 		private readonly LikesService _likesService;
 		LikesHubConnectionService _likesHubConnectionService;
-		CommentsHubConnectionService _commentHubConnectionService;
+		DeleteHubConnectionService _deleteHubConnectionService;
 		SignalRConnectionService _signalRConnectionService;
-        public CommentDetailsViewModel(CommentService commentService, AuthService authService, LikesService likesService, LikesHubConnectionService likesHubConnectionService, CommentsHubConnectionService commentsHubConnectionService, SignalRConnectionService signalRConnectionService)
+        public CommentDetailsViewModel(CommentService commentService, AuthService authService, LikesService likesService, LikesHubConnectionService likesHubConnectionService, DeleteHubConnectionService deleteHubConnectionService, SignalRConnectionService signalRConnectionService)
         {
             _commentService = commentService;
 			_authService = authService;
 			_likesService = likesService;
 			_likesHubConnectionService = likesHubConnectionService;
-			_commentHubConnectionService = commentsHubConnectionService;
+			_deleteHubConnectionService = deleteHubConnectionService;
 			_signalRConnectionService = signalRConnectionService;
-			_commentHubConnectionService.CommentsConnection.On<int>("CommentDeleted", UpdateComment);
+			_deleteHubConnectionService.DeleteConnection.On<int>("CommentDeleted", UpdateComment);
 			_likesHubConnectionService.LikesConnection.On<int>("CommentLiked", UpdateComment);
 			ReplyCommand = new ReplyCommand(ExecuteReplyCommand);
 		}
@@ -45,7 +45,6 @@ namespace ZestFrontend.ViewModels
 			set
 			{
 				postId = value;
-				OnPropertyChanged();
 			}
 		}
 
@@ -127,7 +126,7 @@ namespace ZestFrontend.ViewModels
 				new Dictionary<string, object>
 			{
 			{"Comment", comment },
-			{"Post", PostId }
+			{"postId", PostId }
 			});
 
 		}
@@ -148,12 +147,15 @@ namespace ZestFrontend.ViewModels
 			else
 			{
 				var commentToFind = FindCommentById(secondNumber, Replies, 0);
-				var commentDto = (CommentDTO)commentToFind[0];
-				var commentLevel = (int)commentToFind[1];
-				commentDto.Replies.Add(reply);
-				if (commentLevel >= 4)
+				if (commentToFind != null && commentToFind.Length > 1)
 				{
-					commentDto.AreRepliesVisible = false;
+					var commentDto = (CommentDTO)commentToFind[0];
+					var commentLevel = (int)commentToFind[1];
+					commentDto.Replies.Add(reply);
+					if (commentLevel >= 4)
+					{
+						commentDto.AreRepliesVisible = false;
+					}
 				}
 			}
 
@@ -189,14 +191,16 @@ namespace ZestFrontend.ViewModels
 			}
 			else
 			{
-				var comment = (CommentDTO)FindCommentById(id, Replies, 0)[0];
-				if (comment != null)
+				var comment = FindCommentById(id, Replies, 0);
+
+				if (comment != null && comment.Length > 1)
 				{
-					comment.Likes = updatedComment.Likes;
-					comment.Dislikes = updatedComment.Dislikes;
-					comment.Like = updatedComment.Like;
-					comment.Text = updatedComment.Text;
-					comment.Publisher = updatedComment.Publisher;
+					var commentDto = (CommentDTO)comment[0];
+					commentDto.Likes = updatedComment.Likes;
+					commentDto.Dislikes = updatedComment.Dislikes;
+					commentDto.Like = updatedComment.Like;
+					commentDto.Text = updatedComment.Text;
+					commentDto.Publisher = updatedComment.Publisher;
 				}
 			}
 		}
@@ -216,8 +220,12 @@ namespace ZestFrontend.ViewModels
 			}
 			else
 			{
-				var commentToFind = (CommentDTO)FindCommentById(comment, Replies, 0)[0];
-				commentToFind.IsReplyVisible = false;
+				var commentToFind = FindCommentById(comment, Replies, 0);
+				if (commentToFind != null && commentToFind.Length > 1)
+				{
+					var commentDto = (CommentDTO)commentToFind[0];
+					commentDto.IsReplyVisible = false;
+				}
 			}
 			
 

@@ -8,10 +8,11 @@ namespace ZestFrontend.Services
 	{
 		private  HubConnection _likesConnection;
 		private readonly AuthService _authService;
-		public LikesHubConnectionService(AuthService authService )
+		private SignalRConnectionService _signalRConnectionService;
+		public LikesHubConnectionService(AuthService authService, SignalRConnectionService signalRConnectionService )
 		{
-			
 			_authService=authService;
+			_signalRConnectionService=signalRConnectionService;
 		}
 
 		public HubConnection LikesConnection => _likesConnection;
@@ -44,6 +45,10 @@ namespace ZestFrontend.Services
 		private async Task _likesConnection_Closed(Exception arg)
 		{
 			await _likesConnection.StartAsync();
+			if (_authService.Groups.Count != 0)
+			{
+				await _signalRConnectionService.AddConnectionToGroup(LikesConnection.ConnectionId, _authService.Groups.Where(x => x.Contains("pdl")).ToArray());
+			}
 		}
 	}
 }

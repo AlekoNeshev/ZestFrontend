@@ -30,7 +30,7 @@ namespace ZestFrontend.ViewModels
 		public async void GetComs()
 		{
 			Communities.Clear();
-			foreach (var item in await _communityService.GetCommunitiesByAccount(_authService.Id))
+			foreach (var item in await _communityService.GetCommunitiesByAccount(_authService.Id, 50, Communities.Count))
 			{
 				Communities.Add(item);
 			}

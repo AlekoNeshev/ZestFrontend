@@ -21,7 +21,7 @@ namespace ZestFrontend.ViewModels
 		LikesService _likesService;
 		SignalRConnectionService _signalRConnectionService;
 		LikesHubConnectionService _likesHubConnectionService;
-		CommentsHubConnectionService _commentHubConnectionService;
+		DeleteHubConnectionService _deleteHubConnectionService;
 		CommentService _commentService;
 		MediaService _mediaService;
 		CommentFilter _filter;
@@ -29,7 +29,7 @@ namespace ZestFrontend.ViewModels
 		private bool _isNavigatingToCommentDetailPage;
 
 
-		public PostDetailsViewModel(PostsService postsService, LikesService likesService, CommentService commentService, MediaService mediaService, LikesHubConnectionService likesHubConnectionService, CommentsHubConnectionService commentHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService)
+		public PostDetailsViewModel(PostsService postsService, LikesService likesService, CommentService commentService, MediaService mediaService, LikesHubConnectionService likesHubConnectionService, DeleteHubConnectionService deleteHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService)
 		{
 			_authService = authService;
 			_postsService = postsService;
@@ -37,7 +37,7 @@ namespace ZestFrontend.ViewModels
 			_commentService = commentService;
 			_mediaService = mediaService;
 			_likesHubConnectionService=likesHubConnectionService;
-			_commentHubConnectionService=commentHubConnectionService;
+			_deleteHubConnectionService=deleteHubConnectionService;
 			_signalRConnectionService = signalRConnectionService;
 			TaskInit = Init();
 			ReplyCommand = new ReplyCommand(ExecuteReplyCommand);
@@ -46,7 +46,7 @@ namespace ZestFrontend.ViewModels
 		}
 		private async Task Init()
 		{
-			_commentHubConnectionService.CommentsConnection.On<int>("CommentDeleted", UpdateComment);
+			_deleteHubConnectionService.DeleteConnection.On<int>("CommentDeleted", UpdateComment);
 			_likesHubConnectionService.LikesConnection.On<int>("CommentLiked", UpdateComment);
 		}
 		public CarouselView Carousel { get; set; }
@@ -261,12 +261,15 @@ namespace ZestFrontend.ViewModels
 			var reply = await _commentService.GetSingleComment(firstNumber);
 			reply.IsOwner = reply.Publisher == _authService.Username;
 			var commentToFind = FindCommentById(secondNumber, Comments, 0);
-			var commentDto = (CommentDTO)commentToFind[0];
-			var commentLevel = (int)commentToFind[1];
-			commentDto.Replies.Add(reply);
-			if(commentLevel >= 4)
+			if (commentToFind != null && commentToFind.Length > 1)
 			{
-				commentDto.AreRepliesVisible = false;
+				var commentDto = (CommentDTO)commentToFind[0];
+				var commentLevel = (int)commentToFind[1];
+				commentDto.Replies.Add(reply);
+				if (commentLevel >= 4)
+				{
+					commentDto.AreRepliesVisible = false;
+				}
 			}
 			
 		}
@@ -292,16 +295,18 @@ namespace ZestFrontend.ViewModels
 		public async void UpdateComment(int id)
 		{
 			var updatedComment = await _commentService.GetSingleComment(id);
-			var comment = (CommentDTO)FindCommentById(id, Comments, 0)[0];
-			if(comment != null)
+			var comment = FindCommentById(id, Comments, 0);
+
+			if (comment != null && comment.Length > 1)
 			{
-				comment.Likes = updatedComment.Likes;
-				comment.Dislikes = updatedComment.Dislikes;
-				comment.Like = updatedComment.Like;
-				comment.Text = updatedComment.Text;
-				comment.Publisher = updatedComment.Publisher;
+				var commentDto = (CommentDTO)comment[0];
+				commentDto.Likes = updatedComment.Likes;
+				commentDto.Dislikes = updatedComment.Dislikes;
+				commentDto.Like = updatedComment.Like;
+				commentDto.Text = updatedComment.Text;
+				commentDto.Publisher = updatedComment.Publisher;
 			}
-			
+
 		}
 		public async void AddComment(int id)
 		{
@@ -375,8 +380,13 @@ namespace ZestFrontend.ViewModels
 			var comment = int.Parse(parameter.Comment);
 			var text = parameter.ReplyText;
 			await SendReplyAsync(comment, text);
-			var commentToFind = (CommentDTO)FindCommentById(comment, Comments, 0)[0];
-			commentToFind.IsReplyVisible = false;
+			var commentToFind = FindCommentById(comment, Comments, 0);
+			if (commentToFind != null && commentToFind.Length > 1)
+			{
+				var commentDto = (CommentDTO)commentToFind[0];
+				commentDto.IsReplyVisible = false;
+			}
+			
 
 		}
 		[RelayCommand]
@@ -399,8 +409,17 @@ namespace ZestFrontend.ViewModels
 			if (TaskInit is not null && !TaskInit.IsCompleted) await TaskInit;
 			if (!_isNavigatingToCommentDetailPage)
 			{
-				await _signalRConnectionService.AddConnectionToGroup(_likesHubConnectionService.LikesConnection.ConnectionId, new string[] { $"pd-{Post.Id}", Post.Id.ToString() });
-				await _signalRConnectionService.AddConnectionToGroup(_commentHubConnectionService.CommentsConnection.ConnectionId, new string[] { $"comment-{Post.Id}" });
+				if(_likesHubConnectionService.LikesConnection.ConnectionId != null)
+				{
+					await _signalRConnectionService.AddConnectionToGroup(_likesHubConnectionService.LikesConnection.ConnectionId, new string[] { $"pdl-{Post.Id}", Post.Id.ToString() });
+				}
+				if(_deleteHubConnectionService.DeleteConnection.ConnectionId != null)
+				{
+					await _signalRConnectionService.AddConnectionToGroup(_deleteHubConnectionService.DeleteConnection.ConnectionId, new string[] { $"pdd-{Post.Id}" });
+				}
+				_authService.Groups.Add(Post.Id.ToString());
+				_authService.Groups.Add($"pdl-{Post.Id}");
+				_authService.Groups.Add($"pdd-{Post.Id}");
 			}
 			_isNavigatingToCommentDetailPage = false;
 		}
@@ -408,8 +427,15 @@ namespace ZestFrontend.ViewModels
 		{
 			if (!_isNavigatingToCommentDetailPage)
 			{
-				await _signalRConnectionService.RemoveConnectionToGroup(_likesHubConnectionService.LikesConnection.ConnectionId);
-				await _signalRConnectionService.RemoveConnectionToGroup(_commentHubConnectionService.CommentsConnection.ConnectionId);
+				if (_likesHubConnectionService.LikesConnection.ConnectionId != null)
+				{
+					await _signalRConnectionService.RemoveConnectionToGroup(_likesHubConnectionService.LikesConnection.ConnectionId);
+				}
+				if (_deleteHubConnectionService.DeleteConnection.ConnectionId != null)
+				{
+					await _signalRConnectionService.RemoveConnectionToGroup(_deleteHubConnectionService.DeleteConnection.ConnectionId);
+				}
+				_authService.Groups.Clear();
 			}
 		}
 	}
