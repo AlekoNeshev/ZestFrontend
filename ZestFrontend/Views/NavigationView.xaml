@@ -148,7 +148,7 @@
                                 BackgroundColor="Transparent"
                                 BorderColor="Transparent"
                                 Clicked="ImageButton_Clicked"
-                                Command="{Binding ShowFollowedComsCommand}"
+                                Command="{Binding ShowFollowedComsAsyncCommand}"
                                 ContentLayout="Right, 20"
                                 CornerRadius="0"
                                 FontSize="13"
@@ -170,7 +170,7 @@
                                 x:Name="SecondImageButton"
                                 BackgroundColor="Transparent"
                                 Clicked="ImageButton_Clicked"
-                                Command="{Binding ShowFollowedComsCommand}"
+                                Command="{Binding ShowFollowedComsAsyncCommand}"
                                 Source="{mi:FluentFilled ArrowUp20Filled,
                                                          IconAutoScaling=True,
                                                          IconSize=20}" />

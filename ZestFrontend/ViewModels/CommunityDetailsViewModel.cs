@@ -251,7 +251,7 @@ namespace ZestFrontend.ViewModels
 			_authService.Groups.AddRange(Posts.Select(x => x.Id.ToString()).ToList());
 		}
 		[RelayCommand]
-		async Task FilterBtnAsync()
+		void FilterBtnAsync()
 		{
 			AreFiltersVisible = !AreFiltersVisible;
 		}

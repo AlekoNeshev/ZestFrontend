@@ -38,8 +38,8 @@
 
                         <Grid Padding="{OnIdiom Phone=0, Desktop=-10}" RowSpacing="1">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 

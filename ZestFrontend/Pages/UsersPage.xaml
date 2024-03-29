@@ -34,7 +34,7 @@
             Grid.Column="1"
             Command="{Binding RefreshCommand}"
             IsRefreshing="{Binding IsRefreshing}">
-            <CollectionView HorizontalOptions="CenterAndExpand" ItemsSource="{Binding Users}">
+            <CollectionView HorizontalOptions="CenterAndExpand" ItemsSource="{Binding Users}" RemainingItemsThreshold="1" RemainingItemsThresholdReachedCommand="{Binding LoadMoreUsersCommand}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:UserDTO">
                         <Grid>

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MauiIcons.Core;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Maui.Controls;
 using System;
@@ -40,12 +41,14 @@ namespace ZestFrontend.ViewModels
 			_filter = PostsFilterOptions.None;
 			InitTask = Init();
 			_commentHubConnectionService=commentHubConnectionService;
+			_ = new MauiIcon();
 		}
 
 		private async Task Init()
 		{
-			await GetPosts();
+			await GetTrendingPosts();
 
+			IsInSearchMode = false;
 			await this._likesConnection.Init();
 			await this._commentHubConnectionService.Init();
 			_likesConnection.LikesConnection.On<int>("PostLiked", UpdatePost);
@@ -60,9 +63,16 @@ namespace ZestFrontend.ViewModels
 		bool isBtnVisible;
 		[ObservableProperty]
 		bool areFiltersVisible;
-
 		[ObservableProperty]
 		string searchText;
+
+		private bool isInSearchMode;
+
+		public bool IsInSearchMode
+		{
+			get { return isInSearchMode; }
+			set { isInSearchMode = value; }
+		}
 
 		public ObservableCollection<PostDTO> Posts { get; } = new();
 
@@ -91,7 +101,8 @@ namespace ZestFrontend.ViewModels
 			{
 				lastDate = Posts.Last().PostedOn;
 			}
-			foreach (var post in await _postsService.GetPosts(lastDate, 0, 40))
+			var posts = Task.Run(async () => await _postsService.GetPosts(lastDate, 0, 40)).Result;
+			foreach (var post in posts)
 			{
 				post.IsOwner = post.Publisher == _authService.Username;
 				Posts.Add(post);
@@ -130,7 +141,7 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task GetLatestPostsAsync()
 		{
-			if (_filter != PostsFilterOptions.Last)
+			if (_filter != PostsFilterOptions.Last || IsInSearchMode == true)
 			{
 				Posts.Clear();
 				await GetPosts();
@@ -140,6 +151,7 @@ namespace ZestFrontend.ViewModels
 					await _signalRConnectionService.AddConnectionToGroup(_likesConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
 				}
 				SearchText = string.Empty;
+				IsInSearchMode = false;
 				_authService.Groups.Clear();
 				_authService.Groups.AddRange(Posts.Select(x => x.Id.ToString()).ToList());
 			}
@@ -147,7 +159,7 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task GetTrendingPostsAsync()
 		{
-			if (_filter != PostsFilterOptions.Trending)
+			if (_filter != PostsFilterOptions.Trending || IsInSearchMode == true)
 			{
 				Posts.Clear();
 				await GetTrendingPosts();
@@ -156,6 +168,7 @@ namespace ZestFrontend.ViewModels
 					await _signalRConnectionService.RemoveConnectionToGroup(_likesConnection.LikesConnection.ConnectionId);
 					await _signalRConnectionService.AddConnectionToGroup(_likesConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
 				}
+				IsInSearchMode = false;
 				SearchText = string.Empty;
 				_authService.Groups.Clear();
 				_authService.Groups.AddRange(Posts.Select(x => x.Id.ToString()).ToList());
@@ -164,7 +177,7 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task GetFollowedPostsAsync()
 		{
-			if (_filter != PostsFilterOptions.Followed)
+			if (_filter != PostsFilterOptions.Followed || IsInSearchMode == true)
 			{
 				Posts.Clear();
 				await GetFollowedPosts();
@@ -173,6 +186,7 @@ namespace ZestFrontend.ViewModels
 					await _signalRConnectionService.RemoveConnectionToGroup(_likesConnection.LikesConnection.ConnectionId);
 					await _signalRConnectionService.AddConnectionToGroup(_likesConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
 				}
+				IsInSearchMode = false;
 				SearchText = string.Empty;
 				_authService.Groups.Clear();
 				_authService.Groups.AddRange(Posts.Select(x => x.Id.ToString()).ToList());
@@ -180,7 +194,7 @@ namespace ZestFrontend.ViewModels
 		}
 
 		[RelayCommand]
-		async Task ShowFollowedComsAsync()
+		 void ShowFollowedComsAsync()
 		{
 			IsBtnVisible = !IsBtnVisible;
 		}
@@ -232,16 +246,21 @@ namespace ZestFrontend.ViewModels
 			});
 
 		}
+		public async Task SearchPosts()
+		{
+			foreach (var item in await _postsService.GetPostsBySearch(SearchText, 40, Posts.Select(x => x.Id).ToArray()))
+			{
+				Posts.Add(item);
+			}
+		}
 		[RelayCommand]
-		async Task SearchPosts()
+		async Task SearchPostsAsync()
 		{
 			if (!string.IsNullOrWhiteSpace(SearchText))
 			{
 				Posts.Clear();
-				foreach (var item in await _postsService.GetPostsBySearch(SearchText, 40, Posts.Select(x=>x.Id).ToArray()))
-				{
-					Posts.Add(item);
-				}
+				await SearchPosts();
+				IsInSearchMode = true;
 			}
 			else if (_filter == PostsFilterOptions.Last)
 			{
@@ -292,14 +311,18 @@ namespace ZestFrontend.ViewModels
 			_authService.Groups.AddRange(Posts.Select(x => x.Id.ToString()).ToList());
 		}
 		[RelayCommand]
-		async Task FilterBtnAsync()
+		void FilterBtnAsync()
 		{
 			AreFiltersVisible = !AreFiltersVisible;
 		}
 		[RelayCommand]
 		async Task LoadMorePostsAsync()
 		{
-			if (_filter == PostsFilterOptions.Last)
+			if (!string.IsNullOrWhiteSpace(SearchText) && IsInSearchMode == true)
+			{
+				await SearchPosts();
+			}
+			else if (_filter == PostsFilterOptions.Last)
 			{
 				await GetPosts();
 			}

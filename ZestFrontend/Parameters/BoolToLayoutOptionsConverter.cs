@@ -13,6 +13,7 @@ namespace ZestFrontend.Parameters
 		{
 			if (value is bool isCurrentUser)
 			{
+
 				return isCurrentUser ? 1 : 0;
 			}
 			return 0;

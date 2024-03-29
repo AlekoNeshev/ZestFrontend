@@ -31,7 +31,11 @@
             MaximumWidthRequest="500"
             SearchCommand="{Binding SearchCommunitiesCommand}"
             Text="{Binding SearchText, Mode=TwoWay}" />
-        <Grid Grid.Row="1" Grid.Column="2">
+        <Grid
+            Grid.Row="1"
+            Grid.Column="2"
+            IsVisible="{OnIdiom Phone=false,
+                                Desktop=true}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
@@ -53,7 +57,7 @@
                                 BackgroundColor="Transparent"
                                 BorderColor="Transparent"
                                 Clicked="ImageButton_Clicked"
-                                Command="{Binding FilterBtnCommand}"
+                                Command="{Binding FilterBtnAsyncCommand}"
                                 Text="Filter"
                                 TextColor="Black" />
                         </Frame>
@@ -72,7 +76,7 @@
                                 x:Name="SecondImageButton"
                                 BackgroundColor="Transparent"
                                 Clicked="ImageButton_Clicked"
-                                Command="{Binding FilterBtnCommand}"
+                                Command="{Binding FilterBtnAsyncCommand}"
                                 Source="{mi:FluentFilled ArrowUp20Filled,
                                                          IconAutoScaling=True,
                                                          IconSize=20}" />
@@ -146,6 +150,28 @@
                     RemainingItemsThreshold="1"
                     RemainingItemsThresholdReachedCommand="{Binding LoadMoreComsCommand}"
                     SelectionMode="None">
+                    <CollectionView.Header>
+                        <StackLayout IsVisible="{OnIdiom Phone=True, Desktop=False}" Orientation="Horizontal">
+                            <Button
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Command="{Binding GetAllComsCommand}"
+                                Text="Latest"
+                                TextColor="Black" />
+                            <Button
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Command="{Binding GetPopularComsCommand}"
+                                Text="Trending"
+                                TextColor="Black" />
+                            <Button
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Command="{Binding GetFollowedComsCommand}"
+                                Text="Followed"
+                                TextColor="Black" />
+                        </StackLayout>
+                    </CollectionView.Header>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="model:CommunityDTO">
                             <Grid>

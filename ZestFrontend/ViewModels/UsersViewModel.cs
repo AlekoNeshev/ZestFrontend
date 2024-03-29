@@ -34,10 +34,17 @@ namespace ZestFrontend.ViewModels
 		[ObservableProperty]
 		string searchText;
 		public ObservableCollection<UserDTO> Users { get; } = new();
-		
+
+		private bool isInSearchMode;
+
+		public bool IsInSearchMode
+		{
+			get { return isInSearchMode; }
+			set { isInSearchMode = value; }
+		}
 		public async Task GetUsers()
 		{
-			foreach (var user in await _accountService.GetAllAccounts())
+			foreach (var user in await _accountService.GetAllAccounts(50, Users.Count))
 			{
 				Users.Add(user);
 			}
@@ -54,6 +61,13 @@ namespace ZestFrontend.ViewModels
 			{"User", user }
 			});
 		}
+		public async Task SearchUsers()
+		{
+			foreach (var item in await _accountService.GetAccountsBySearch(SearchText, _authService.Token, 50, Users.Select(x => x.Id).ToArray()))
+			{
+				Users.Add(item);
+			}
+		}
 		
 		[RelayCommand]
 		async Task SearchUsersAsync()
@@ -61,15 +75,14 @@ namespace ZestFrontend.ViewModels
 			if (!string.IsNullOrWhiteSpace(SearchText))
 			{
 				Users.Clear();
-				foreach (var item in await _accountService.GetAccountsBySearch(SearchText, _authService.Token, 50, Users.Select(x => x.Id).ToArray()))
-				{
-					Users.Add(item);
-				}
+				await SearchUsers();
+				IsInSearchMode = true;
 			}
 			else
 			{
 				Users.Clear();
 				await GetUsers();
+				IsInSearchMode = false;
 			}
 		}
 		
@@ -79,6 +92,18 @@ namespace ZestFrontend.ViewModels
 			Users.Clear();
 			await GetUsers();
 			IsRefreshing = false;
+		}
+		[RelayCommand]
+		async Task LoadMoreUsersAsync()
+		{
+			if (!string.IsNullOrEmpty(SearchText) && IsInSearchMode == true)
+			{
+				await SearchUsers();
+			}
+			else
+			{
+				await GetUsers();
+			}
 		}
 	}
 }

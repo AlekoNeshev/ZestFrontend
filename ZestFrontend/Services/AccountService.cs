@@ -42,9 +42,9 @@ namespace ZestFrontend.Services
             else
                 return null;
         }
-		public async Task<List<UserDTO>> GetAllAccounts()
+		public async Task<List<UserDTO>> GetAllAccounts(int takeCount, int skipCount)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Account/getAll";
+			var url = $"{PortConst.Port_Forward_Http}/api/Account/getAll/{takeCount}/{skipCount}";
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)
 			{

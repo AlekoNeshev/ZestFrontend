@@ -33,6 +33,14 @@ namespace ZestFrontend.ViewModels
 		[ObservableProperty]
 		string searchText;
 
+		private bool isInSearchMode;
+
+		public bool IsInSearchMode
+		{
+			get { return isInSearchMode; }
+			set { isInSearchMode = value; }
+		}
+
 		public async Task GetCommunities()
 		{
 			foreach (var item in await _communityService.GetCommunities(Communities.Count, 20))
@@ -87,35 +95,40 @@ namespace ZestFrontend.ViewModels
 			await Shell.Current.GoToAsync($"{nameof(AddCommunityPage)}");
 		}
 		[RelayCommand]
-		async Task FilterBtnAsync()
+		void FilterBtnAsync()
 		{
 			AreFiltersVisible = !AreFiltersVisible;
 		}
 		[RelayCommand]
 		async Task GetAllComsAsync()
 		{
-			if (_filter != CommunitiesFilterOptions.All)
+			if (_filter != CommunitiesFilterOptions.All || IsInSearchMode == true)
 			{
 				Communities.Clear();
 				await GetCommunities();
+				SearchText = string.Empty;
+				IsInSearchMode = false;
 			}
 		}
 		[RelayCommand]
 		async Task GetPopularComsAsync()
 		{
-			if (_filter != CommunitiesFilterOptions.Popular)
+			if (_filter != CommunitiesFilterOptions.Popular || IsInSearchMode == true)
 			{
 				Communities.Clear();
 				await GetPopularCommunities();
+				SearchText = string.Empty;
+				IsInSearchMode = false;
 			}
 		}
 		[RelayCommand]
 		async Task GetFollowedComsAsync()
 		{
-			if (_filter != CommunitiesFilterOptions.Followed)
+			if (_filter != CommunitiesFilterOptions.Followed || IsInSearchMode == true)
 			{
 				Communities.Clear();
 				await GetFollowedCommunities();
+				IsInSearchMode = false;
 			}
 		}
 		[RelayCommand]
@@ -124,21 +137,25 @@ namespace ZestFrontend.ViewModels
 			if (!string.IsNullOrWhiteSpace(SearchText))
 			{
 				await GetCommunitiesBySearchAsync(SearchText);
+				IsInSearchMode = true;
 			}
 			else if (_filter == CommunitiesFilterOptions.All)
 			{
 				Communities.Clear();
 				await GetCommunities();
+				SearchText = string.Empty;
 			}
 			else if (_filter == CommunitiesFilterOptions.Popular)
 			{
 				Communities.Clear();
 				await GetPopularCommunities();
+				SearchText = string.Empty;
 			}
 			else if (_filter == CommunitiesFilterOptions.Followed)
 			{
 				Communities.Clear();
 				await GetFollowedCommunities();
+				SearchText = string.Empty;
 			}
 		}
 		[RelayCommand]
@@ -162,7 +179,11 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task LoadMoreComsAsync()
 		{
-			if(_filter == CommunitiesFilterOptions.All)
+			if(!string.IsNullOrWhiteSpace(SearchText) && IsInSearchMode == true)
+			{
+				await GetCommunitiesBySearchAsync(SearchText);
+			}
+			else if(_filter == CommunitiesFilterOptions.All)
 			{
 				await GetCommunities();
 			}

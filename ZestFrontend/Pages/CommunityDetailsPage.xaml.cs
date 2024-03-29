@@ -12,7 +12,7 @@ public partial class CommunityDetailsPage : ContentPage
 		BindingContext = viewModel;
 		_viewModel = viewModel;
 		InitializeComponent();
-		if (Device.RuntimePlatform == Device.WinUI)
+		if (Microsoft.Maui.Devices.DeviceInfo.Current.Platform == Microsoft.Maui.Devices.DevicePlatform.WinUI)
 		{
 			var nav = serviceProvider.GetRequiredService<NavigationView>();
 			nav.RowSpan(4);

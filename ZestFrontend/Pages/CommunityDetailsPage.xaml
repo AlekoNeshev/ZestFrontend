@@ -89,7 +89,7 @@
                             BackgroundColor="Transparent"
                             BorderColor="Transparent"
                             Clicked="ImageButton_Clicked"
-                            Command="{Binding FilterBtnCommand}"
+                            Command="{Binding FilterBtnAsyncCommand}"
                             Text="Filter"
                             TextColor="Black" />
                     </Frame>
@@ -108,7 +108,7 @@
                             x:Name="SecondImageButton"
                             BackgroundColor="Transparent"
                             Clicked="ImageButton_Clicked"
-                            Command="{Binding FilterBtnCommand}"
+                            Command="{Binding FilterBtnAsyncCommand}"
                             Source="{mi:FluentFilled ArrowUp20Filled,
                                                      IconAutoScaling=True,
                                                      IconSize=20}" />

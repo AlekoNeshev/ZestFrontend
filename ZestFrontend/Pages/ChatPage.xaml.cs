@@ -18,7 +18,7 @@ public partial class ChatPage : ContentPage
 		BindingContext = chatViewModel;
 		this.viewModel = chatViewModel;
 		InitializeComponent();
-		if (Device.RuntimePlatform == Device.WinUI)
+		if (Microsoft.Maui.Devices.DeviceInfo.Current.Platform == Microsoft.Maui.Devices.DevicePlatform.WinUI)
 		{
 			var nav = serviceProvider.GetRequiredService<NavigationView>();
 

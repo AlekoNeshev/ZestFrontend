@@ -28,9 +28,13 @@ namespace ZestFrontend.Services
 		private HubConnection BuildLikesHubConnection(string url)
 		{
 			var connection = new HubConnectionBuilder()
-				.WithUrl(url, option =>
+				.WithUrl(url, options =>
 				{
-					option.Headers["userId"] = _authService.Id.ToString();
+					options.AccessTokenProvider = async () =>
+					{
+						string accessToken = _authService.Token;
+						return accessToken;
+					};
 				})
 				.Build();
 

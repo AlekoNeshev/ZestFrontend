@@ -42,10 +42,13 @@
                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=GoToCommentDetailPageCommand}" CommandParameter="{Binding .}" />
                         </Frame.GestureRecognizers>
 
-                        <Grid Padding="{OnIdiom Phone=0, Desktop=-10}" RowSpacing="1">
+                        <Grid RowSpacing="1">
+                            <Grid.Padding>
+                                <OnIdiom Desktop="-10" Phone="0" />
+                            </Grid.Padding>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
@@ -78,7 +81,7 @@
                                     Grid.Column="0"
                                     HorizontalOptions="Start"
                                     Orientation="Horizontal"
-                                    Spacing="{OnIdiom Phone=3,
+                                    Spacing="{OnIdiom Phone=5,
                                                       Desktop=1}"
                                     VerticalOptions="End">
 
@@ -86,9 +89,9 @@
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=LikeCommentCommand}"
                                         CommandParameter="{Binding .}"
                                         HorizontalOptions="Center"
-                                        MaximumHeightRequest="{OnIdiom Phone=20,
+                                        MaximumHeightRequest="{OnIdiom Phone=25,
                                                                        Desktop=10}"
-                                        MaximumWidthRequest="{OnIdiom Phone=20,
+                                        MaximumWidthRequest="{OnIdiom Phone=25,
                                                                       Desktop=10}"
                                         Source="{Binding Like, Converter={StaticResource LikeButtonColorConverter}}"
                                         VerticalOptions="End" />
@@ -96,21 +99,21 @@
                                     <ImageButton
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=DislikeCommentCommand}"
                                         CommandParameter="{Binding .}"
-                                        HeightRequest="{OnIdiom Phone=20,
+                                        HeightRequest="{OnIdiom Phone=25,
                                                                 Desktop=10}"
                                         HorizontalOptions="End"
                                         Source="{Binding Like, Converter={StaticResource DislikeButtonColorConverter}}"
                                         VerticalOptions="Center"
-                                        WidthRequest="{OnIdiom Phone=20,
+                                        WidthRequest="{OnIdiom Phone=25,
                                                                Desktop=10}" />
                                     <Label Text="{Binding Dislikes}" VerticalOptions="Start" />
                                     <ImageButton
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommentCommand}"
                                         CommandParameter="{Binding .}"
                                         HorizontalOptions="End"
-                                        MaximumHeightRequest="{OnIdiom Phone=20,
+                                        MaximumHeightRequest="{OnIdiom Phone=25,
                                                                        Desktop=10}"
-                                        MaximumWidthRequest="{OnIdiom Phone=20,
+                                        MaximumWidthRequest="{OnIdiom Phone=25,
                                                                       Desktop=10}"
                                         Source="{mi:FluentFilled ArrowReplyDown16Filled,
                                                                  IconAutoScaling=True,
@@ -121,9 +124,9 @@
                                         CommandParameter="{Binding .}"
                                         HorizontalOptions="End"
                                         IsVisible="{Binding IsOwner}"
-                                        MaximumHeightRequest="{OnIdiom Phone=20,
+                                        MaximumHeightRequest="{OnIdiom Phone=25,
                                                                        Desktop=15}"
-                                        MaximumWidthRequest="{OnIdiom Phone=20,
+                                        MaximumWidthRequest="{OnIdiom Phone=25,
                                                                       Desktop=15}"
                                         Source="{mi:FluentFilled Broom20Filled,
                                                                  IconAutoScaling=True,
@@ -145,7 +148,8 @@
                                     x:Name="ReplyEntry"
                                     AutoSize="TextChanges"
                                     HorizontalOptions="Start"
-                                    MinimumWidthRequest="400"
+                                    MinimumWidthRequest="{OnIdiom Desktop=400,
+                                                                  Phone=100}"
                                     Placeholder="Write a reply"
                                     VerticalOptions="StartAndExpand" />
                                 <Label
@@ -155,6 +159,10 @@
                                 <ImageButton
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommand}"
                                     HorizontalOptions="Center"
+                                    MaximumHeightRequest="{OnIdiom Phone=25,
+                                                                   Desktop=15}"
+                                    MaximumWidthRequest="{OnIdiom Phone=25,
+                                                                  Desktop=15}"
                                     Source="{mi:FluentFilled Send20Filled,
                                                              IconAutoScaling=True,
                                                              IconSize=17}">
@@ -166,11 +174,14 @@
 
                             <CollectionView
                                 Grid.Row="2"
-                                Margin="0,0,-10,-10"
                                 HorizontalOptions="FillAndExpand"
                                 IsVisible="{Binding AreRepliesVisible}"
                                 ItemTemplate="{StaticResource CommentTemplate}"
-                                ItemsSource="{Binding Replies}" />
+                                ItemsSource="{Binding Replies}">
+                                <CollectionView.Margin>
+                                    <OnIdiom Desktop="0, 0, -10, -10" Phone="0, 0, -21, -21" />
+                                </CollectionView.Margin>
+                            </CollectionView>
                         </Grid>
 
                     </Frame>

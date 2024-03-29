@@ -244,7 +244,7 @@ namespace ZestFrontend.ViewModels
 			}
 		}
 		[RelayCommand]
-		async Task ReplyCommentAsync(CommentDTO comment)
+		void ReplyCommentAsync(CommentDTO comment)
 		{
 			comment.IsReplyVisible = !comment.IsReplyVisible;
 

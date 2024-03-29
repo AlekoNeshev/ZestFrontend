@@ -1,4 +1,5 @@
 
+using MauiIcons.Core;
 using ZestFrontend.ViewModels;
 using ZestFrontend.Views;
 
@@ -12,7 +13,7 @@ public partial class PostsPage : ContentPage
 	{
 		
 		InitializeComponent();
-		if (Device.RuntimePlatform == Device.WinUI)
+		if (Microsoft.Maui.Devices.DeviceInfo.Current.Platform == Microsoft.Maui.Devices.DevicePlatform.WinUI)
 		{
 			var nav = serviceProvider.GetRequiredService<NavigationView>();
 			Grid.SetRow(nav, 1);
@@ -20,6 +21,7 @@ public partial class PostsPage : ContentPage
 		}
 		BindingContext = viewModel;
 		this.viewModel = viewModel;
+		
 	}
 	async protected override void OnNavigatedTo(NavigatedToEventArgs args)
 	{
@@ -43,5 +45,9 @@ public partial class PostsPage : ContentPage
 			SecondImageButton.RotateTo(0);
 		}		
 	}
-
+	protected override void OnAppearing()
+	{
+		_ = new MauiIcon();
+		base.OnAppearing();
+	}
 }

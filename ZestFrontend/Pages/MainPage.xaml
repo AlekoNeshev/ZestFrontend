@@ -5,8 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     x:DataType="viewmodel:MainViewModel"
-    Shell.TabBarIsVisible="False"
-    BackgroundColor="GhostWhite">
+    BackgroundColor="GhostWhite"
+    Shell.TabBarIsVisible="False">
 
     <ScrollView>
         <VerticalStackLayout
@@ -15,7 +15,6 @@
             VerticalOptions="Center">
 
             <Image
-                BackgroundColor="AntiqueWhite"
                 HeightRequest="400"
                 HorizontalOptions="Center"
                 SemanticProperties.Description="Cute dot net bot waving hi to you!"

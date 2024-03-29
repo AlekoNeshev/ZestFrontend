@@ -26,9 +26,24 @@ namespace ZestFrontend.ViewModels
 		bool isRefreshing;
 		[ObservableProperty]
 		string searchText;
+
+		private bool isInSearchMode;
+
+		public bool IsInSearchMode
+		{
+			get { return isInSearchMode; }
+			set { isInSearchMode = value; }
+		}
 		public async Task GetFriends()
 		{
-			foreach (var item in await _followersService.GetFriends())
+			foreach (var item in await _followersService.GetFriends(50, Friends.Count))
+			{
+				Friends.Add(item);
+			}
+		}
+		public async Task SearchFriends()
+		{
+			foreach (var item in await _followersService.GetAccountsBySearch(SearchText, 50, Friends.Select(x => x.FollowerId).ToArray()))
 			{
 				Friends.Add(item);
 			}
@@ -57,16 +72,28 @@ namespace ZestFrontend.ViewModels
 			if (!string.IsNullOrWhiteSpace(SearchText))
 			{
 				Friends.Clear();
-				foreach (var item in await _followersService.GetAccountsBySearch(SearchText, 50, Friends.Select(x => x.FollowerId).ToArray()))
-				{
-					Friends.Add(item);
-				}
+				await SearchFriends();
+				IsInSearchMode = true;
 			}
 			else
 			{
 				Friends.Clear();
 				await GetFriends();
+				IsInSearchMode=false;
 			}
 		}
+		[RelayCommand]
+		async Task LoadMoreFriendsAsync()
+		{
+			if(!string.IsNullOrEmpty(SearchText) && IsInSearchMode == true)
+			{
+				await SearchFollowersAsync();
+			}
+			else
+			{
+				await GetFriends();
+			}
+		}
+		
 	}
 }

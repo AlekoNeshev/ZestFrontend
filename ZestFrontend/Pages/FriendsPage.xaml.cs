@@ -9,7 +9,7 @@ public partial class FriendsPage : ContentPage
 	{
 		BindingContext = friendsViewModel;
 		InitializeComponent();
-		if (Device.RuntimePlatform == Device.WinUI)
+		if (Microsoft.Maui.Devices.DeviceInfo.Current.Platform == Microsoft.Maui.Devices.DevicePlatform.WinUI)
 		{
 			var nav = serviceProvider.GetRequiredService<NavigationView>();
 			Grid.SetRow(nav, 1);

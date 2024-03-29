@@ -36,9 +36,9 @@ namespace ZestFrontend.Services
 			response.EnsureSuccessStatusCode();
 			return response;
 		}
-		public async Task<FollowerDTO[]> GetFriends()
+		public async Task<FollowerDTO[]> GetFriends(int takeCount, int skipCount)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Followers/getFriends";
+			var url = $"{PortConst.Port_Forward_Http}/api/Followers/getFriends/{takeCount}/{skipCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)

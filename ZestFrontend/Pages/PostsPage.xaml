@@ -3,9 +3,7 @@
     x:Class="ZestFrontend.PostsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:icon="clr-namespace:IconPacks.IconKind;assembly=IconPacks.Material"
     xmlns:local="clr-namespace:ZestFrontend.Parameters"
-    xmlns:mdc="clr-namespace:Material.Components.Maui;assembly=Material.Components.Maui"
     xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
     xmlns:nav="clr-namespace:ZestFrontend.Views"
@@ -15,7 +13,6 @@
     x:DataType="viewmodel:PostsViewModel"
     BackgroundColor="GhostWhite"
     Shell.ForegroundColor="Orange"
-    Shell.TabBarBackgroundColor="Orange"
     Shell.TabBarIsVisible="{OnIdiom Phone=True,
                                     Desktop=True}">
 
@@ -53,45 +50,43 @@
             </Grid.ColumnDefinitions>
             <StackLayout Grid.Column="1">
                 <StackLayout>
-                    <StackLayout Orientation="Horizontal">
+                    <StackLayout IsVisible="{OnIdiom Phone=false, Desktop=true}" Orientation="Horizontal">
                         <ContentView
                             Padding="0,-1,-1,0"
                             BackgroundColor="LightGray"
                             HorizontalOptions="FillAndExpand"
                             VerticalOptions="FillAndExpand">
-                            <Frame
+                            <Border
                                 Padding="0,0,0,0"
                                 BackgroundColor="GhostWhite"
-                                BorderColor="Transparent"
-                                CornerRadius="0">
+                                Stroke="Transparent">
                                 <Button
                                     BackgroundColor="Transparent"
                                     BorderColor="Transparent"
                                     Clicked="ImageButton_Clicked"
-                                    Command="{Binding FilterBtnCommand}"
+                                    Command="{Binding FilterBtnAsyncCommand}"
                                     Text="Filter"
                                     TextColor="Black" />
-                            </Frame>
+                            </Border>
                         </ContentView>
                         <ContentView
                             Padding="-1,-1,-1,0"
                             BackgroundColor="LightGray"
                             HorizontalOptions="FillAndExpand"
                             VerticalOptions="FillAndExpand">
-                            <Frame
+                            <Border
                                 Padding="0,0,0,0"
                                 BackgroundColor="GhostWhite"
-                                BorderColor="Transparent"
-                                CornerRadius="0">
+                                Stroke="Transparent">
                                 <ImageButton
                                     x:Name="SecondImageButton"
                                     BackgroundColor="Transparent"
                                     Clicked="ImageButton_Clicked"
-                                    Command="{Binding FilterBtnCommand}"
+                                    Command="{Binding FilterBtnAsyncCommand}"
                                     Source="{mi:FluentFilled ArrowUp20Filled,
                                                              IconAutoScaling=True,
                                                              IconSize=20}" />
-                            </Frame>
+                            </Border>
                         </ContentView>
                     </StackLayout>
 
@@ -101,54 +96,51 @@
                             BackgroundColor="LightGray"
                             HorizontalOptions="FillAndExpand"
                             VerticalOptions="FillAndExpand">
-                            <Frame
+                            <Border
                                 Padding="0,0,0,0"
                                 BackgroundColor="GhostWhite"
-                                BorderColor="Transparent"
-                                CornerRadius="0">
+                                Stroke="Transparent">
                                 <Button
                                     BackgroundColor="Transparent"
                                     BorderColor="Transparent"
                                     Command="{Binding GetLatestPostsCommand}"
                                     Text="Latest"
                                     TextColor="Black" />
-                            </Frame>
+                            </Border>
                         </ContentView>
                         <ContentView
                             Padding="0,-1,-1,0"
                             BackgroundColor="LightGray"
                             HorizontalOptions="FillAndExpand"
                             VerticalOptions="FillAndExpand">
-                            <Frame
+                            <Border
                                 Padding="0,0,0,0"
                                 BackgroundColor="GhostWhite"
-                                BorderColor="Transparent"
-                                CornerRadius="0">
+                                Stroke="Transparent">
                                 <Button
                                     BackgroundColor="Transparent"
                                     BorderColor="Transparent"
                                     Command="{Binding GetTrendingPostsCommand}"
                                     Text="Trending"
                                     TextColor="Black" />
-                            </Frame>
+                            </Border>
                         </ContentView>
                         <ContentView
                             Padding="0,-1,-1,0"
                             BackgroundColor="LightGray"
                             HorizontalOptions="FillAndExpand"
                             VerticalOptions="FillAndExpand">
-                            <Frame
+                            <Border
                                 Padding="0,0,0,0"
                                 BackgroundColor="GhostWhite"
-                                BorderColor="Transparent"
-                                CornerRadius="0">
+                                Stroke="Transparent">
                                 <Button
                                     BackgroundColor="Transparent"
                                     BorderColor="Transparent"
                                     Command="{Binding GetFollowedPostsCommand}"
                                     Text="Followed"
                                     TextColor="Black" />
-                            </Frame>
+                            </Border>
                         </ContentView>
                     </StackLayout>
                 </StackLayout>
@@ -180,23 +172,47 @@
                 ItemsUpdatingScrollMode="KeepScrollOffset"
                 RemainingItemsThreshold="1"
                 RemainingItemsThresholdReachedCommand="{Binding LoadMorePostsCommand}">
+                <CollectionView.Header>
+                    <StackLayout IsVisible="{OnIdiom Phone=True, Desktop=False}" Orientation="Horizontal">
+                        <Button
+                            BackgroundColor="Transparent"
+                            BorderColor="Transparent"
+                            Command="{Binding GetLatestPostsCommand}"
+                            Text="Latest"
+                            TextColor="Black" />
+                        <Button
+                            BackgroundColor="Transparent"
+                            BorderColor="Transparent"
+                            Command="{Binding GetTrendingPostsCommand}"
+                            Text="Trending"
+                            TextColor="Black" />
+                        <Button
+                            BackgroundColor="Transparent"
+                            BorderColor="Transparent"
+                            Command="{Binding GetFollowedPostsCommand}"
+                            Text="Followed"
+                            TextColor="Black" />
+                    </StackLayout>
+                </CollectionView.Header>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:PostDTO">
                         <Grid>
                             <ContentView
-                                Padding="-1,0,-1,-1"
+                                Padding="-1,1,-1,-1"
                                 BackgroundColor="LightGray"
                                 HorizontalOptions="FillAndExpand"
                                 VerticalOptions="FillAndExpand">
-                                <Frame
-                                    BorderColor="Transparent"
-                                    CornerRadius="0"
-                                    InputTransparent="False">
 
-                                    <Frame.GestureRecognizers>
+                                <Border
+                                    BackgroundColor="White"
+                                    InputTransparent="False"
+                                    Stroke="Transparent"
+                                    StrokeThickness="0">
+
+                                    <Border.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=GoToPostDetailPageCommand}" CommandParameter="{Binding .}" />
-                                    </Frame.GestureRecognizers>
-                                    <Grid Padding="{OnIdiom Phone=0, Desktop=-10}">
+                                    </Border.GestureRecognizers>
+                                    <Grid Padding="{OnIdiom Phone=2, Desktop=2}">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
@@ -245,7 +261,7 @@
                                                 HorizontalOptions="StartAndExpand"
                                                 IsClippedToBounds="False"
                                                 Orientation="Horizontal"
-                                                Spacing="{OnIdiom Phone=3,
+                                                Spacing="{OnIdiom Phone=5,
                                                                   Desktop=1}"
                                                 VerticalOptions="EndAndExpand">
 
@@ -253,10 +269,10 @@
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=LikePostCommand}"
                                                     CommandParameter="{Binding .}"
                                                     HorizontalOptions="End"
-                                                    MaximumHeightRequest="{OnIdiom Phone=20,
-                                                                                   Desktop=20}"
-                                                    MaximumWidthRequest="{OnIdiom Phone=20,
-                                                                                  Desktop=20}"
+                                                    MaximumHeightRequest="{OnIdiom Phone=25,
+                                                                                   Desktop=15}"
+                                                    MaximumWidthRequest="{OnIdiom Phone=25,
+                                                                                  Desktop=15}"
                                                     Source="{Binding Like, Converter={StaticResource LikeButtonColorConverter}}"
                                                     VerticalOptions="Center" />
                                                 <Label Text="{Binding Likes}" VerticalOptions="Start" />
@@ -265,10 +281,10 @@
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=DislikePostCommand}"
                                                     CommandParameter="{Binding .}"
                                                     HorizontalOptions="End"
-                                                    MaximumHeightRequest="{OnIdiom Phone=20,
-                                                                                   Desktop=20}"
-                                                    MaximumWidthRequest="{OnIdiom Phone=20,
-                                                                                  Desktop=20}"
+                                                    MaximumHeightRequest="{OnIdiom Phone=25,
+                                                                                   Desktop=15}"
+                                                    MaximumWidthRequest="{OnIdiom Phone=25,
+                                                                                  Desktop=15}"
                                                     Source="{Binding Like, Converter={StaticResource DislikeButtonColorConverter}}"
                                                     VerticalOptions="Center" />
 
@@ -278,10 +294,10 @@
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostsViewModel}}, Path=GoToPostDetailPageCommand}"
                                                     CommandParameter="{Binding .}"
                                                     HorizontalOptions="End"
-                                                    MaximumHeightRequest="{OnIdiom Phone=20,
-                                                                                   Desktop=20}"
-                                                    MaximumWidthRequest="{OnIdiom Phone=20,
-                                                                                  Desktop=20}"
+                                                    MaximumHeightRequest="{OnIdiom Phone=25,
+                                                                                   Desktop=15}"
+                                                    MaximumWidthRequest="{OnIdiom Phone=25,
+                                                                                  Desktop=15}"
                                                     Source="{mi:FluentFilled ArrowReplyDown16Filled,
                                                                              IconAutoScaling=True,
                                                                              IconSize=20}"
@@ -289,7 +305,7 @@
                                             </StackLayout>
                                         </Grid>
                                     </Grid>
-                                </Frame>
+                                </Border>
                             </ContentView>
                         </Grid>
                     </DataTemplate>

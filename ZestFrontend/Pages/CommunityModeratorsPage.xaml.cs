@@ -10,7 +10,7 @@ public partial class CommunityModeratorsPage : ContentPage
 	{
 		BindingContext = viewModel;
 		InitializeComponent();
-		if (Device.RuntimePlatform == Device.WinUI)
+		if (Microsoft.Maui.Devices.DeviceInfo.Current.Platform == Microsoft.Maui.Devices.DevicePlatform.WinUI)
 		{
 			var nav = serviceProvider.GetRequiredService<NavigationView>();
 			nav.Paddings(0, 64);

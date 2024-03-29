@@ -37,7 +37,11 @@
             Grid.Column="1"
             Command="{Binding RefreshCommand}"
             IsRefreshing="{Binding IsRefreshing}">
-            <CollectionView ItemsSource="{Binding Friends}" SelectionMode="None">
+            <CollectionView
+                ItemsSource="{Binding Friends}"
+                RemainingItemsThreshold="1"
+                RemainingItemsThresholdReachedCommand="{Binding LoadMoreFriendsCommand}"
+                SelectionMode="None">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:FollowerDTO">
                         <Grid>
