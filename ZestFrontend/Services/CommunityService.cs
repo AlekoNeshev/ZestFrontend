@@ -19,7 +19,7 @@ namespace ZestFrontend.Services
 
         public async Task<List<CommunityDTO>> GetCommunitiesByAccount(string accountId, int takeCount, int skipCount)
         {
-            var url = $"{PortConst.Port_Forward_Http}/Zest/Community/GetByAccountId/{accountId}/{takeCount}/{skipCount}";
+            var url = $"{PortConst.Port_Forward_Http}/Zest/Community/getByAccountId/{accountId}/{takeCount}/{skipCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -147,7 +147,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<List<CommunityDTO>> GetTrendingCommunitiesAsync(int takeCount, int[] skipIds = null)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/Zest/Community/GetByPopularityId/{takeCount}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Community/getByPopularityId/{takeCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject(skipIds);
 
