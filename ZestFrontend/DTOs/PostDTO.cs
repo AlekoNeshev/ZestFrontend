@@ -12,12 +12,41 @@ namespace ZestFrontend.DTOs
     {
         private int _likes;
         private int _dislikes;
+        private LikeDTO _like;
+
+        private string _text;
+
+		private string _title;
+
+		public string Title
+		{
+			get => _text;
+			set => SetProperty(ref _title, value);
+		}
+		public string Text
+        {
+			get => _text;
+			set => SetProperty(ref _text, value);
+		}
 
         public int Id { get; set; }
-        public string Title { get; set; }
-        public string Text { get; set; }
-        public string Publisher { get; set; }
-        public int Likes
+
+        private string _publisher;
+
+        public string Publisher
+        {
+			get => _publisher;
+			set => SetProperty(ref _publisher, value);
+		}
+
+		private bool _isOwner;
+
+		public bool IsOwner
+		{
+			get => _isOwner;
+			set => SetProperty(ref _isOwner, value);
+		}
+		public int Likes
         {
             get => _likes;
             set => SetProperty(ref _likes, value);
@@ -27,10 +56,17 @@ namespace ZestFrontend.DTOs
             get => _dislikes;
             set => SetProperty(ref _dislikes, value);
         }
-		public string ResourceType { get; set; }
-        public bool IsOwner { get; set; }
-        public DateTime PostedOn { get; set; }
+        public LikeDTO Like
+		{
+			get => _like;
+			set => SetProperty(ref _like, value);
+		}
 
-        
-    }
+		public string ResourceType { get; set; }
+		public bool IsModerator { get; set; }
+		public DateTime PostedOn { get; set; }
+        public string CommunityName { get; set; }
+		public int CommunityId { get; set; }
+
+	}
 }

@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using ZestFrontend.DTOs;
+using ZestFrontend.Filters;
 using ZestFrontend.Pages;
 using ZestFrontend.Services;
 
@@ -18,34 +19,56 @@ namespace ZestFrontend.ViewModels
     [QueryProperty(nameof(Community), "Community")]
     public partial class CommunityDetailsViewModel : ObservableObject
     {
-        CommunityService communityService;
-        PostsService postsService;
-		LikesService likesService;
-		AuthService authService;
-		HubConnection connection;
-		public CommunityDetailsViewModel(CommunityService communityService, PostsService postsService, LikesService likesService, AuthService authService)
+        CommunityService _communityService;
+        PostsService _postsService;
+		LikesService _likesService;
+		AuthService _authService;
+		SignalRConnectionService _signalRConnectionService;
+		LikesHubConnectionService _likesHubConnection;
+		PostsFilterOptions _filter;
+		public CommunityDetailsViewModel(CommunityService communityService, PostsService postsService, LikesService likesService, AuthService authService, LikesHubConnectionService likesHubConnectionService, SignalRConnectionService signalRConnectionService)
 		{ 
-			this.communityService = communityService;
-			this.postsService = postsService;
-			this.likesService=likesService;
-			this.authService=authService;
-			connection = new HubConnectionBuilder().WithUrl("https://localhost:7183/likeshub").Build();
-			connection.On<int>("SignalLike", (id) => UpdatePost(id));
-			connection.StartAsync();
+			this._communityService = communityService;
+			this._postsService = postsService;
+			this._likesService=likesService;
+			this._authService=authService;
+			this._likesHubConnection = likesHubConnectionService;
+			_signalRConnectionService = signalRConnectionService;
+			_filter = PostsFilterOptions.None;
+			
+			_likesHubConnection.LikesConnection.On<int>("PostLiked", UpdatePost);
 		}
+		[ObservableProperty]
+		string searchText;
+
+		private bool isInSearchMode;
+
+		public bool IsInSearchMode
+		{
+			get { return isInSearchMode; }
+			set { isInSearchMode = value; }
+		}
+
 		public async void UpdatePost(int id)
 		{
-			var updatedPost = await postsService.GetSinglePost(id);
-			var post = Posts.Where(x => x.Id==id).First();
-			post.Likes = updatedPost.Likes;
-			post.Dislikes = updatedPost.Dislikes;
+			var updatedPost = await _postsService.GetSinglePost(id);
+			var post = Posts.Where(x => x.Id==id).FirstOrDefault();
+			if(post != null)
+			{
+				post.Likes = updatedPost.Likes;
+				post.Dislikes = updatedPost.Dislikes;
+				post.Like = updatedPost.Like;
+			}	
 		}
 	
-
 		[ObservableProperty]
 		CommunityDTO community;
 		[ObservableProperty]
 		string buttonText;
+		[ObservableProperty]
+		bool isRefreshing;
+		[ObservableProperty]
+		bool areFiltersVisible;
 		public ObservableCollection<PostDTO> Posts { get; private set; } = new();
 
 		[RelayCommand]
@@ -56,29 +79,85 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task DislikePostAsync(PostDTO postDTO)
 		{
-			await likesService.Like(postDTO.Id, 0, false);
+			if (postDTO.Like == null)
+			{
+
+				await _likesService.Like(postDTO.Id, 0, false);
+			}
+			else if (postDTO.Like.Value == false)
+			{
+				await _likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
+			}
+			else if (postDTO.Like.Value == true)
+			{
+				await _likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
+				await _likesService.Like(postDTO.Id, 0, false);
+			}
 		}
 		[RelayCommand]
 		async Task LikePostAsync(PostDTO postDTO)
 		{
-			await likesService.Like(postDTO.Id, 0, true);
+			if (postDTO.Like == null)
+			{
+
+				await _likesService.Like(postDTO.Id, 0, true);
+			}
+			else if (postDTO.Like.Value == true)
+			{
+				await _likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
+			}
+			else if (postDTO.Like.Value == false)
+			{
+				await _likesService.RemoveLike(postDTO.Like.Id, postDTO.Id, 0);
+				await _likesService.Like(postDTO.Id, 0, true);
+			}
 		}
 		[RelayCommand]
 		async Task DeletePostAsync(PostDTO postDTO)
 		{
-			await postsService.DeletePost(postDTO.Id);
+			await _postsService.DeletePost(postDTO.Id);
 		}
-		public async void GetPosts()
+		public async Task GetPosts()
 		{
-			Posts.Clear();
-			var posts = await postsService.GetPostsByCommunity(Community.Id);
-			foreach (var post in posts)
+			DateTime lastDate = new DateTime();
+			if (Posts.Count==0)
 			{
-				post.IsOwner = post.Publisher == authService.Username;
+				lastDate = DateTime.Now;
+			}
+			else
+			{
+				lastDate = Posts.Last().PostedOn;
+			}
+			foreach (var post in await _postsService.GetPosts(lastDate, Community.Id, 20))
+			{
 				Posts.Add(post);
 			}
+			_filter = PostsFilterOptions.Last;
 		}
-		partial void OnCommunityChanged(CommunityDTO value)
+		public async Task GetTrendingPosts()
+		{
+			Posts.Clear();
+			var skipIds = Posts.Select(x => x.Id).ToArray();
+
+			foreach (var post in await _postsService.GetTrendingPostsAsync(20, Community.Id, skipIds))
+			{
+				Posts.Add(post);
+			}
+			_filter = PostsFilterOptions.Trending;
+
+		}
+		public async Task SearchPosts()
+		{
+			foreach (var item in await _postsService.GetPostsBySearch(SearchText, 40, Community.Id, Posts.Select(x => x.Id).ToArray()))
+			{
+				Posts.Add(item);
+			}
+		}
+		public async Task DeleteCommuity(int communityId)
+		{
+			await _communityService.DeleteCommunity(communityId);
+		}
+		async partial void OnCommunityChanged(CommunityDTO value)
 		{
 			if (value.IsSubscribed)
 			{
@@ -88,15 +167,15 @@ namespace ZestFrontend.ViewModels
 			{
 				ButtonText = "Follow";
 			}
-			GetPosts();
+			Posts.Clear();
+			await GetPosts();
 		}
 		[RelayCommand]
 		async Task ChangeFollowshipStatusAsync()
 		{
 			if (Community.IsSubscribed)
-			{
-				
-				var result = await communityService.Unfollow(Community.Id);
+			{	
+				var result = await _communityService.Unfollow(Community.Id);
 				if (result.StatusCode == HttpStatusCode.OK)
 				{
 					ButtonText = "Follow";
@@ -105,8 +184,7 @@ namespace ZestFrontend.ViewModels
 			}
 			else
 			{
-
-				var result = await communityService.Follow(Community.Id);
+				var result = await _communityService.Follow(Community.Id);
 				if (result.IsSuccessStatusCode)
 				{
 					ButtonText = "Unfollow";
@@ -147,6 +225,143 @@ namespace ZestFrontend.ViewModels
 			{
 			{"Community", Community }
 			});
+		}
+		[RelayCommand]
+		async Task LoadMorePostsAsync()
+		{
+			if (Posts.Count > 0)
+			{
+
+				if (!string.IsNullOrWhiteSpace(SearchText) && IsInSearchMode == true)
+				{
+					await SearchPosts();
+				}
+				else if (_filter == PostsFilterOptions.Last)
+				{
+					await GetPosts();
+				}
+				else if (_filter == PostsFilterOptions.Trending)
+				{
+					await GetTrendingPosts();
+				}
+                  if (_likesHubConnection.LikesConnection.ConnectionId != null)
+				{
+					await _signalRConnectionService.AddConnectionToGroup(_likesHubConnection.LikesConnection.ConnectionId, Posts.TakeLast(40).Select(x => x.Id.ToString()).ToArray());
+				}
+
+			}
+			_authService.Groups.AddRange(Posts.TakeLast(40).Select(x => x.Id.ToString()).ToList());
+		}
+		[RelayCommand]
+		async Task RefreshAsync()
+		{
+			Posts.Clear();
+			if (_filter == PostsFilterOptions.Last)
+			{
+				await GetPosts();
+			}
+			else if (_filter == PostsFilterOptions.Trending)
+			{
+				await GetTrendingPosts();
+			}
+			
+			IsRefreshing = false;
+			if (_likesHubConnection.LikesConnection.ConnectionId != null)
+			{
+				await _signalRConnectionService.RemoveConnectionToGroup(_likesHubConnection.LikesConnection.ConnectionId);
+				await _signalRConnectionService.AddConnectionToGroup(_likesHubConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
+			}
+			_authService.Groups.Clear();
+			_authService.Groups.AddRange(Posts.Select(x => x.Id.ToString()).ToList());
+		}
+		[RelayCommand]
+		void FilterBtnAsync()
+		{
+			AreFiltersVisible = !AreFiltersVisible;
+		}
+		[RelayCommand]
+		async Task GetLatestPostsAsync()
+		{
+			if (_filter != PostsFilterOptions.Last || IsInSearchMode == true)
+			{
+				Posts.Clear();
+				await GetPosts();
+				IsInSearchMode = false;
+				if (_likesHubConnection.LikesConnection.ConnectionId != null)
+				{
+					await _signalRConnectionService.RemoveConnectionToGroup(_likesHubConnection.LikesConnection.ConnectionId);
+					await _signalRConnectionService.AddConnectionToGroup(_likesHubConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
+				}
+				_authService.Groups.Clear();
+				_authService.Groups.AddRange(Posts.Select(x => x.Id.ToString()).ToList());
+			}
+		}
+		[RelayCommand]
+		async Task GetTrendingPostsAsync()
+		{
+			if (_filter != PostsFilterOptions.Trending || IsInSearchMode == true)
+			{
+				Posts.Clear();
+				IsInSearchMode = false;
+				await GetTrendingPosts();
+				if (_likesHubConnection.LikesConnection.ConnectionId != null)
+				{
+					await _signalRConnectionService.RemoveConnectionToGroup(_likesHubConnection.LikesConnection.ConnectionId);
+					await _signalRConnectionService.AddConnectionToGroup(_likesHubConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
+				}
+				_authService.Groups.Clear();
+				_authService.Groups.AddRange(Posts.Select(x => x.Id.ToString()).ToList());
+			}
+		}
+		[RelayCommand]
+		async Task SearchPostsAsync()
+		{
+			if (!string.IsNullOrWhiteSpace(SearchText))
+			{
+				Posts.Clear();
+				await SearchPosts();
+				IsInSearchMode = true;
+			}
+			else if (_filter == PostsFilterOptions.Last)
+			{
+				Posts.Clear();
+				await GetPosts();
+			}
+			else if (_filter == PostsFilterOptions.Trending)
+			{
+				Posts.Clear();
+				await GetTrendingPosts();
+			}
+			
+			if (_likesHubConnection.LikesConnection.ConnectionId != null)
+			{
+				await _signalRConnectionService.AddConnectionToGroup(_likesHubConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
+			}
+			_authService.Groups.Clear();
+			_authService.Groups.AddRange(Posts.Select(x => x.Id.ToString()).ToList());
+		}
+		[RelayCommand]
+		async Task DeleteCommunityAsync(int communityId)
+		{
+			await DeleteCommuity(communityId);
+			await Shell.Current.GoToAsync("..");
+		}
+		public async Task onNavigatedTo()
+		{
+			
+			if (_likesHubConnection.LikesConnection.ConnectionId != null)
+			{
+				await _signalRConnectionService.AddConnectionToGroup(_likesHubConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
+			}
+			_authService.Groups.AddRange(Posts.Select(x => x.Id.ToString()).ToList());
+		}
+		public async Task OnNavigatedFrom()
+		{
+			if (_likesHubConnection.LikesConnection.ConnectionId != null)
+			{
+				await _signalRConnectionService.RemoveConnectionToGroup(_likesHubConnection.LikesConnection.ConnectionId);
+			}
+			_authService.Groups.Clear();
 		}
 	}
 }

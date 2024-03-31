@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ZestFrontend.Services
+namespace ZestFrontend.Filters
 {
-	public class UserInformationService
+	public enum CommentFilter
 	{
+		All,
+		Trending
 	}
 }

@@ -1,17 +1,12 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using ZestFrontend.DTOs;
 
 namespace ZestFrontend.Services
 {
-    public class AccountService
+	public class AccountService
     {
         HttpClient _httpClient;
 
@@ -22,7 +17,7 @@ namespace ZestFrontend.Services
         public async Task<string[]> CreateAccount(string accessToken, string name, string email)
         {
            
-            var url = $"https://localhost:7183/api/Account/add/{name}/{email}";
+            var url = $"{PortConst.Port_Forward_Http}/Zest/Account/add/{name}/{email}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 			var response = await _httpClient.PostAsJsonAsync(url, new StringContent("data"));
 			response.EnsureSuccessStatusCode();
@@ -32,7 +27,7 @@ namespace ZestFrontend.Services
 
         public async Task<AccountDTO> GetCurrentAccount(string accessToken)
         {
-            var url = $"https://localhost:7183/api/Account/get";
+            var url = $"{PortConst.Port_Forward_Http}/Zest/Account/get";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -47,10 +42,24 @@ namespace ZestFrontend.Services
             else
                 return null;
         }
-		public async Task<List<UserDTO>> GetAllAccounts()
+		public async Task<List<UserDTO>> GetAllAccounts(int takeCount, int skipCount)
 		{
-			var url = $"https://localhost:7183/api/Account/getAll";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Account/getAll/{takeCount}/{skipCount}";
 			var response = await _httpClient.GetAsync(url);
+			if (response.IsSuccessStatusCode)
+			{
+				return await response.Content.ReadFromJsonAsync<List<UserDTO>>();
+			}
+			else
+				return null;
+		}
+		public async Task<List<UserDTO>> GetAccountsBySearch(string text, string accessToken, int takeCount, string[] skipIds = null)
+		{
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Account/getBySearch/{text}/{takeCount}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+			var body = Newtonsoft.Json.JsonConvert.SerializeObject(skipIds);
+
+			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
 			if (response.IsSuccessStatusCode)
 			{
 				return await response.Content.ReadFromJsonAsync<List<UserDTO>>();

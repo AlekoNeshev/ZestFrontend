@@ -11,12 +11,11 @@ namespace ZestFrontend.ViewModels
 {
     public partial class AddCommunityViewModel : ObservableObject
     {
-        CommunityService communityService;
-        AuthService authService;
-        public AddCommunityViewModel(CommunityService communityService, AuthService authService ) 
+        CommunityService _communityService;
+        public AddCommunityViewModel(CommunityService communityService) 
         {
-            this.communityService = communityService;
-            this.authService = authService;
+            this._communityService = communityService;
+  
         }
         [ObservableProperty]
         string name;
@@ -25,12 +24,10 @@ namespace ZestFrontend.ViewModels
         [RelayCommand]
         async Task CreateCommunityAsync()
         {
-            var response = await communityService.AddCommunity(Name, Description);
+            var response = await _communityService.AddCommunity(Name, Description);
             if (response.IsSuccessStatusCode)
             {
-                await Shell.Current.GoToAsync($"{nameof(CommunitiesPage)}");
-
-
+                await Shell.Current.GoToAsync($"..");
             }
         }
     }

@@ -6,7 +6,8 @@
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="Login"
     x:DataType="viewmodel:LoginViewModel"
-    Shell.TabBarIsVisible="False">
+    Shell.TabBarIsVisible="False"
+    BackgroundColor="GhostWhite">
 
     <ContentPage.ToolbarItems />
     <Grid>

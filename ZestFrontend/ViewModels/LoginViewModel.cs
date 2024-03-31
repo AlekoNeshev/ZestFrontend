@@ -1,34 +1,41 @@
-﻿using Auth0.OidcClient;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using IdentityModel.OidcClient;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Net.Http.Headers;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using ZestFrontend.DTOs;
 using ZestFrontend.Services;
 
 namespace ZestFrontend.ViewModels
 {
-    
-      public partial class LoginViewModel : ObservableObject
+
+	public partial class LoginViewModel : ObservableObject
     {
-        LoginService loginService;
-        AuthService authService;
-        AccountService accountService;
-        HttpClient httpClient;
+        LoginService _loginService;
+        AuthService _authService;
+        AccountService _accountService;
+        HttpClient _httpClient;
 		public LoginViewModel(LoginService service,  AccountService accountService, HttpClient httpClient, AuthService authService) 
         {
-            this.loginService = service;
-            this.authService = authService;
-       this.httpClient = httpClient;
-            this.accountService = accountService;
+            this._loginService = service;
+            this._authService = authService;
+       this._httpClient = httpClient;
+            this._accountService = accountService;
+            Retrieve();
         }
+        public async void Retrieve()
+        {
+			var userId = await _authService.GetAuthenticatedUser();
+            if(userId != null)
+            {
+				var accessToken = await SecureStorage.Default.GetAsync("access_token");
+				var account = await _accountService.GetCurrentAccount(accessToken);
+				_authService.Token = accessToken;
+				_authService.Id = account.Id;
+				_authService.Username = account.Username;
+				_authService.IsAdmin = account.IsAdmin;
+				await Shell.Current.GoToAsync($"{nameof(PostsPage)}");
+			}
+		}
 
         [ObservableProperty]
         string username;
@@ -45,23 +52,25 @@ namespace ZestFrontend.ViewModels
             if (!string.IsNullOrEmpty(audience))
                 extraParameters.Add("audience", audience);
 
-            var result = await authService.LoginAsync(extraParameters);
-            authService.Token = result.AccessToken;
-            var handler = new JwtSecurityTokenHandler();
-            var token = handler.ReadJwtToken(authService.Token);
+            var result = await _authService.LoginAsync(extraParameters);
+            _authService.Token = result.AccessToken;
+			try
+			{
+				await SecureStorage.Default.SetAsync("access_token", result.AccessToken);
+				await SecureStorage.Default.SetAsync("id_token", result.IdentityToken);
+			}
+			catch (Exception ex)
+			{
+				
+			}
+
+			var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(_authService.Token);
 			var usernameClaim = token.Claims.FirstOrDefault(c => c.Type == "username");
-			var username = usernameClaim?.Value;
-            try
-            {
-                var m = await accountService.GetCurrentAccount(result.AccessToken);
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-			var account = await accountService.GetCurrentAccount(result.AccessToken);
-			httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authService.Token);
-			var response = await httpClient.GetAsync("https://dev-kckk4xk2mvwnhizd.us.auth0.com/userinfo");
+			
+			var account = await _accountService.GetCurrentAccount(result.AccessToken);
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
+			var response = await _httpClient.GetAsync("https://dev-kckk4xk2mvwnhizd.us.auth0.com/userinfo");
 			if (response.IsSuccessStatusCode)
 			{
 				var userProfile = await response.Content.ReadAsStringAsync();
@@ -72,16 +81,17 @@ namespace ZestFrontend.ViewModels
             {
                
                 var user = result.User;
-                var name = username;
+                var name = account.Username;
                 var email = user.FindFirst(c => c.Type == "email")?.Value;
-                var info = await accountService.CreateAccount(authService.Token, name, email);
-                authService.Id = info[0];
-                authService.Username = info[1];
+                var info = await _accountService.CreateAccount(_authService.Token, name, email);
+                _authService.Id = info[0];
+                _authService.Username = info[1];
             }
             else 
             {
-				authService.Id = account.Id;
-				authService.Username = account.Username;
+				_authService.Id = account.Id;
+				_authService.Username = account.Username;
+                _authService.IsAdmin = account.IsAdmin;
 			}
            
 

@@ -11,25 +11,30 @@ namespace ZestFrontend.Services
 	{
 		private HubConnection _messageConnection;
 		private readonly AuthService _authService;
-		public MessageHubConnectionService(AuthService authService)
+		private SignalRConnectionService _signalRConnectionService;
+		public MessageHubConnectionService(AuthService authService, SignalRConnectionService signalRConnectionService)
 		{
-
 			_authService=authService;
+			_signalRConnectionService=signalRConnectionService;
 		}
 
 		public HubConnection MessageConnection => _messageConnection;
 
-		public async void Init()
+		public async Task Init()
 		{
-			_messageConnection = BuildLikesHubConnection("https://localhost:7183/messagehub");
+			_messageConnection = BuildLikesHubConnection($"{PortConst.Port_Forward_Http}/messagehub");
 			await StartConnections();
 		}
 		private HubConnection BuildLikesHubConnection(string url)
 		{
 			var connection = new HubConnectionBuilder()
-				.WithUrl(url, option =>
+				.WithUrl(url, options =>
 				{
-					option.Headers["userId"] = _authService.Id.ToString();
+					options.AccessTokenProvider = async () =>
+					{
+						string accessToken = _authService.Token;
+						return accessToken;
+					};
 				})
 				.Build();
 
@@ -41,6 +46,16 @@ namespace ZestFrontend.Services
 		private async Task StartConnections()
 		{
 			await _messageConnection.StartAsync();
+			_messageConnection.Closed += _messageConnection_Closed;
+		}
+
+		private async Task _messageConnection_Closed(Exception arg)
+		{
+			await _messageConnection.StartAsync();
+			if (_authService.Groups.Count != 0)
+			{
+				await _signalRConnectionService.AddConnectionToGroup(MessageConnection.ConnectionId, _authService.Groups.Where(x => x.Contains("message")).ToArray());
+			}
 		}
 	}
 }

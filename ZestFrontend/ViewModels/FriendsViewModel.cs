@@ -13,18 +13,37 @@ namespace ZestFrontend.ViewModels
 {
 	public partial class FriendsViewModel : ObservableObject
 	{
-        FollowersService followersService;
-		AuthService authService;
+        FollowersService _followersService;
+		AuthService _authService;
         public FriendsViewModel(FollowersService followersService, AuthService authService)
         {
-            this.followersService = followersService;
-			this.authService = authService;
+            this._followersService = followersService;
+			this._authService = authService;
 			GetFriends();
         }
 		public ObservableCollection<FollowerDTO> Friends { get; private set; } = new();
-		public async void GetFriends()
+		[ObservableProperty]
+		bool isRefreshing;
+		[ObservableProperty]
+		string searchText;
+
+		private bool isInSearchMode;
+
+		public bool IsInSearchMode
 		{
-			foreach (var item in await followersService.GetFriends())
+			get { return isInSearchMode; }
+			set { isInSearchMode = value; }
+		}
+		public async Task GetFriends()
+		{
+			foreach (var item in await _followersService.GetFriends(50, Friends.Count))
+			{
+				Friends.Add(item);
+			}
+		}
+		public async Task SearchFriends()
+		{
+			foreach (var item in await _followersService.GetAccountsBySearch(SearchText, 50, Friends.Select(x => x.Id).ToArray()))
 			{
 				Friends.Add(item);
 			}
@@ -34,7 +53,7 @@ namespace ZestFrontend.ViewModels
 		{
 			if (follower== null) return;
 
-			await Shell.Current.GoToAsync($"{nameof(ChatPage)}?id={follower.FollowerId}", true,
+			await Shell.Current.GoToAsync($"{nameof(ChatPage)}?id={follower.Id}", true,
 				new Dictionary<string, object>
 			{
 			{"Follower", follower }
@@ -44,7 +63,37 @@ namespace ZestFrontend.ViewModels
 		async Task RefreshAsync()
 		{
 			Friends.Clear();
-			GetFriends();
+			await GetFriends();
+			IsRefreshing = false;
 		}
+		[RelayCommand]
+		async Task SearchFollowersAsync()
+		{
+			if (!string.IsNullOrWhiteSpace(SearchText))
+			{
+				Friends.Clear();
+				await SearchFriends();
+				IsInSearchMode = true;
+			}
+			else
+			{
+				Friends.Clear();
+				await GetFriends();
+				IsInSearchMode=false;
+			}
+		}
+		[RelayCommand]
+		async Task LoadMoreFriendsAsync()
+		{
+			if(!string.IsNullOrEmpty(SearchText) && IsInSearchMode == true)
+			{
+				await SearchFollowersAsync();
+			}
+			else
+			{
+				await GetFriends();
+			}
+		}
+		
 	}
 }

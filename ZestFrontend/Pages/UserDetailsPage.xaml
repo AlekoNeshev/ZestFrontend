@@ -1,34 +1,96 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ZestFrontend.UserDetailsPage"
-             xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
-             x:DataType="viewmodel:UserDetailsViewModel"
-             xmlns:model="clr-namespace:ZestFrontend.DTOs"
-             Title="UserDetailsPage">
-    <Grid>
+<ContentPage
+    x:Class="ZestFrontend.UserDetailsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:model="clr-namespace:ZestFrontend.DTOs"
+    xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+    Title="UserDetailsPage"
+    x:DataType="viewmodel:UserDetailsViewModel"
+    BackgroundColor="GhostWhite">
+    <Grid x:Name="MyGrid" Padding="0,64,0,0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto" />
-
+            <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
+            <ColumnDefinition Width="{OnIdiom Phone=*, Tablet=2*, Desktop=3*}" />
+            <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="50"/>
-        </Grid.RowDefinitions>
-        <Label
-          Grid.Row="0"
-          Text="{Binding User.Username}"
-          VerticalOptions="Center" 
-          HorizontalOptions="Center" />
-        <Label 
-          Grid.Row="1"
-          Text="{Binding User.CreatedOn1}"
-          VerticalOptions="Center" 
-          HorizontalOptions="Center" />
 
-        <VerticalStackLayout HorizontalOptions="End">
-            <Button Grid.Column="1" Text="{Binding ButtonText}" HorizontalOptions="End" Command="{Binding ChangeFollowshipStatusCommand}"/>
-        </VerticalStackLayout>
+
+        <CollectionView
+            x:Name="Coms"
+            Grid.Column="1"
+            ItemsSource="{Binding Communities}">
+            <CollectionView.Header>
+                <StackLayout>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="50" />
+                        </Grid.RowDefinitions>
+                        <StackLayout
+                            Grid.Row="0"
+                            HorizontalOptions="Center"
+                            Orientation="Horizontal"
+                            Spacing="2"
+                            VerticalOptions="Center">
+                            <Label Text="Username: " />
+                            <Label Text="{Binding User.Username}" />
+                        </StackLayout>
+                        <StackLayout
+                            Grid.Row="1"
+                            HorizontalOptions="Center"
+                            Orientation="Horizontal"
+                            Spacing="3"
+                            VerticalOptions="Center">
+                            <Label Text="Created On:" />
+                            <Label Text="{Binding User.CreatedOn1}" />
+                        </StackLayout>
+
+                        <VerticalStackLayout HorizontalOptions="End">
+                            <Button
+                                Grid.Column="1"
+                                Command="{Binding ChangeFollowshipStatusCommand}"
+                                HorizontalOptions="End"
+                                Text="{Binding ButtonText}">
+                                <Button.Background>
+                                    <LinearGradientBrush>
+                                        <GradientStop Offset="0.0" Color="ForestGreen" />
+                                        <GradientStop Offset="1.0" Color="LightBlue" />
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                            </Button>
+                        </VerticalStackLayout>
+                    </Grid>
+                    <Label Text="Followed communities:" />
+                </StackLayout>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:CommunityDTO">
+                    <ContentView
+                        Padding="-1,-1,0,0"
+                        BackgroundColor="LightGray"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand">
+                        <Frame
+                            BackgroundColor="GhostWhite"
+                            BorderColor="Transparent"
+                            CornerRadius="0">
+
+                            <Frame.GestureRecognizers>
+                                <PointerGestureRecognizer PointerEntered="OnPointerEntered" PointerExited="OnPointerExited" />
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:UserDetailsViewModel}}, Path=GoToCommunityDetailPageCommand}" CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+
+                            <Label Text="{Binding Name}" />
+                        </Frame>
+                    </ContentView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
     </Grid>
 </ContentPage>

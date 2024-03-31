@@ -1,12 +1,19 @@
 using ZestFrontend.ViewModels;
+using ZestFrontend.Views;
 
 namespace ZestFrontend;
 
 public partial class FriendsPage : ContentPage
 {
-	public FriendsPage(FriendsViewModel friendsViewModel)
+	public FriendsPage(FriendsViewModel friendsViewModel, IServiceProvider serviceProvider)
 	{
 		BindingContext = friendsViewModel;
 		InitializeComponent();
+		if (Microsoft.Maui.Devices.DeviceInfo.Current.Platform == Microsoft.Maui.Devices.DevicePlatform.WinUI)
+		{
+			var nav = serviceProvider.GetRequiredService<NavigationView>();
+			Grid.SetRow(nav, 1);
+			MyGrid.Children.Add(nav);
+		}
 	}
 }

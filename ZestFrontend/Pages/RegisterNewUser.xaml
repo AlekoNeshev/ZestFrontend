@@ -5,20 +5,28 @@
              x:DataType="viewmodel:RegisterNewUserViewModel"
              x:Class="ZestFrontend.RegisterNewUser"
              Title="RegisterNewUser">
-    <StackLayout Padding="20" Spacing="10">
-        <Label Text="Account Details" FontSize="Large" HorizontalOptions="Center" />
-        <Label Text="First Name:" />
-        <Entry Text="{Binding FirstName}" />
-        <Label Text="Last Name:" />
-        <Entry Text="{Binding LastName}" />
-        <Label Text="Username:" />
-        <Entry Text="{Binding Username}" />
-        <Label Text="Email:" />
-        <Entry Text="{Binding Email}" />
-        <Label Text="Birthdate:" />
-        <DatePicker Date="{Binding Birthdate}" />
-        <Label Text="Password" />
-        <Entry IsPassword="True" Text="{Binding Password}" />
-        <Button Text="Create" Command="{Binding CreateAccountCommand}"/>
-    </StackLayout>
+    <Grid x:Name="MyGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
+            <ColumnDefinition Width="{OnIdiom Phone=*, Tablet=2*, Desktop=3*}" />
+            <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
+        </Grid.ColumnDefinitions>
+
+        <StackLayout Padding="20" Spacing="10" Grid.Column="1">
+            <Label Text="Account Details" FontSize="Large" HorizontalOptions="Center" />
+            <Label Text="First Name:" />
+            <Entry Text="{Binding FirstName}" />
+            <Label Text="Last Name:" />
+            <Entry Text="{Binding LastName}" />
+            <Label Text="Username:" />
+            <Entry Text="{Binding Username}" />
+            <Label Text="Email:" />
+            <Entry Text="{Binding Email}" />
+            <Label Text="Birthdate:" />
+            <DatePicker Date="{Binding Birthdate}" />
+            <Label Text="Password" />
+            <Entry IsPassword="True" Text="{Binding Password}" />
+            <Button Text="Create" Command="{Binding CreateAccountCommand}"/>
+        </StackLayout>
+    </Grid>
 </ContentPage>

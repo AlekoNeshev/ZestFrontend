@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Maui.Controls.Shapes;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,7 +16,9 @@ namespace ZestFrontend.DTOs
         private int _likes;
         private int _dislikes;
         private bool _isReplyVisible;
-        public int Id { get; set; }
+		private LikeDTO _like;
+		private bool _areRepliesVisible = true;
+		public int Id { get; set; }
         public string Publisher 
         { 
             get => _publisher; 
@@ -41,7 +44,17 @@ namespace ZestFrontend.DTOs
 			get => _isReplyVisible;
 			set => SetProperty(ref _isReplyVisible, value);
 		}
-        public bool IsOwner { get; set; }
+		public bool AreRepliesVisible
+		{
+			get => _areRepliesVisible;
+			set => SetProperty(ref _areRepliesVisible, value);
+		}
+		public LikeDTO Like
+		{
+			get => _like;
+			set => SetProperty(ref _like, value);
+		}
+		public bool IsOwner { get; set; }
         public ObservableCollection<CommentDTO> Replies { get; set; } = new ObservableCollection<CommentDTO>();
         public DateTime PostedOn { get; set; }
     }

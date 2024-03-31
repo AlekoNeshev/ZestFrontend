@@ -12,6 +12,7 @@ namespace ZestFrontend.DTOs
         public string Name { get; set; }
         public string Description { get; set; }
         public string Creator { get; set; }
-        public bool IsSubscribed { get; set; }
-    }
+		public DateTime CreatedOn { get; set; }
+		public bool IsSubscribed { get; set; }
+	}
 }

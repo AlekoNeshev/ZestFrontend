@@ -6,88 +6,121 @@
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="CommunityModeratorsViewModel"
-    x:DataType="viewmodel:CommunityModeratorsViewModel">
-    <Grid>
-        <VerticalStackLayout>
-            <Label
-                HorizontalOptions="Center"
-                Text="Moderators:"
-                VerticalOptions="Center" />
-            <CollectionView
-                Grid.Row="3"
-                Grid.Column="1"
-                ItemsSource="{Binding Moderators}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="model:AccountDTO">
+    x:DataType="viewmodel:CommunityModeratorsViewModel"
+    BackgroundColor="GhostWhite">
+    <Grid x:Name="MyGrid">
+        <Grid.ColumnDefinitions>
 
-                        <Frame>
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityModeratorsViewModel}}, Path=GoToUserDetailPageCommand}" CommandParameter="{Binding .}" />
-                            </Frame.GestureRecognizers>
+            <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
+            <ColumnDefinition Width="{OnIdiom Phone=*, Tablet=2*, Desktop=3*}" />
+            <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
+        </Grid.ColumnDefinitions>
+        <ScrollView Grid.Column="1">
+            <VerticalStackLayout>
+                <Label
+                    HorizontalOptions="Center"
+                    Text="Moderators:"
+                    VerticalOptions="Center" />
+                <CollectionView
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    ItemsSource="{Binding Moderators}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:AccountDTO">
 
+                            <Frame>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityModeratorsViewModel}}, Path=GoToUserDetailPageCommand}" CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
 
-                            <Label FontAttributes="Bold" Text="{Binding Username}" />
-
-
-
-                        </Frame>
-
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-
-            </CollectionView>
-            <Label
-                HorizontalOptions="Center"
-                IsVisible="{Binding IsModerator}"
-                Text="Candidates:" />
-            <CollectionView
-                Grid.Row="3"
-                Grid.Column="1"
-                IsVisible="{Binding IsModerator}"
-                ItemsSource="{Binding Candidates}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="model:AccountDTO">
-
-                        <Frame>
-
-
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityModeratorsViewModel}}, Path=GoToUserDetailPageCommand}" CommandParameter="{Binding .}" />
-                            </Frame.GestureRecognizers>
-                            <HorizontalStackLayout>
                                 <Label FontAttributes="Bold" Text="{Binding Username}" />
-                                <Button
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityModeratorsViewModel}}, Path=ApproveCandidateCommand}"
-                                    CommandParameter="{Binding .}"
-                                    Text="Approve" />
-                                <Button
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityModeratorsViewModel}}, Path=DisapproveCandidateCommand}"
-                                    CommandParameter="{Binding .}"
-                                    Text="Disapprove" />
-                            </HorizontalStackLayout>
 
-                        </Frame>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
 
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
+                </CollectionView>
+                <Label
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding IsModerator}"
+                    Text="Candidates:" />
+                <CollectionView
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    IsVisible="{Binding IsModerator}"
+                    ItemsSource="{Binding Candidates}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:AccountDTO">
+                            <Frame>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityModeratorsViewModel}}, Path=GoToUserDetailPageCommand}" CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                                <Grid ColumnSpacing="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="Start"
+                                        Text="{Binding Username}" />
 
-            </CollectionView>
-        </VerticalStackLayout>
-        <Frame
+                                    <Button
+                                        Grid.Column="1"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityModeratorsViewModel}}, Path=ApproveCandidateCommand}"
+                                        CommandParameter="{Binding .}"
+                                        HorizontalOptions="End"
+                                        Text="Approve">
+                                        <Button.Background>
+                                            <LinearGradientBrush>
+                                                <GradientStop Offset="0.0" Color="ForestGreen" />
+                                                <GradientStop Offset="1.0" Color="LightBlue" />
+                                            </LinearGradientBrush>
+                                        </Button.Background>
+                                    </Button>
+                                    <Button
+                                        Grid.Column="2"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityModeratorsViewModel}}, Path=DisapproveCandidateCommand}"
+                                        CommandParameter="{Binding .}"
+                                        HorizontalOptions="End"
+                                        Text="Disapprove">
+                                        <Button.Background>
+                                            <LinearGradientBrush>
+                                                <GradientStop Offset="0.0" Color="ForestGreen" />
+                                                <GradientStop Offset="1.0" Color="LightBlue" />
+                                            </LinearGradientBrush>
+                                        </Button.Background>
+
+                                    </Button>
+
+                                </Grid>
+
+                            </Frame>
+
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+        <Border
+            Grid.Column="1"
             Margin="16"
             Padding="0"
             BackgroundColor="LightBlue"
-            CornerRadius="20"
             HeightRequest="60"
             HorizontalOptions="End"
             VerticalOptions="End"
             WidthRequest="60">
             <Button
                 BackgroundColor="Transparent"
+                BorderColor="Transparent"
                 Command="{Binding AddMeCommand}"
                 HorizontalOptions="Start"
                 Text="{Binding ButtonText}"
-                VerticalOptions="Start" />
-        </Frame>
+                VerticalOptions="Center" />
+        </Border>
     </Grid>
 </ContentPage>

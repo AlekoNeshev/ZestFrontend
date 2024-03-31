@@ -8,25 +8,30 @@ namespace ZestFrontend.Services
 	{
 		private  HubConnection _likesConnection;
 		private readonly AuthService _authService;
-		public LikesHubConnectionService(AuthService authService )
+		private SignalRConnectionService _signalRConnectionService;
+		public LikesHubConnectionService(AuthService authService, SignalRConnectionService signalRConnectionService )
 		{
-			
 			_authService=authService;
+			_signalRConnectionService=signalRConnectionService;
 		}
 
 		public HubConnection LikesConnection => _likesConnection;
 
 		public async void Init()
 		{
-			_likesConnection = BuildLikesHubConnection("https://localhost:7183/likeshub");
-			await StartConnections();
+			_likesConnection = BuildLikesHubConnection($"{PortConst.Port_Forward_Http}/likeshub");
+			 StartConnections();
 		}
 		private HubConnection BuildLikesHubConnection(string url)
 		{
 			var connection = new HubConnectionBuilder()
-				.WithUrl(url, option =>
+				.WithUrl(url, options =>
 				{
-					option.Headers["userId"] = _authService.Id.ToString();
+					options.AccessTokenProvider = async () =>
+					{
+						string accessToken = _authService.Token;
+						return accessToken;
+					};
 				})
 				.Build();
 
@@ -35,11 +40,19 @@ namespace ZestFrontend.Services
 			return connection;
 		}
 
-		private async Task StartConnections()
+		private void StartConnections()
 		{
-			await _likesConnection.StartAsync();
+			 _likesConnection.StartAsync();
+			_likesConnection.Closed += _likesConnection_Closed;
 		}
 
-		
+		private async Task _likesConnection_Closed(Exception arg)
+		{
+			await _likesConnection.StartAsync();
+			if (_authService.Groups.Count != 0)
+			{
+				await _signalRConnectionService.AddConnectionToGroup(LikesConnection.ConnectionId, _authService.Groups.Where(x => x.Contains("pdl")).ToArray());
+			}
+		}
 	}
 }

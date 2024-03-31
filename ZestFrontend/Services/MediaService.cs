@@ -22,7 +22,7 @@ namespace ZestFrontend.Services
         }
 		public async Task<byte[]> GetMedia(string name)
 		{
-			var url = $"https://localhost:7183/api/PostRescources/ivan/{name}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/PostResources/get/{name}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)
@@ -32,7 +32,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<PostResourcesDTO[]> GetPhotosByPostId(int postId)
 		{
-			var url = $"https://localhost:7183/api/PostRescources/getByPostId/{postId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/PostResources/getByPostId/{postId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			
@@ -43,18 +43,23 @@ namespace ZestFrontend.Services
 			else
 				return null;
 		}
-		public async Task<HttpResponseMessage> UploadImage(int postId, FileResult postedFile)
+		public async Task<HttpResponseMessage> UploadImage(int postId, FileResult[] postedFiles)
 		{
-			var request = $"https://localhost:7183/api/PostRescources/ivan/{postId}";
+			var request = $"{PortConst.Port_Forward_Http}/Zest/PostResources/uploadFile/{postId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var content = new MultipartFormDataContent();
-			if(postedFile != null)
-			content.Add(new StreamContent(await postedFile.OpenReadAsync()), "postedFile", postedFile.FileName);
-
 			
+			if (postedFiles != null && postedFiles.Length > 0)
+			{
+				for (int i = 0; i < postedFiles.Length; i++)
+				{
+					var file = postedFiles[i];
+					content.Add(new StreamContent(await file.OpenReadAsync()), $"postedFiles", file.FileName);
+				}
+			}
+
 			var response = await _httpClient.PostAsync(request, content);
-
-			
+	
 			if (response.IsSuccessStatusCode)
 			{
 				

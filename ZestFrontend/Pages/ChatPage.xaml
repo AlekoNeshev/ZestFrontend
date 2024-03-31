@@ -7,8 +7,8 @@
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="ChatPage"
-    BackgroundColor="GhostWhite"
-    x:DataType="viewmodel:ChatViewModel">
+    x:DataType="viewmodel:ChatViewModel"
+    BackgroundColor="GhostWhite">
     <ContentPage.Resources>
         <ResourceDictionary>
             <local:UserMessageColorConverter x:Key="UserMessageColorConverter" />
@@ -16,77 +16,118 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid>
+    <Grid x:Name="MyGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{OnIdiom Phone=0, Desktop=1*}" />
+            <ColumnDefinition Width="5*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ScrollView Orientation="Vertical">
-            <StackLayout>
-                <Label
-                    FontSize="Large"
-                    HorizontalOptions="Center"
-                    Text="Messages" />
 
-                <CollectionView ItemsSource="{Binding Messages}" MinimumHeightRequest="50">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="model:MessageDTO">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Frame Grid.Column="{Binding IsOwner, Converter={StaticResource BoolToLayoutOptionsConverter}}" Background="{Binding IsOwner, Converter={StaticResource UserMessageColorConverter}}">
-                                    <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:FriendsViewModel}}, Path=GoToChatPageCommand}" CommandParameter="{Binding .}" />
-                                    </Frame.GestureRecognizers>
-                                    <Grid Padding="10">
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Label
+                FontSize="Large"
+                HorizontalOptions="Center"
+                Text="Messages" />
 
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*" />
+            <CollectionView
+                x:Name="Messages"
+                Grid.Row="1"
+                IsGrouped="True"
+                ItemsSource="{Binding Messages}"
+                ItemsUpdatingScrollMode="KeepScrollOffset">
+                <CollectionView.GroupHeaderTemplate>
+                    <DataTemplate x:DataType="model:MessageGroup">
+                        <Label HorizontalOptions="{OnIdiom Phone=Center, Desktop=Start}" Text="{Binding Date, StringFormat='{0:MMMM dd, yyyy}'}" />
+                    </DataTemplate>
 
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
+                </CollectionView.GroupHeaderTemplate>
 
-                                        <Label
-                                            Grid.Column="0"
-                                            FontAttributes="Bold"
-                                            MinimumWidthRequest="100"
-                                            Text="{Binding SenderUsername}" />
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:MessageDTO">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="{OnIdiom Phone=*, Desktop=0}" />
+                                <ColumnDefinition Width="{OnIdiom Phone=*, Desktop=0}" />
+                            </Grid.ColumnDefinitions>
+                            <Frame
+                                Grid.Column="{Binding IsOwner, Converter={StaticResource BoolToLayoutOptionsConverter}}"
+                                Grid.ColumnSpan="{OnIdiom Phone=3,
+                                                          Desktop=1}"
+                                Background="{Binding IsOwner, Converter={StaticResource UserMessageColorConverter}}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:FriendsViewModel}}, Path=GoToChatPageCommand}" CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                                <Grid Padding="{OnIdiom Phone=0, Desktop=-7}">
 
-                                        <Label
-                                            Grid.Column="1"
-                                            FontAttributes="Bold"
-                                            MinimumWidthRequest="100"
-                                            Text="{Binding Text}" />
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
 
-                                    </Grid>
-                                </Frame>
-                            </Grid>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </StackLayout>
-        </ScrollView>
-        <Grid Grid.Row="1" VerticalOptions="End">
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label
+                                        Grid.Column="0"
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="Start"
+                                        MinimumWidthRequest="100"
+                                        Text="{Binding SenderUsername}" />
+
+                                    <Label
+                                        Grid.Row="1"
+                                        Grid.ColumnSpan="2"
+                                        FontAttributes="None"
+                                        MinimumWidthRequest="100"
+                                        Text="{Binding Text}" />
+                                    <Label
+                                        Grid.Column="1"
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="End"
+                                        MinimumWidthRequest="10"
+                                        Text="{Binding CreatedOn, StringFormat='{0:HH:mm}'}" />
+
+                                </Grid>
+                            </Frame>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+
+        <Grid
+            Grid.Row="1"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            VerticalOptions="End">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
+                <ColumnDefinition Width="{OnIdiom Phone=1, Desktop=1*}" />
                 <ColumnDefinition Width="10*" />
-                <ColumnDefinition />
+                <ColumnDefinition Width="{OnIdiom Phone=1, Desktop=1*}" />
             </Grid.ColumnDefinitions>
             <StackLayout
                 Grid.Column="1"
                 HorizontalOptions="Fill"
                 Orientation="Horizontal">
-                <Entry
+                <Editor
                     x:Name="CommentEntry"
+                    AutoSize="TextChanges"
                     HorizontalOptions="FillAndExpand"
                     Placeholder="Write a comment" />
                 <Button
                     BackgroundColor="CadetBlue"
+                    Clicked="Button_Clicked"
                     Command="{Binding SendCommand}"
                     CommandParameter="{Binding Text, Source={x:Reference CommentEntry}}"
                     Text="Send" />

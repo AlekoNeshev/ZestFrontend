@@ -21,7 +21,7 @@ namespace ZestFrontend.Services
 
        public async Task<AccountDTO> GetAccount(string username, string password)
         {
-            var url = $"https://localhost:7183/api/Account/email/{username}/password/{password}";
+            var url = $"{PortConst.Port_Forward_Http}/Zest/Account/email/{username}/password/{password}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)

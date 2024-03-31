@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -14,17 +15,27 @@ namespace ZestFrontend.ViewModels
 	[QueryProperty(nameof(User), "User")]
 	public partial class UserDetailsViewModel : ObservableObject
 	{
-		FollowersService followersService;
-		AuthService authService;
-        public UserDetailsViewModel(FollowersService followersService, AuthService authService)
+		FollowersService _followersService;
+		CommunityService _communityService;
+        public UserDetailsViewModel(FollowersService followersService, CommunityService communityService)
         { 
-            this.followersService = followersService;
-			this.authService = authService;
+            this._followersService = followersService;
+			this._communityService = communityService;
         }
         [ObservableProperty]
         UserDTO user;
 		[ObservableProperty]
 		string buttonText;
+		public ObservableCollection<CommunityDTO> Communities { get; } = new();
+
+		public async void GetComs()
+		{
+			Communities.Clear();
+			foreach (var item in await _communityService.GetCommunitiesByAccount(User.Id, 50, Communities.Count))
+			{
+				Communities.Add(item);
+			}
+		}
 		partial void OnUserChanged(UserDTO value)
 		{
 			if (value.IsFollowed)
@@ -35,6 +46,7 @@ namespace ZestFrontend.ViewModels
 			{
 				ButtonText = "Follow";
 			}
+			GetComs();
 		}
 		[RelayCommand]
 		async Task ChangeFollowshipStatusAsync()
@@ -42,7 +54,7 @@ namespace ZestFrontend.ViewModels
 			if (User.IsFollowed)
 			{
 
-				var result = await followersService.Unfollow(User.Id);
+				var result = await _followersService.Unfollow(User.Id);
 				if (result.StatusCode == HttpStatusCode.OK)
 				{
 					ButtonText = "Follow";
@@ -52,13 +64,24 @@ namespace ZestFrontend.ViewModels
 			else
 			{
 
-				var result = await followersService.Follow(User.Id);
+				var result = await _followersService.Follow(User.Id);
 				if (result.IsSuccessStatusCode)
 				{
 					ButtonText = "Unfollow";
 					User.IsFollowed = true;
 				}
 			}
+		}
+		[RelayCommand]
+		async Task GoToCommunityDetailPageAsync(CommunityDTO community)
+		{
+			if (community== null) return;
+
+			await Shell.Current.GoToAsync($"{nameof(CommunityDetailsPage)}?id={community.Name}", true,
+				new Dictionary<string, object>
+			{
+			{"Community", community }
+			});
 		}
 	}
 }

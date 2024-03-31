@@ -15,34 +15,40 @@ namespace ZestFrontend.ViewModels
     public partial class UsersViewModel : ObservableObject
     {
 
-		AuthService authService;
-		AccountService accountService;
-		FollowersService followersService;
+		AuthService _authService;
+		AccountService _accountService;
+		FollowersService _followersService;
 		
-        public UsersViewModel( AccountService accountService, FollowersService followersService, AuthService authService)
+        public UsersViewModel(AccountService accountService, FollowersService followersService, AuthService authService)
         {
-            this.accountService = accountService;
-			this.authService = authService;
-			this.followersService = followersService;
+            this._accountService = accountService;
+			this._authService = authService;
+			this._followersService = followersService;
 			GetUsers();
         }
-        [ObservableProperty]
-		string search;
+       
 		[ObservableProperty]
 		bool isButtonVisible;
+		[ObservableProperty]
+		bool isRefreshing;
+		[ObservableProperty]
+		string searchText;
 		public ObservableCollection<UserDTO> Users { get; } = new();
-		
-		public async void GetUsers()
+
+		private bool isInSearchMode;
+
+		public bool IsInSearchMode
 		{
-		
-			foreach (var user in await accountService.GetAllAccounts())
+			get { return isInSearchMode; }
+			set { isInSearchMode = value; }
+		}
+		public async Task GetUsers()
+		{
+			foreach (var user in await _accountService.GetAllAccounts(50, Users.Count))
 			{
 				Users.Add(user);
 			}
-			
-
-		}
-		
+		}	
 		
 		[RelayCommand]
 		async Task GoToUserDetailPageAsync(UserDTO user)
@@ -55,24 +61,49 @@ namespace ZestFrontend.ViewModels
 			{"User", user }
 			});
 		}
+		public async Task SearchUsers()
+		{
+			foreach (var item in await _accountService.GetAccountsBySearch(SearchText, _authService.Token, 50, Users.Select(x => x.Id).ToArray()))
+			{
+				Users.Add(item);
+			}
+		}
+		
 		[RelayCommand]
 		async Task SearchUsersAsync()
 		{
-		   Users.Clear();
-			/*foreach (var item in await a.GetPostsBySearch(Search))
+			if (!string.IsNullOrWhiteSpace(SearchText))
 			{
-				Accounts.Add(item);
-			}*/
+				Users.Clear();
+				await SearchUsers();
+				IsInSearchMode = true;
+			}
+			else
+			{
+				Users.Clear();
+				await GetUsers();
+				IsInSearchMode = false;
+			}
 		}
-		public void OnNavaigated()
-		{
-
-		}
+		
 		[RelayCommand]
 		async Task RefreshAsync()
 		{
 			Users.Clear();
-			GetUsers();
+			await GetUsers();
+			IsRefreshing = false;
+		}
+		[RelayCommand]
+		async Task LoadMoreUsersAsync()
+		{
+			if (!string.IsNullOrEmpty(SearchText) && IsInSearchMode == true)
+			{
+				await SearchUsers();
+			}
+			else
+			{
+				await GetUsers();
+			}
 		}
 	}
 }

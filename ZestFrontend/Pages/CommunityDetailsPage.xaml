@@ -3,102 +3,272 @@
     x:Class="ZestFrontend.CommunityDetailsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:ZestFrontend.Parameters"
     xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="CommunityDetailsPage"
     x:DataType="viewmodel:CommunityDetailsViewModel"
     BackgroundColor="GhostWhite">
+    <ContentPage.Resources>
+        <local:LikeButtonsColorConverter x:Key="LikeButtonColorConverter" />
+        <local:DislikeButtonColorConverter x:Key="DislikeButtonColorConverter" />
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding RefreshCommand}" Text="Refresh" />
+    </ContentPage.ToolbarItems>
+    <Grid x:Name="MyGrid">
 
-    <ScrollView Orientation="Vertical">
-        <VerticalStackLayout>
-            <Grid>
+        <Grid.ColumnDefinitions>
 
-                <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
+            <ColumnDefinition Width="{OnIdiom Phone=*, Tablet=2*, Desktop=3*}" />
+            <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
 
-                    <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
-                    <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=9*}" />
-                    <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <SearchBar
+            Grid.Column="1"
+            Margin="0,10,0,10"
+            HorizontalOptions="Fill"
+            Keyboard="Plain"
+            MaximumWidthRequest="500"
+            Placeholder="Search"
+            SearchCommand="{Binding SearchPostsCommand}"
+            Text="{Binding SearchText, Mode=TwoWay}" />
+        <VerticalStackLayout
+            Grid.Row="1"
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
+            HorizontalOptions="Center"
+            IsVisible="{OnIdiom Phone=False,
+                                Desktop=True}">
 
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Label
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    HorizontalOptions="Center"
-                    Text="{Binding Community.Name}"
-                    VerticalOptions="Center" />
-                <Label
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    HorizontalOptions="Center"
-                    Text="{Binding Community.Description}"
-                    VerticalOptions="Center" />
-                <Label
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    HorizontalOptions="Center"
-                    Text="{Binding Community.Creator}"
-                    VerticalOptions="Center" />
-                <VerticalStackLayout
-                    Grid.RowSpan="3"
-                    Grid.Column="1"
-                    Grid.ColumnSpan="2"
-                    HorizontalOptions="End"
-                    MaximumWidthRequest="75">
+            <Button
+                Command="{Binding ChangeFollowshipStatusCommand}"
+                HorizontalOptions="Center"
+                Text="{Binding ButtonText}"
+                WidthRequest="90">
+                <Button.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Offset="0.0" Color="ForestGreen" />
+                        <GradientStop Offset="1.0" Color="LightBlue" />
+                    </LinearGradientBrush>
+                </Button.Background>
 
-                    <Button
-                        Command="{Binding ChangeFollowshipStatusCommand}"
-                        HorizontalOptions="End"
-                        MaximumWidthRequest="75"
-                        Text="{Binding ButtonText}">
-                        <Button.Background>
-                            <LinearGradientBrush>
-                                <GradientStop Offset="0.0" Color="ForestGreen" />
-                                <GradientStop Offset="1.0" Color="LightBlue" />
-                            </LinearGradientBrush>
-                        </Button.Background>
+            </Button>
+            <Button
+                Command="{Binding AddPostCommand}"
+                HorizontalOptions="Center"
+                Text="Add"
+                WidthRequest="90">
+                <Button.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Offset="0.0" Color="ForestGreen" />
+                        <GradientStop Offset="1.0" Color="LightBlue" />
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+            <Button
+                Command="{Binding DeleteCommunityCommand}"
+                CommandParameter="{Binding Community.Id}"
+                HorizontalOptions="Center"
+                Text="Delete"
+                WidthRequest="90">
+                <Button.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Offset="0.0" Color="ForestGreen" />
+                        <GradientStop Offset="1.0" Color="LightBlue" />
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+            <Button
+                BackgroundColor="Transparent"
+                BorderColor="Transparent"
+                Command="{Binding GoToModeratorsDetailPageCommand}"
+                Text="See moderators"
+                TextColor="Grey" />
 
-                    </Button>
-                    <Button
-                        Command="{Binding AddPostCommand}"
-                        HorizontalOptions="End"
-                        Text="Add">
-                        <Button.Background>
-                            <LinearGradientBrush>
-                                <GradientStop Offset="0.0" Color="ForestGreen" />
-                                <GradientStop Offset="1.0" Color="LightBlue" />
-                            </LinearGradientBrush>
-                        </Button.Background>
-                    </Button>
-                    <Button Command="{Binding GoToModeratorsDetailPageCommand}" Text="See moderators">
-                        <Button.Background>
-                            <LinearGradientBrush>
-                                <GradientStop Offset="0.0" Color="ForestGreen" />
-                                <GradientStop Offset="1.0" Color="LightBlue" />
-                            </LinearGradientBrush>
-                        </Button.Background>
-                    </Button>
-                </VerticalStackLayout>
+            <StackLayout Orientation="Horizontal">
+                <ContentView
+                    Padding="0,-1,-1,0"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+                    <Border
+                        Padding="0,0,0,0"
+                        BackgroundColor="GhostWhite"
+                        Stroke="Transparent">
+                        <Button
+                            BackgroundColor="Transparent"
+                            BorderColor="Transparent"
+                            Clicked="ImageButton_Clicked"
+                            Command="{Binding FilterBtnAsyncCommand}"
+                            Text="Filter"
+                            TextColor="Black" />
+                    </Border>
+                </ContentView>
+                <ContentView
+                    Padding="-1,-1,-1,0"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+                    <Border
+                        Padding="0,0,0,0"
+                        BackgroundColor="GhostWhite"
+                        Stroke="Transparent">
+                        <ImageButton
+                            x:Name="SecondImageButton"
+                            BackgroundColor="Transparent"
+                            Clicked="ImageButton_Clicked"
+                            Command="{Binding FilterBtnAsyncCommand}"
+                            Source="{mi:FluentFilled ArrowUp20Filled,
+                                                     IconAutoScaling=True,
+                                                     IconSize=20}" />
+                    </Border>
+                </ContentView>
+            </StackLayout>
+            <StackLayout IsVisible="{Binding AreFiltersVisible}">
+                <ContentView
+                    Padding="0,-1,-1,0"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+                    <Border
+                        Padding="0,0,0,0"
+                        BackgroundColor="GhostWhite"
+                        Stroke="Transparent">
+                        <Button
+                            BackgroundColor="Transparent"
+                            BorderColor="Transparent"
+                            Command="{Binding GetLatestPostsCommand}"
+                            Text="Latest"
+                            TextColor="Black" />
+                    </Border>
+                </ContentView>
+                <ContentView
+                    Padding="0,-1,-1,0"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+                    <Border
+                        Padding="0,0,0,0"
+                        BackgroundColor="GhostWhite"
+                        Stroke="Transparent">
+                        <Button
+                            BackgroundColor="Transparent"
+                            BorderColor="Transparent"
+                            Command="{Binding GetTrendingPostsCommand}"
+                            Text="Trending"
+                            TextColor="Black" />
+                    </Border>
+                </ContentView>
 
-                <CollectionView
-                    Grid.Row="3"
-                    Grid.Column="1"
-                    ItemsSource="{Binding Posts}">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="model:PostDTO">
-                            <Grid>
-                                <Frame>
+            </StackLayout>
+        </VerticalStackLayout>
+        <RefreshView
+            Grid.Row="1"
+            Grid.Column="1"
+            Command="{Binding RefreshCommand}"
+            IsRefreshing="{Binding IsRefreshing}">
+
+            <CollectionView
+                ItemsSource="{Binding Posts}"
+                ItemsUpdatingScrollMode="KeepScrollOffset"
+                RemainingItemsThreshold="1"
+                RemainingItemsThresholdReachedCommand="{Binding LoadMorePostsCommand}">
+                <CollectionView.Header>
+
+                    <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+
+                        <StackLayout HorizontalOptions="Center" Spacing="3">
+                            <Label
+                                FontAttributes="Bold"
+                                HorizontalOptions="Center"
+                                Text="{Binding Community.Name}"
+                                VerticalOptions="Center" />
+                            <Label
+                                HorizontalOptions="Center"
+                                Text="{Binding Community.Description}"
+                                VerticalOptions="Center" />
+                            <StackLayout Orientation="Horizontal" Spacing="2">
+                                <Label Text="Created on:" />
+                                <Label
+                                    HorizontalOptions="Center"
+                                    Text="{Binding Community.CreatedOn, StringFormat='{0:MMMM dd, yyyy}'}"
+                                    VerticalOptions="Center" />
+                            </StackLayout>
+
+
+                        </StackLayout>
+                        <StackLayout
+                            Grid.RowSpan="2"
+                            Grid.Column="1"
+                            HorizontalOptions="End"
+                            IsVisible="{OnIdiom Phone=True,
+                                                Desktop=False}"
+                            VerticalOptions="Center">
+                            <Button
+                                Background="Transparent"
+                                BorderColor="Transparent"
+                                Command="{Binding AddPostCommand}"
+                                HorizontalOptions="Center"
+                                Text="Add"
+                                TextColor="Green" />
+                            <Button
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Command="{Binding ChangeFollowshipStatusCommand}"
+                                HorizontalOptions="Center"
+                                Text="{Binding ButtonText}"
+                                TextColor="Black" />
+                        </StackLayout>
+                        <StackLayout
+                            Grid.Row="1"
+                            IsVisible="{OnIdiom Phone=True,
+                                                Desktop=False}"
+                            Orientation="Horizontal">
+                            <Button
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Command="{Binding GetLatestPostsCommand}"
+                                Text="Latest"
+                                TextColor="Black" />
+                            <Button
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Command="{Binding GetTrendingPostsCommand}"
+                                Text="Trending"
+                                TextColor="Black" />
+
+                            <Button
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Command="{Binding GoToModeratorsDetailPageCommand}"
+                                Text="See moderators"
+                                TextColor="Grey" />
+                        </StackLayout>
+
+                    </Grid>
+                </CollectionView.Header>
+                <CollectionView.ItemTemplate>
+
+                    <DataTemplate x:DataType="model:PostDTO">
+                        <Grid>
+                            <ContentView
+                                Padding="-1,0,-1,-1"
+                                BackgroundColor="LightGray"
+                                HorizontalOptions="FillAndExpand"
+                                VerticalOptions="FillAndExpand">
+                                <Frame BorderColor="Transparent" CornerRadius="0">
                                     <Frame.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=GoToPostDetailPageCommand}" CommandParameter="{Binding .}" />
                                     </Frame.GestureRecognizers>
 
-                                    <Grid Padding="-10">
+                                    <Grid Padding="{OnIdiom Phone=0, Desktop=-10}">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
@@ -133,38 +303,39 @@
 
                                         <StackLayout
                                             Grid.Row="3"
-                                            Grid.Column="0"
                                             Grid.ColumnSpan="2"
                                             HorizontalOptions="End"
                                             Orientation="Horizontal">
                                             <ImageButton
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=LikePostCommand}"
                                                 CommandParameter="{Binding .}"
-                                                HeightRequest="5"
                                                 HorizontalOptions="Center"
-                                                Source="{mi:FluentFilled ArrowUp20Filled,
-                                                                         IconAutoScaling=True,
-                                                                         IconSize=20}"
-                                                VerticalOptions="Center"
-                                                WidthRequest="5" />
+                                                MaximumHeightRequest="{OnIdiom Phone=20,
+                                                                               Desktop=20}"
+                                                MaximumWidthRequest="{OnIdiom Phone=20,
+                                                                              Desktop=20}"
+                                                Source="{Binding Like, Converter={StaticResource LikeButtonColorConverter}}"
+                                                VerticalOptions="Center" />
                                             <Label Text="{Binding Likes}" />
                                             <ImageButton
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=DislikePostCommand}"
                                                 CommandParameter="{Binding .}"
                                                 HorizontalOptions="Center"
-                                                MaximumHeightRequest="10"
-                                                MaximumWidthRequest="10"
-                                                Source="{mi:FluentFilled Icon=ArrowDown20Filled,
-                                                                         IconAutoScaling=True,
-                                                                         IconSize=20}"
+                                                MaximumHeightRequest="{OnIdiom Phone=20,
+                                                                               Desktop=20}"
+                                                MaximumWidthRequest="{OnIdiom Phone=20,
+                                                                              Desktop=20}"
+                                                Source="{Binding Like, Converter={StaticResource DislikeButtonColorConverter}}"
                                                 VerticalOptions="Center" />
                                             <Label Text="{Binding Dislikes}" />
                                             <ImageButton
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CommunityDetailsViewModel}}, Path=GoToPostDetailPageCommand}"
                                                 CommandParameter="{Binding .}"
                                                 HorizontalOptions="Center"
-                                                MaximumHeightRequest="10"
-                                                MaximumWidthRequest="10"
+                                                MaximumHeightRequest="{OnIdiom Phone=20,
+                                                                               Desktop=20}"
+                                                MaximumWidthRequest="{OnIdiom Phone=20,
+                                                                              Desktop=20}"
                                                 Source="{mi:FluentFilled ArrowReplyDown16Filled,
                                                                          IconAutoScaling=True,
                                                                          IconSize=20}"
@@ -174,22 +345,22 @@
                                                 CommandParameter="{Binding .}"
                                                 HorizontalOptions="Center"
                                                 IsVisible="{Binding IsOwner}"
-                                                MaximumHeightRequest="10"
-                                                MaximumWidthRequest="10"
+                                                MaximumHeightRequest="{OnIdiom Phone=20,
+                                                                               Desktop=20}"
+                                                MaximumWidthRequest="{OnIdiom Phone=20,
+                                                                              Desktop=20}"
                                                 Source="{mi:FluentFilled Broom20Filled,
                                                                          IconAutoScaling=True,
                                                                          IconSize=20}"
                                                 VerticalOptions="Center" />
                                         </StackLayout>
                                     </Grid>
-
                                 </Frame>
-                            </Grid>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-
-                </CollectionView>
-            </Grid>
-        </VerticalStackLayout>
-    </ScrollView>
+                            </ContentView>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
 </ContentPage>
