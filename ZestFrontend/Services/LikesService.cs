@@ -18,7 +18,7 @@ namespace ZestFrontend.Services
         }
         public async Task<HttpResponseMessage> Like( int postId, int commentId, bool value)
         {
-            var url = $"{PortConst.Port_Forward_Http}/api/Likes/add/post/{postId}/comment/{commentId}/value/{value}";
+            var url = $"{PortConst.Port_Forward_Http}/Zest/Like/add/post/{postId}/comment/{commentId}/value/{value}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.PostAsync(url, new StringContent("data"));
             response.EnsureSuccessStatusCode();
@@ -27,7 +27,7 @@ namespace ZestFrontend.Services
         }
 		public async Task<HttpResponseMessage> RemoveLike(int likeId, int postId, int commentId)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Likes/remove/like/{likeId}/{postId}/{commentId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Like/remove/like/{likeId}/{postId}/{commentId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.DeleteAsync(url);
 			response.EnsureSuccessStatusCode();

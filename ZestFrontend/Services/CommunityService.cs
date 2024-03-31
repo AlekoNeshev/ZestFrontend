@@ -19,7 +19,7 @@ namespace ZestFrontend.Services
 
         public async Task<List<CommunityDTO>> GetCommunitiesByAccount(string accountId, int takeCount, int skipCount)
         {
-            var url = $"{PortConst.Port_Forward_Http}/api/Community/GetByAccountId/{accountId}/{takeCount}/{skipCount}";
+            var url = $"{PortConst.Port_Forward_Http}/Zest/Community/GetByAccountId/{accountId}/{takeCount}/{skipCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -31,7 +31,7 @@ namespace ZestFrontend.Services
         }
 		public async Task<List<CommunityDTO>> GetCommunities(int skipCount, int takeCount)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Community/getAll/{takeCount}/{skipCount}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Community/getAll/{takeCount}/{skipCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)
@@ -43,7 +43,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<List<CommunityDTO>> GetCommunitiesBySearch(string text, int takeCount, int[] skipIds = null)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Community/getBySearch/{text}/{takeCount}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Community/getBySearch/{text}/{takeCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject(skipIds);
 
@@ -57,7 +57,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<HttpResponseMessage> Follow(int communityId)       
         {
-			var url = $"{PortConst.Port_Forward_Http}/api/CommunityFollowers/account/add/community/{communityId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/CommunityFollowers/account/add/community/{communityId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.PostAsync(url, new StringContent("data"));
 			
@@ -65,7 +65,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<HttpResponseMessage> Unfollow(int communityId)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/CommunityFollowers/account/delete/community/{communityId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/CommunityFollowers/account/delete/community/{communityId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.DeleteAsync(url);
 
@@ -73,7 +73,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<HttpResponseMessage> IsSubscribed(int communityId)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/CommunityFollowers/account/add/community/{communityId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/CommunityFollowers/account/add/community/{communityId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.PostAsync(url, new StringContent("data"));
 
@@ -81,7 +81,7 @@ namespace ZestFrontend.Services
 		}
         public async Task<HttpResponseMessage> AddCommunity(string name, string description)
         {
-			var url = $"{PortConst.Port_Forward_Http}/api/Community/add/{name}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Community/add/{name}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject(description);
 			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
@@ -90,7 +90,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<HttpResponseMessage> DeleteCommunity(int communityId)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Community/delete/{communityId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Community/delete/{communityId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.DeleteAsync(url);
 			response.EnsureSuccessStatusCode();
@@ -99,7 +99,7 @@ namespace ZestFrontend.Services
 
 		public async Task<HttpResponseMessage> AddCommunityModerator(string accountId, int communityId)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/CommunityModerators/add/{accountId}/{communityId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/CommunityModerators/add/{accountId}/{communityId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.PostAsync(url, new StringContent("data"));
 			response.EnsureSuccessStatusCode();
@@ -107,7 +107,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<UserDTO[]> GetModeratorsByCommunity(int communityId)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/CommunityModerators/getModerators/{communityId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/CommunityModerators/getModerators/{communityId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			response.EnsureSuccessStatusCode();
@@ -115,7 +115,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<UserDTO[]> GetModeratorCandidatesByCommunity(int communityId)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/CommunityModerators/getCandidates/{communityId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/CommunityModerators/getCandidates/{communityId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			response.EnsureSuccessStatusCode();
@@ -123,7 +123,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<HttpResponseMessage> ApproveCandidate(string accountId, int communityId)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/CommunityModerators/approveCandidate/{accountId}/{communityId}";
+			var url = $"{PortConst.Port_Forward_Http}/ZestCommunityModerators/approveCandidate/{accountId}/{communityId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.PostAsync(url, new StringContent("data"));
 			response.EnsureSuccessStatusCode();
@@ -131,7 +131,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<bool> IsModerator(string accountId, int communityId)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/CommunityModerators/isModerator/{accountId}/{communityId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/CommunityModerators/isModerator/{accountId}/{communityId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			response.EnsureSuccessStatusCode();
@@ -139,7 +139,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<HttpResponseMessage> RemoveModerator(string accountId, int communityId)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/CommunityModerators/removeModerator/{accountId}/{communityId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/CommunityModerators/removeModerator/{accountId}/{communityId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.PostAsync(url, new StringContent("data"));
 			response.EnsureSuccessStatusCode();
@@ -147,7 +147,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<List<CommunityDTO>> GetTrendingCommunitiesAsync(int takeCount, int[] skipIds = null)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Community/GetByPopularityId/{takeCount}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Community/GetByPopularityId/{takeCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject(skipIds);
 

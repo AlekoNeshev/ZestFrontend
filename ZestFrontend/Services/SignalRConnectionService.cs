@@ -23,7 +23,7 @@ namespace ZestFrontend.Services
 			{
 				throw new Exception();
 			}
-			var url = $"{PortConst.Port_Forward_Http}/api/SignalRGroups/addConnectionToGroup/{connectionId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/SignalRGroups/addConnectionToGroup/{connectionId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject(groupsId);
 			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
@@ -36,7 +36,7 @@ namespace ZestFrontend.Services
 			{
 				throw new Exception();
 			}	
-			var url = $"{PortConst.Port_Forward_Http}/api/SignalRGroups/removeConnectionToGroup/{connectionId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/SignalRGroups/removeConnectionToGroup/{connectionId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject("");
 			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));

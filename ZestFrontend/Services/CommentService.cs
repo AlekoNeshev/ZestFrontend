@@ -25,7 +25,7 @@ namespace ZestFrontend.Services
         public async Task<CommentDTO[]> GetComments(int postId, DateTime lastDatel, int takeCount)
         {
 			string lastDate = lastDatel.ToString("yyyy-MM-ddTHH:mm:ss");
-			var url = $"{PortConst.Port_Forward_Http}/api/Comments/getCommentsByPost/{postId}/{lastDate}/{takeCount}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Comment/getCommentsByPost/{postId}/{lastDate}/{takeCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -37,7 +37,7 @@ namespace ZestFrontend.Services
         }
         public async Task<HttpResponseMessage> PostComment(int postId, string text,int commentId = 0)
         {
-            var url = $"{PortConst.Port_Forward_Http}/api/Comments/add/post/{postId}/comment/{commentId}";
+            var url = $"{PortConst.Port_Forward_Http}/Zest/Comment/add/post/{postId}/comment/{commentId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject(text);
             var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
@@ -46,7 +46,7 @@ namespace ZestFrontend.Services
         }
         public async Task<CommentDTO> GetSingleComment(int id)
         {
-            var url = $"{PortConst.Port_Forward_Http}/api/Comments/{id}";
+            var url = $"{PortConst.Port_Forward_Http}/Zest/Comment/{id}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -66,14 +66,14 @@ namespace ZestFrontend.Services
         }
         public async Task<HttpResponseMessage> DeleteComment(int commentId, int postId)
         {
-            var url = $"{PortConst.Port_Forward_Http}/api/Comments/remove/{commentId}/{postId}";
+            var url = $"{PortConst.Port_Forward_Http}/Zest/Comment/remove/{commentId}/{postId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.PutAsync(url, new StringContent("", Encoding.UTF8, "application/json")); response.EnsureSuccessStatusCode();
             return response;
         }
 		public async Task<List<CommentDTO>> GetTrendingPostsAsync(int takeCount, int postId, int[] skipIds = null)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Comments/getByTrending/{takeCount}/{postId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Comment/getByTrending/{takeCount}/{postId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject(skipIds);
 

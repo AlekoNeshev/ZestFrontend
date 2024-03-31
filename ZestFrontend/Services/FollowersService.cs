@@ -22,7 +22,7 @@ namespace ZestFrontend.Services
 		public async Task<HttpResponseMessage> Follow( string followedId)
 		{
 
-			var url = $"{PortConst.Port_Forward_Http}/api/Followers/add/followed/{followedId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Followers/add/followed/{followedId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.PostAsync(url, new StringContent("data"));
 			response.EnsureSuccessStatusCode();
@@ -30,7 +30,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<HttpResponseMessage> Unfollow(string followedId)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Followers/delete/followed/{followedId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Followers/delete/followed/{followedId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.DeleteAsync(url);
 			response.EnsureSuccessStatusCode();
@@ -38,7 +38,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<FollowerDTO[]> GetFriends(int takeCount, int skipCount)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Followers/getFriends/{takeCount}/{skipCount}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Followers/getFriends/{takeCount}/{skipCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)
@@ -50,7 +50,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<List<FollowerDTO>> GetAccountsBySearch(string text, int takeCount, string[] skipIds = null)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Followers/getBySearch/{text}/{takeCount}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Followers/getBySearch/{text}/{takeCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject(skipIds);
 

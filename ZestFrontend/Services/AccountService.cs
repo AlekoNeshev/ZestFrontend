@@ -17,7 +17,7 @@ namespace ZestFrontend.Services
         public async Task<string[]> CreateAccount(string accessToken, string name, string email)
         {
            
-            var url = $"{PortConst.Port_Forward_Http}/api/Account/add/{name}/{email}";
+            var url = $"{PortConst.Port_Forward_Http}/Zest/Account/add/{name}/{email}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 			var response = await _httpClient.PostAsJsonAsync(url, new StringContent("data"));
 			response.EnsureSuccessStatusCode();
@@ -27,7 +27,7 @@ namespace ZestFrontend.Services
 
         public async Task<AccountDTO> GetCurrentAccount(string accessToken)
         {
-            var url = $"{PortConst.Port_Forward_Http}/api/Account/get";
+            var url = $"{PortConst.Port_Forward_Http}/Zest/Account/get";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 			var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -44,7 +44,7 @@ namespace ZestFrontend.Services
         }
 		public async Task<List<UserDTO>> GetAllAccounts(int takeCount, int skipCount)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Account/getAll/{takeCount}/{skipCount}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Account/getAll/{takeCount}/{skipCount}";
 			var response = await _httpClient.GetAsync(url);
 			if (response.IsSuccessStatusCode)
 			{
@@ -55,7 +55,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<List<UserDTO>> GetAccountsBySearch(string text, string accessToken, int takeCount, string[] skipIds = null)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Account/getBySearch/{text}/{takeCount}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Account/getBySearch/{text}/{takeCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 			var body = Newtonsoft.Json.JsonConvert.SerializeObject(skipIds);
 
