@@ -32,10 +32,12 @@ namespace ZestFrontend.ViewModels
         {
             try
             {
-                  await _authService.LogoutAsync();
+				SecureStorage.Default.RemoveAll();
+				await _authService.LogoutAsync();
                 _authService.Token ="";
                 _authService.Username = "";
                 _authService.Id = "";
+                _authService.IsAdmin = false;
 				await Shell.Current.GoToAsync($"{nameof(MainPage)}");
 			}
             catch (Exception ex)

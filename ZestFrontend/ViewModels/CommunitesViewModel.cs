@@ -1,11 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ZestFrontend.DTOs;
 using ZestFrontend.Filters;
 using ZestFrontend.Services;
@@ -129,6 +124,7 @@ namespace ZestFrontend.ViewModels
 				Communities.Clear();
 				await GetFollowedCommunities();
 				IsInSearchMode = false;
+				SearchText = string.Empty;
 			}
 		}
 		[RelayCommand]
@@ -179,21 +175,24 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task LoadMoreComsAsync()
 		{
-			if(!string.IsNullOrWhiteSpace(SearchText) && IsInSearchMode == true)
+			if (Communities.Count > 0)
 			{
-				await GetCommunitiesBySearchAsync(SearchText);
-			}
-			else if(_filter == CommunitiesFilterOptions.All)
-			{
-				await GetCommunities();
-			}
-			else if(_filter == CommunitiesFilterOptions.Popular)
-			{
-				await GetPopularCommunities();
-			}
-			else if (_filter == CommunitiesFilterOptions.Followed)
-			{
-				await GetFollowedCommunities();
+				if (!string.IsNullOrWhiteSpace(SearchText) && IsInSearchMode == true)
+				{
+					await GetCommunitiesBySearchAsync(SearchText);
+				}
+				else if (_filter == CommunitiesFilterOptions.All)
+				{
+					await GetCommunities();
+				}
+				else if (_filter == CommunitiesFilterOptions.Popular)
+				{
+					await GetPopularCommunities();
+				}
+				else if (_filter == CommunitiesFilterOptions.Followed)
+				{
+					await GetFollowedCommunities();
+				}
 			}
 		}
 	}

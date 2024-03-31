@@ -58,7 +58,7 @@ namespace ZestFrontend.ViewModels
 			{
 				lastDate = Messages.First().FirstOrDefault().CreatedOn;
 			}
-			var p = await _messageService.GetMessages(Follower.FollowerId, lastDate, 40);
+			var p = await _messageService.GetMessages(Follower.Id, lastDate, 40);
 			
 			var groups = p.GroupBy(m => m.CreatedOn.Date);
 			foreach (var item in groups.Reverse())
@@ -86,7 +86,7 @@ namespace ZestFrontend.ViewModels
 			{
 				lastDate = Messages.First().FirstOrDefault().CreatedOn;
 			}
-			var p = await _messageService.GetMessages(Follower.FollowerId, lastDate, 40);
+			var p = await _messageService.GetMessages(Follower.Id, lastDate, 40);
 			var groups = p.GroupBy(m => m.CreatedOn.Date);
 			foreach (var item in groups)
 			{
@@ -127,7 +127,7 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task SendAsync(string text)
 		{
-			await _messageService.SendMessage(Follower.FollowerId, text);
+			await _messageService.SendMessage(Follower.Id, text);
 		}
 		[RelayCommand]
 		async Task GetMoreMessagesAsync()
@@ -166,17 +166,17 @@ namespace ZestFrontend.ViewModels
 		public async void OnNavigatedTo()
 		{
 			if (InitTask is not null && !InitTask.IsCompleted) await InitTask;
-			int comparisonResult = string.Compare(_authService.Id, Follower.FollowerId);
+			int comparisonResult = string.Compare(_authService.Id, Follower.Id);
 			string firstHubId, secondHubId;
 
 			if (comparisonResult >= 0)
 			{
 				firstHubId = _authService.Id;
-				secondHubId = Follower.FollowerId;
+				secondHubId = Follower.Id;
 			}
 			else
 			{
-				firstHubId = Follower.FollowerId;
+				firstHubId = Follower.Id;
 				secondHubId = _authService.Id;
 			}
 			if(_messageHubConnection.MessageConnection.ConnectionId!= null)
@@ -187,17 +187,17 @@ namespace ZestFrontend.ViewModels
 		}
 		public async void OnNavigatedFrom()
 		{
-			int comparisonResult = string.Compare(_authService.Id, Follower.FollowerId);
+			int comparisonResult = string.Compare(_authService.Id, Follower.Id);
 			string firstHubId, secondHubId;
 
 			if (comparisonResult >= 0)
 			{
 				firstHubId = _authService.Id;
-				secondHubId = Follower.FollowerId;
+				secondHubId = Follower.Id;
 			}
 			else
 			{
-				firstHubId = Follower.FollowerId;
+				firstHubId = Follower.Id;
 				secondHubId = _authService.Id;
 			}
 			if (_messageHubConnection.MessageConnection.ConnectionId!= null)

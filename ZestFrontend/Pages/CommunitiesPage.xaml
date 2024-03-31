@@ -29,6 +29,7 @@
             HorizontalOptions="Fill"
             Keyboard="Plain"
             MaximumWidthRequest="500"
+            Placeholder="Search"
             SearchCommand="{Binding SearchCommunitiesCommand}"
             Text="{Binding SearchText, Mode=TwoWay}" />
         <Grid

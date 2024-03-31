@@ -29,7 +29,7 @@ namespace ZestFrontend.ViewModels
 		bool isModerator;
 		[ObservableProperty]
 		string buttonText;
-       public ObservableCollection<UserDTO> Moderators { get; private set; } = new ();
+        public ObservableCollection<UserDTO> Moderators { get; private set; } = new ();
 		public ObservableCollection<UserDTO> Candidates { get; private set; } = new();
 		public async Task GetModerators()
         {
@@ -51,12 +51,23 @@ namespace ZestFrontend.ViewModels
         [RelayCommand]
         async Task ApproveCandidateAsync(UserDTO account)
         {
-            await _communityService.ApproveCandidate(account.Id, Community.Id);
+            var result = await _communityService.ApproveCandidate(account.Id, Community.Id);
+			if (result.IsSuccessStatusCode)
+			{
+				Candidates.Remove(account);
+				Moderators.Add(account);
+			}
         }
         [RelayCommand]
 		async Task DisapproveCandidateAsync(UserDTO account)
 		{
-			await _communityService.RemoveModerator(account.Id, Community.Id);
+			var result = await _communityService.RemoveModerator(account.Id, Community.Id);
+			if (result.IsSuccessStatusCode)
+			{
+				Candidates.Remove(account);
+			}
+				
+			
 		}
 		[RelayCommand]
 		async Task AddMeAsync(UserDTO account)
@@ -70,10 +81,12 @@ namespace ZestFrontend.ViewModels
 			var isMod  = await _communityService.IsModerator(_authService.Id, Community.Id);
 			if (isMod)
 			{
+				IsModerator = true;
 				ButtonText = "Remove me";
 			}
 			else
 			{
+				IsModerator = false;
 				ButtonText = "Add me";
 			}
 		}
@@ -98,7 +111,7 @@ namespace ZestFrontend.ViewModels
 				if (result.StatusCode == HttpStatusCode.OK)
 				{
 					ButtonText = "Add me";
-					Community.IsSubscribed = false;
+					IsModerator = false;
 				}
 			}
 			else
@@ -108,7 +121,7 @@ namespace ZestFrontend.ViewModels
 				if (result.IsSuccessStatusCode)
 				{
 					ButtonText = "Remove me";
-					Community.IsSubscribed = true;
+					IsModerator = true;
 				}
 			}
 		}

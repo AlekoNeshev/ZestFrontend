@@ -17,10 +17,10 @@ namespace ZestFrontend.Services
 
 		public HubConnection LikesConnection => _likesConnection;
 
-		public async Task Init()
+		public async void Init()
 		{
 			_likesConnection = BuildLikesHubConnection($"{PortConst.Port_Forward_Http}/likeshub");
-			await StartConnections();
+			 StartConnections();
 		}
 		private HubConnection BuildLikesHubConnection(string url)
 		{
@@ -40,9 +40,9 @@ namespace ZestFrontend.Services
 			return connection;
 		}
 
-		private async Task StartConnections()
+		private void StartConnections()
 		{
-			await _likesConnection.StartAsync();
+			 _likesConnection.StartAsync();
 			_likesConnection.Closed += _likesConnection_Closed;
 		}
 

@@ -1,18 +1,13 @@
 ﻿
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
-using System.Threading.Tasks;
 using ZestFrontend.DTOs;
 
 namespace ZestFrontend.Services
 {
-    public class CommunityService
+	public class CommunityService
     {
         HttpClient _httpClient;
 		AuthService _authService;
@@ -93,6 +88,15 @@ namespace ZestFrontend.Services
 			response.EnsureSuccessStatusCode();
 			return response;
 		}
+		public async Task<HttpResponseMessage> DeleteCommunity(int communityId)
+		{
+			var url = $"{PortConst.Port_Forward_Http}/api/Community/delete/{communityId}";
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
+			var response = await _httpClient.DeleteAsync(url);
+			response.EnsureSuccessStatusCode();
+			return response;
+		}
+
 		public async Task<HttpResponseMessage> AddCommunityModerator(string accountId, int communityId)
 		{
 			var url = $"{PortConst.Port_Forward_Http}/api/CommunityModerators/add/{accountId}/{communityId}";

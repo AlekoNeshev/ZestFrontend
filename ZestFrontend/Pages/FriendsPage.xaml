@@ -29,6 +29,7 @@
             HorizontalOptions="Fill"
             Keyboard="Plain"
             MaximumWidthRequest="500"
+            Placeholder="Search"
             SearchCommand="{Binding SearchFollowersCommand}"
             Text="{Binding SearchText, Mode=TwoWay}" />
 
@@ -64,7 +65,7 @@
                                         Grid.Column="0"
                                         FontAttributes="Bold"
                                         MinimumWidthRequest="100"
-                                        Text="{Binding FollowerUsername}" />
+                                        Text="{Binding Username}" />
                                 </Grid>
                             </Frame>
                         </Grid>

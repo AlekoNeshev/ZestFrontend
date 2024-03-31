@@ -8,7 +8,7 @@ namespace ZestFrontend.DTOs
 {
 	public class FollowerDTO
 	{
-        public string FollowerId { get; set; }
-        public string FollowerUsername { get; set; }
+        public string Id { get; set; }
+        public string Username { get; set; }
     }
 }

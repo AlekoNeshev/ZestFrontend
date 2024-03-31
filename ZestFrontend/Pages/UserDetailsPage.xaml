@@ -83,7 +83,7 @@
 
                             <Frame.GestureRecognizers>
                                 <PointerGestureRecognizer PointerEntered="OnPointerEntered" PointerExited="OnPointerExited" />
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:NavigationViewModel}}, Path=GoToCommunityDetailPageCommand}" CommandParameter="{Binding .}" />
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:UserDetailsViewModel}}, Path=GoToCommunityDetailPageCommand}" CommandParameter="{Binding .}" />
                             </Frame.GestureRecognizers>
 
                             <Label Text="{Binding Name}" />

@@ -12,7 +12,7 @@ using ZestFrontend.Services;
 namespace ZestFrontend.ViewModels
 {
 	[QueryProperty(nameof(Comment), "Comment")]
-	[QueryProperty(nameof(PostId), "postId")]
+	[QueryProperty(nameof(Post), "postId")]
 	public partial class CommentDetailsViewModel : ObservableObject
 	{
         private readonly CommentService _commentService;
@@ -37,14 +37,14 @@ namespace ZestFrontend.ViewModels
         [ObservableProperty]
         CommentDTO comment;
 
-		private int postId;
+		private PostDTO post;
 		
-		public int PostId
+		public PostDTO Post
 		{
-			get => postId;
+			get => post;
 			set
 			{
-				postId = value;
+				post = value;
 			}
 		}
 
@@ -57,7 +57,10 @@ namespace ZestFrontend.ViewModels
 			var comment = await _commentService.GetSingleComment(Comment.Id);
 			foreach (var item in comment.Replies)
 			{
-				item.IsOwner = comment.Publisher==_authService.Username;
+				if ((Post.IsModerator == true || comment.Publisher==_authService.Username || _authService.IsAdmin)  && comment.Publisher != "Unknown")
+				{
+					comment.IsOwner = true;
+				}
 				await IsOwner(item.Replies, 0);
 				Replies.Add(item);
 			}
@@ -66,7 +69,11 @@ namespace ZestFrontend.ViewModels
 		{
 			foreach (var comment in comments)
 			{
-				comment.IsOwner = comment.Publisher==_authService.Username;
+
+				if ((Post.IsModerator == true || comment.Publisher==_authService.Username || _authService.IsAdmin)  && comment.Publisher != "Unknown")
+				{
+					comment.IsOwner = true;
+				}
 				comment.AreRepliesVisible = level<=4;
 				if (comment.Replies == null)
 				{
@@ -82,16 +89,16 @@ namespace ZestFrontend.ViewModels
 			if (commentDTO.Like == null)
 			{
 
-				await _likesService.Like(PostId, commentDTO.Id, true);
+				await _likesService.Like(Post.Id, commentDTO.Id, true);
 			}
 			else if (commentDTO.Like.Value == true)
 			{
-				await _likesService.RemoveLike(commentDTO.Like.Id, PostId, commentDTO.Id);
+				await _likesService.RemoveLike(commentDTO.Like.Id, Post.Id, commentDTO.Id);
 			}
 			else if (commentDTO.Like.Value == false)
 			{
-				await _likesService.RemoveLike(commentDTO.Like.Id, PostId, commentDTO.Id);
-				await _likesService.Like(PostId, commentDTO.Id, true); 
+				await _likesService.RemoveLike(commentDTO.Like.Id, Post.Id, commentDTO.Id);
+				await _likesService.Like(Post.Id, commentDTO.Id, true); 
 			}
 		}
 		[RelayCommand]
@@ -99,16 +106,16 @@ namespace ZestFrontend.ViewModels
 		{
 			if (commentDTO.Like == null)
 			{
-				await _likesService.Like(PostId, commentDTO.Id, false); 
+				await _likesService.Like(Post.Id, commentDTO.Id, false); 
 			}
 			else if (commentDTO.Like.Value == false)
 			{
-				await _likesService.RemoveLike(commentDTO.Like.Id, PostId, commentDTO.Id);
+				await _likesService.RemoveLike(commentDTO.Like.Id, Post.Id, commentDTO.Id);
 			}
 			else if (commentDTO.Like.Value == true)
 			{
-				await _likesService.RemoveLike(commentDTO.Like.Id, PostId, commentDTO.Id);
-				await _likesService.Like(PostId, commentDTO.Id, false);
+				await _likesService.RemoveLike(commentDTO.Like.Id, Post.Id, commentDTO.Id);
+				await _likesService.Like(Post.Id, commentDTO.Id, false);
 			}
 		}
 		[RelayCommand]
@@ -126,14 +133,14 @@ namespace ZestFrontend.ViewModels
 				new Dictionary<string, object>
 			{
 			{"Comment", comment },
-			{"postId", PostId }
+			{"postId", Post }
 			});
 
 		}
 
 		public async Task SendReplyAsync(int comment, string text)
 		{
-			var response = await _commentService.PostComment(postId, text, comment);
+			var response = await _commentService.PostComment(Post.Id, text, comment);
 			var content = await response.Content.ReadAsStringAsync();
 			string[] parts = content.Trim('[', ']').Split(',');
 			int firstNumber = int.Parse(parts[0]);
@@ -207,7 +214,7 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task DeleteCommentAsync(CommentDTO commentDTO)
 		{
-			await _commentService.DeleteComment(commentDTO.Id, PostId);
+			await _commentService.DeleteComment(commentDTO.Id, Post.Id);
 		}
 		private async void ExecuteReplyCommand(ReplyCommandParameter parameter)
 		{

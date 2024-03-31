@@ -68,9 +68,9 @@ namespace ZestFrontend.Services
 			else
 				return null;
 		}
-		public async Task<List<PostDTO>> GetPostsBySearch(string text, int takeCount, int[] skipIds = null)
+		public async Task<List<PostDTO>> GetPostsBySearch(string text, int takeCount, int communityId,int[] skipIds = null)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/api/Post/getBySearch/{text}/{takeCount}";
+			var url = $"{PortConst.Port_Forward_Http}/api/Post/getBySearch/{text}/{takeCount}/{communityId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject(skipIds);
 

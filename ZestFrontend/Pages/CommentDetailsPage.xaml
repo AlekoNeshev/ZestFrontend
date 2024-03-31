@@ -16,15 +16,12 @@
         <local:DislikeButtonColorConverter x:Key="DislikeButtonColorConverter" />
         <ResourceDictionary>
 
-
             <DataTemplate x:Key="CommentTemplate" x:DataType="model:CommentDTO">
                 <ContentView
                     Padding="0,-1,-1,-1"
                     BackgroundColor="LightGray"
                     HorizontalOptions="FillAndExpand"
                     VerticalOptions="FillAndExpand">
-
-
 
                     <Frame
                         BorderColor="Transparent"
@@ -38,23 +35,21 @@
 
                         <Grid Padding="{OnIdiom Phone=0, Desktop=-10}" RowSpacing="1">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="{OnIdiom Desktop=*, Phone=Auto}" />
+                                <RowDefinition Height="{OnIdiom Desktop=*, Phone=Auto}" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
                             <Grid Grid.Row="0">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="{OnIdiom Phone=Auto, Desktop=*}" />
+                                    <RowDefinition Height="{OnIdiom Phone=Auto, Desktop=*}" />
+                                    <RowDefinition Height="{OnIdiom Phone=Auto, Desktop=*}" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-
-
 
                                 <Label FontAttributes="Bold" Text="{Binding Publisher}" />
                                 <Label
@@ -205,8 +200,8 @@
 
                         <Grid Padding="{OnIdiom Phone=0, Desktop=-10}" RowSpacing="1">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
+                                <RowDefinition Height="{OnIdiom Desktop=*, Phone=Auto}" />
+                                <RowDefinition Height="{OnIdiom Desktop=*, Phone=Auto}" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 

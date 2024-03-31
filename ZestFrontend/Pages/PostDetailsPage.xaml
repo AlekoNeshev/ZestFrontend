@@ -47,8 +47,8 @@
                                 <OnIdiom Desktop="-10" Phone="0" />
                             </Grid.Padding>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="{OnIdiom Desktop=*, Phone=Auto}" />
+                                <RowDefinition Height="{OnIdiom Desktop=*, Phone=Auto}" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
@@ -108,7 +108,7 @@
                                                                Desktop=10}" />
                                     <Label Text="{Binding Dislikes}" VerticalOptions="Start" />
                                     <ImageButton
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommentCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommentAsyncCommand}"
                                         CommandParameter="{Binding .}"
                                         HorizontalOptions="End"
                                         MaximumHeightRequest="{OnIdiom Phone=25,
@@ -159,10 +159,6 @@
                                 <ImageButton
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommand}"
                                     HorizontalOptions="Center"
-                                    MaximumHeightRequest="{OnIdiom Phone=25,
-                                                                   Desktop=15}"
-                                    MaximumWidthRequest="{OnIdiom Phone=25,
-                                                                  Desktop=15}"
                                     Source="{mi:FluentFilled Send20Filled,
                                                              IconAutoScaling=True,
                                                              IconSize=17}">
@@ -235,12 +231,16 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-
-                                    <Label
-                                        Grid.Column="0"
-                                        FontAttributes="Bold"
-                                        MinimumWidthRequest="100"
-                                        Text="{Binding Post.Title}" />
+                                    <StackLayout>
+                                        <Label
+                                            FontAttributes="Italic"
+                                            MinimumWidthRequest="100"
+                                            Text="{Binding Post.Publisher}" />
+                                        <Label
+                                            FontAttributes="Bold"
+                                            MinimumWidthRequest="100"
+                                            Text="{Binding Post.Title}" />
+                                    </StackLayout>
                                     <Label
                                         Grid.Row="1"
                                         Grid.Column="0"
@@ -248,6 +248,12 @@
                                         FontAttributes="None"
                                         MinimumWidthRequest="100"
                                         Text="{Binding Post.Text}"
+                                        VerticalOptions="Start" />
+                                    <Label
+                                        Grid.Column="1"
+                                        FontSize="12"
+                                        HorizontalOptions="End"
+                                        Text="{Binding Post.PostedOn}"
                                         VerticalOptions="Start" />
                                     <StackLayout
                                         Grid.Row="4"
@@ -346,7 +352,7 @@
                                 BorderColor="Transparent"
                                 Command="{Binding FilterCommentsCommand}"
                                 HorizontalOptions="End"
-                                Text="Filter"
+                                Text="{Binding FilterButtonText}"
                                 TextColor="Grey"
                                 VerticalOptions="End" />
 

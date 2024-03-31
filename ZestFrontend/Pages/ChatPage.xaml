@@ -18,7 +18,7 @@
 
     <Grid x:Name="MyGrid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="{OnIdiom Phone=0, Desktop=1}" />
+            <ColumnDefinition Width="{OnIdiom Phone=0, Desktop=1*}" />
             <ColumnDefinition Width="5*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -88,7 +88,7 @@
                                     <Label
                                         Grid.Row="1"
                                         Grid.ColumnSpan="2"
-                                        FontAttributes="Bold"
+                                        FontAttributes="None"
                                         MinimumWidthRequest="100"
                                         Text="{Binding Text}" />
                                     <Label
@@ -112,9 +112,9 @@
             Grid.ColumnSpan="2"
             VerticalOptions="End">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="{OnIdiom Phone=1, Desktop=1}" />
+                <ColumnDefinition Width="{OnIdiom Phone=1, Desktop=1*}" />
                 <ColumnDefinition Width="10*" />
-                <ColumnDefinition Width="{OnIdiom Phone=1, Desktop=1}" />
+                <ColumnDefinition Width="{OnIdiom Phone=1, Desktop=1*}" />
             </Grid.ColumnDefinitions>
             <StackLayout
                 Grid.Column="1"

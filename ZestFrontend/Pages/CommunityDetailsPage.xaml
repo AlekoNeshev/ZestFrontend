@@ -35,12 +35,17 @@
             Margin="0,10,0,10"
             HorizontalOptions="Fill"
             Keyboard="Plain"
-            MaximumWidthRequest="500" />
+            MaximumWidthRequest="500"
+            Placeholder="Search"
+            SearchCommand="{Binding SearchPostsCommand}"
+            Text="{Binding SearchText, Mode=TwoWay}" />
         <VerticalStackLayout
             Grid.Row="1"
             Grid.Column="2"
             Grid.ColumnSpan="2"
-            HorizontalOptions="Center">
+            HorizontalOptions="Center"
+            IsVisible="{OnIdiom Phone=False,
+                                Desktop=True}">
 
             <Button
                 Command="{Binding ChangeFollowshipStatusCommand}"
@@ -68,6 +73,19 @@
                 </Button.Background>
             </Button>
             <Button
+                Command="{Binding DeleteCommunityCommand}"
+                CommandParameter="{Binding Community.Id}"
+                HorizontalOptions="Center"
+                Text="Delete"
+                WidthRequest="90">
+                <Button.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Offset="0.0" Color="ForestGreen" />
+                        <GradientStop Offset="1.0" Color="LightBlue" />
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+            <Button
                 BackgroundColor="Transparent"
                 BorderColor="Transparent"
                 Command="{Binding GoToModeratorsDetailPageCommand}"
@@ -80,11 +98,10 @@
                     BackgroundColor="LightGray"
                     HorizontalOptions="FillAndExpand"
                     VerticalOptions="FillAndExpand">
-                    <Frame
+                    <Border
                         Padding="0,0,0,0"
                         BackgroundColor="GhostWhite"
-                        BorderColor="Transparent"
-                        CornerRadius="0">
+                        Stroke="Transparent">
                         <Button
                             BackgroundColor="Transparent"
                             BorderColor="Transparent"
@@ -92,18 +109,17 @@
                             Command="{Binding FilterBtnAsyncCommand}"
                             Text="Filter"
                             TextColor="Black" />
-                    </Frame>
+                    </Border>
                 </ContentView>
                 <ContentView
                     Padding="-1,-1,-1,0"
                     BackgroundColor="LightGray"
                     HorizontalOptions="FillAndExpand"
                     VerticalOptions="FillAndExpand">
-                    <Frame
+                    <Border
                         Padding="0,0,0,0"
                         BackgroundColor="GhostWhite"
-                        BorderColor="Transparent"
-                        CornerRadius="0">
+                        Stroke="Transparent">
                         <ImageButton
                             x:Name="SecondImageButton"
                             BackgroundColor="Transparent"
@@ -112,7 +128,7 @@
                             Source="{mi:FluentFilled ArrowUp20Filled,
                                                      IconAutoScaling=True,
                                                      IconSize=20}" />
-                    </Frame>
+                    </Border>
                 </ContentView>
             </StackLayout>
             <StackLayout IsVisible="{Binding AreFiltersVisible}">
@@ -121,36 +137,34 @@
                     BackgroundColor="LightGray"
                     HorizontalOptions="FillAndExpand"
                     VerticalOptions="FillAndExpand">
-                    <Frame
+                    <Border
                         Padding="0,0,0,0"
                         BackgroundColor="GhostWhite"
-                        BorderColor="Transparent"
-                        CornerRadius="0">
+                        Stroke="Transparent">
                         <Button
                             BackgroundColor="Transparent"
                             BorderColor="Transparent"
                             Command="{Binding GetLatestPostsCommand}"
                             Text="Latest"
                             TextColor="Black" />
-                    </Frame>
+                    </Border>
                 </ContentView>
                 <ContentView
                     Padding="0,-1,-1,0"
                     BackgroundColor="LightGray"
                     HorizontalOptions="FillAndExpand"
                     VerticalOptions="FillAndExpand">
-                    <Frame
+                    <Border
                         Padding="0,0,0,0"
                         BackgroundColor="GhostWhite"
-                        BorderColor="Transparent"
-                        CornerRadius="0">
+                        Stroke="Transparent">
                         <Button
                             BackgroundColor="Transparent"
                             BorderColor="Transparent"
                             Command="{Binding GetTrendingPostsCommand}"
                             Text="Trending"
                             TextColor="Black" />
-                    </Frame>
+                    </Border>
                 </ContentView>
 
             </StackLayout>
@@ -167,26 +181,78 @@
                 RemainingItemsThreshold="1"
                 RemainingItemsThresholdReachedCommand="{Binding LoadMorePostsCommand}">
                 <CollectionView.Header>
-                    <StackLayout Orientation="Vertical">
-                        <Label
+
+                    <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+
+                        <StackLayout HorizontalOptions="Center" Spacing="3">
+                            <Label
+                                FontAttributes="Bold"
+                                HorizontalOptions="Center"
+                                Text="{Binding Community.Name}"
+                                VerticalOptions="Center" />
+                            <Label
+                                HorizontalOptions="Center"
+                                Text="{Binding Community.Description}"
+                                VerticalOptions="Center" />
+                            <StackLayout Orientation="Horizontal" Spacing="2">
+                                <Label Text="Created on:" />
+                                <Label
+                                    HorizontalOptions="Center"
+                                    Text="{Binding Community.CreatedOn, StringFormat='{0:MMMM dd, yyyy}'}"
+                                    VerticalOptions="Center" />
+                            </StackLayout>
+
+
+                        </StackLayout>
+                        <StackLayout
+                            Grid.RowSpan="2"
+                            Grid.Column="1"
+                            HorizontalOptions="End"
+                            IsVisible="{OnIdiom Phone=True,
+                                                Desktop=False}"
+                            VerticalOptions="Center">
+                            <Button
+                                Background="Transparent"
+                                BorderColor="Transparent"
+                                Command="{Binding AddPostCommand}"
+                                HorizontalOptions="Center"
+                                Text="Add"
+                                TextColor="Green" />
+                            <Button
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Command="{Binding ChangeFollowshipStatusCommand}"
+                                HorizontalOptions="Center"
+                                Text="{Binding ButtonText}"
+                                TextColor="Black" />
+                        </StackLayout>
+                        <StackLayout
                             Grid.Row="1"
-                            Grid.Column="1"
-                            HorizontalOptions="Center"
-                            Text="{Binding Community.Name}"
-                            VerticalOptions="Center" />
-                        <Label
-                            Grid.Row="2"
-                            Grid.Column="1"
-                            HorizontalOptions="Center"
-                            Text="{Binding Community.Description}"
-                            VerticalOptions="Center" />
-                        <Label
-                            Grid.Row="3"
-                            Grid.Column="1"
-                            HorizontalOptions="Center"
-                            Text="{Binding Community.Creator}"
-                            VerticalOptions="Center" />
-                    </StackLayout>
+                            IsVisible="{OnIdiom Phone=True,
+                                                Desktop=False}"
+                            Orientation="Horizontal">
+                            <Button
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Command="{Binding GetLatestPostsCommand}"
+                                Text="Latest"
+                                TextColor="Black" />
+                            <Button
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Command="{Binding GetTrendingPostsCommand}"
+                                Text="Trending"
+                                TextColor="Black" />
+
+                            <Button
+                                BackgroundColor="Transparent"
+                                BorderColor="Transparent"
+                                Command="{Binding GoToModeratorsDetailPageCommand}"
+                                Text="See moderators"
+                                TextColor="Grey" />
+                        </StackLayout>
+
+                    </Grid>
                 </CollectionView.Header>
                 <CollectionView.ItemTemplate>
 
@@ -237,7 +303,6 @@
 
                                         <StackLayout
                                             Grid.Row="3"
-                                            Grid.Column="0"
                                             Grid.ColumnSpan="2"
                                             HorizontalOptions="End"
                                             Orientation="Horizontal">
@@ -290,18 +355,12 @@
                                                 VerticalOptions="Center" />
                                         </StackLayout>
                                     </Grid>
-
                                 </Frame>
                             </ContentView>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
-
             </CollectionView>
-
-
         </RefreshView>
     </Grid>
-
-
 </ContentPage>

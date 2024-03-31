@@ -72,5 +72,16 @@ namespace ZestFrontend.ViewModels
 				}
 			}
 		}
+		[RelayCommand]
+		async Task GoToCommunityDetailPageAsync(CommunityDTO community)
+		{
+			if (community== null) return;
+
+			await Shell.Current.GoToAsync($"{nameof(CommunityDetailsPage)}?id={community.Name}", true,
+				new Dictionary<string, object>
+			{
+			{"Community", community }
+			});
+		}
 	}
 }

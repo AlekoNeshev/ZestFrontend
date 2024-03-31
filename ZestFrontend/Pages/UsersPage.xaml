@@ -9,7 +9,7 @@
     x:DataType="viewmodel:UsersViewModel"
     BackgroundColor="GhostWhite">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding RefreshCommand}" Text="Refresh" />
+        <ToolbarItem Command="{Binding RefreshCommand}" Text="Refresh"/>
     </ContentPage.ToolbarItems>
     <Grid x:Name="MyGrid">
         <Grid.ColumnDefinitions>
@@ -27,6 +27,7 @@
             Grid.Column="1"
             Margin="0,10,0,10"
             MaximumWidthRequest="500"
+            Placeholder="Search"
             SearchCommand="{Binding SearchUsersCommand}"
             Text="{Binding SearchText, Mode=TwoWay}" />
         <RefreshView

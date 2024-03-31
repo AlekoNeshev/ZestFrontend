@@ -1,22 +1,14 @@
-﻿using Auth0.OidcClient;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using IdentityModel.OidcClient;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Net.Http.Headers;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using ZestFrontend.DTOs;
 using ZestFrontend.Services;
 
 namespace ZestFrontend.ViewModels
 {
-    
-      public partial class LoginViewModel : ObservableObject
+
+	public partial class LoginViewModel : ObservableObject
     {
         LoginService _loginService;
         AuthService _authService;
@@ -28,7 +20,22 @@ namespace ZestFrontend.ViewModels
             this._authService = authService;
        this._httpClient = httpClient;
             this._accountService = accountService;
+            Retrieve();
         }
+        public async void Retrieve()
+        {
+			var userId = await _authService.GetAuthenticatedUser();
+            if(userId != null)
+            {
+				var accessToken = await SecureStorage.Default.GetAsync("access_token");
+				var account = await _accountService.GetCurrentAccount(accessToken);
+				_authService.Token = accessToken;
+				_authService.Id = account.Id;
+				_authService.Username = account.Username;
+				_authService.IsAdmin = account.IsAdmin;
+				await Shell.Current.GoToAsync($"{nameof(PostsPage)}");
+			}
+		}
 
         [ObservableProperty]
         string username;
@@ -47,7 +54,17 @@ namespace ZestFrontend.ViewModels
 
             var result = await _authService.LoginAsync(extraParameters);
             _authService.Token = result.AccessToken;
-            var handler = new JwtSecurityTokenHandler();
+			try
+			{
+				await SecureStorage.Default.SetAsync("access_token", result.AccessToken);
+				await SecureStorage.Default.SetAsync("id_token", result.IdentityToken);
+			}
+			catch (Exception ex)
+			{
+				
+			}
+
+			var handler = new JwtSecurityTokenHandler();
             var token = handler.ReadJwtToken(_authService.Token);
 			var usernameClaim = token.Claims.FirstOrDefault(c => c.Type == "username");
 			
@@ -74,6 +91,7 @@ namespace ZestFrontend.ViewModels
             {
 				_authService.Id = account.Id;
 				_authService.Username = account.Username;
+                _authService.IsAdmin = account.IsAdmin;
 			}
            
 

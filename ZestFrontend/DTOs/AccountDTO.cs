@@ -9,7 +9,7 @@ namespace ZestFrontend.DTOs
     public class AccountDTO
     {
         public string Id { get; set; }
-        
+        public bool IsAdmin { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
         public DateTime CreatedOn1 { get; set; }

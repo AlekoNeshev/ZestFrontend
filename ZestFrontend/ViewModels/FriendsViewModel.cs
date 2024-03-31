@@ -43,7 +43,7 @@ namespace ZestFrontend.ViewModels
 		}
 		public async Task SearchFriends()
 		{
-			foreach (var item in await _followersService.GetAccountsBySearch(SearchText, 50, Friends.Select(x => x.FollowerId).ToArray()))
+			foreach (var item in await _followersService.GetAccountsBySearch(SearchText, 50, Friends.Select(x => x.Id).ToArray()))
 			{
 				Friends.Add(item);
 			}
@@ -53,7 +53,7 @@ namespace ZestFrontend.ViewModels
 		{
 			if (follower== null) return;
 
-			await Shell.Current.GoToAsync($"{nameof(ChatPage)}?id={follower.FollowerId}", true,
+			await Shell.Current.GoToAsync($"{nameof(ChatPage)}?id={follower.Id}", true,
 				new Dictionary<string, object>
 			{
 			{"Follower", follower }
