@@ -26,18 +26,18 @@ namespace ZestFrontend.ViewModels
 		
         public ChatViewModel(MessageService messageService, MessageHubConnectionService messageHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService)
         {
-            this._messageService = messageService;
-			this._authService = authService;
 			_messageHubConnection = messageHubConnectionService;
+			 this._messageHubConnection.Init();
+			_messageHubConnection.MessageConnection.On<int>("MessageSent", (id) => GetSingleMessage(id));
+			this._messageService = messageService;
+			this._authService = authService;
+			
 			this._signalRConnectionService = signalRConnectionService;
-			InitTask = Init();
+			Init();
 			
 		}
-		private async Task Init()
-		{
-			
-			await this._messageHubConnection.Init();
-			_messageHubConnection.MessageConnection.On<int>("MessageSent", (id) => GetSingleMessage(id));
+		private async void Init()
+		{	
 			
 		}
 		public ObservableCollection<MessageGroup> Messages { get; private set; } = new();
@@ -46,6 +46,13 @@ namespace ZestFrontend.ViewModels
 		FollowerDTO follower;
 		[ObservableProperty]
 		bool isLoadingMessages;
+		async partial void OnFollowerChanged(FollowerDTO value)
+		{
+			Messages.Clear();
+			await GetMessages();
+			await OnOpen();
+
+		}
 		public async Task GetMessages()
 		{
 			
@@ -86,8 +93,8 @@ namespace ZestFrontend.ViewModels
 			{
 				lastDate = Messages.First().FirstOrDefault().CreatedOn;
 			}
-			var p = await _messageService.GetMessages(Follower.Id, lastDate, 40);
-			var groups = p.GroupBy(m => m.CreatedOn.Date);
+			var messages = await _messageService.GetMessages(Follower.Id, lastDate, 40);
+			var groups = messages.GroupBy(m => m.CreatedOn.Date);
 			foreach (var item in groups)
 			{
 				var messageGroup = new MessageGroup { Date = item.Key };
@@ -116,13 +123,7 @@ namespace ZestFrontend.ViewModels
 
 			IsLoadingMessages = false;
 		}
-		async partial void OnFollowerChanged(FollowerDTO value)
-		{
-			Messages.Clear();
-			await GetMessages();
-			await OnOpen();
-			
-		}
+		
 		
 		[RelayCommand]
 		async Task SendAsync(string text)
@@ -134,7 +135,7 @@ namespace ZestFrontend.ViewModels
 		{
 			await LoadMoreMessages();
 		}
-		public async void GetSingleMessage(int messageId)
+		public async Task GetSingleMessage(int messageId)
 		{
 			var message = await _messageService.FindById(messageId);
 			message.IsOwner = message.SenderUsername == _authService.Username;
@@ -149,8 +150,6 @@ namespace ZestFrontend.ViewModels
 				Messages.Add(messageGroup);
 
 			}
-		
-			Thread.SpinWait(5000);
 			OnNewMessageReceived();
 
 		}
@@ -165,7 +164,6 @@ namespace ZestFrontend.ViewModels
 		}
 		public async void OnNavigatedTo()
 		{
-			if (InitTask is not null && !InitTask.IsCompleted) await InitTask;
 			int comparisonResult = string.Compare(_authService.Id, Follower.Id);
 			string firstHubId, secondHubId;
 
@@ -179,7 +177,11 @@ namespace ZestFrontend.ViewModels
 				firstHubId = Follower.Id;
 				secondHubId = _authService.Id;
 			}
-			if(_messageHubConnection.MessageConnection.ConnectionId!= null)
+			while (_messageHubConnection.MessageConnection.ConnectionId == null)
+			{
+				await Task.Delay(100);
+			}
+			if (_messageHubConnection.MessageConnection.ConnectionId!= null)
 			{
 				await _signalRConnectionService.AddConnectionToGroup(_messageHubConnection.MessageConnection.ConnectionId, new string[] { $"chat-{firstHubId}{secondHubId}" });
 			}

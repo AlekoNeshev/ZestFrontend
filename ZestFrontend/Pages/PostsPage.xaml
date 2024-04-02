@@ -10,6 +10,7 @@
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     xmlns:windows="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;assembly=Microsoft.Maui.Controls"
     Title="PostsPage"
+    xmlns:valueConverters="clr-namespace:ZestFrontend.ValueConverters"
     x:DataType="viewmodel:PostsViewModel"
     BackgroundColor="GhostWhite"
     Shell.ForegroundColor="Orange"
@@ -24,10 +25,10 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Resources>
         <ResourceDictionary>
-            <local:UserMessageColorConverter x:Key="UserMessageColorConverter" />
-            <local:BoolToLayoutOptionsConverter x:Key="BoolToLayoutOptionsConverter" />
-            <local:LikeButtonsColorConverter x:Key="LikeButtonColorConverter" />
-            <local:DislikeButtonColorConverter x:Key="DislikeButtonColorConverter" />
+            <valueConverters:UserMessageColorConverter x:Key="UserMessageColorConverter" />
+            <valueConverters:BoolToLayoutOptionsConverter x:Key="BoolToLayoutOptionsConverter" />
+            <valueConverters:LikeButtonsColorConverter x:Key="LikeButtonColorConverter" />
+            <valueConverters:DislikeButtonColorConverter x:Key="DislikeButtonColorConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <Grid x:Name="MyGrid">

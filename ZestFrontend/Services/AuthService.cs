@@ -69,10 +69,17 @@ public class AuthService
 					KeySet = doc.KeySet
 				}
 			};
+			try
+			{
+				var validationResult = await validator.ValidateAsync(idToken, options);
 
-			var validationResult = await validator.ValidateAsync(idToken, options);
+				if (!validationResult.IsError) user = validationResult.User;
+			}
+			catch
+			{
 
-			if (!validationResult.IsError) user = validationResult.User;
+			}
+		
 		}
 
 		return user;

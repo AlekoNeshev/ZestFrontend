@@ -48,7 +48,19 @@ namespace ZestFrontend.ViewModels
 			get { return isInSearchMode; }
 			set { isInSearchMode = value; }
 		}
-
+		async partial void OnCommunityChanged(CommunityDTO value)
+		{
+			if (value.IsSubscribed)
+			{
+				ButtonText = "Unfollow";
+			}
+			else
+			{
+				ButtonText = "Follow";
+			}
+			Posts.Clear();
+			await GetPosts();
+		}
 		public async void UpdatePost(int id)
 		{
 			var updatedPost = await _postsService.GetSinglePost(id);
@@ -117,64 +129,11 @@ namespace ZestFrontend.ViewModels
 		{
 			await _postsService.DeletePost(postDTO.Id);
 		}
-		public async Task GetPosts()
-		{
-			DateTime lastDate = new DateTime();
-			if (Posts.Count==0)
-			{
-				lastDate = DateTime.Now;
-			}
-			else
-			{
-				lastDate = Posts.Last().PostedOn;
-			}
-			foreach (var post in await _postsService.GetPosts(lastDate, Community.Id, 20))
-			{
-				Posts.Add(post);
-			}
-			_filter = PostsFilterOptions.Last;
-		}
-		public async Task GetTrendingPosts()
-		{
-			Posts.Clear();
-			var skipIds = Posts.Select(x => x.Id).ToArray();
-
-			foreach (var post in await _postsService.GetTrendingPostsAsync(20, Community.Id, skipIds))
-			{
-				Posts.Add(post);
-			}
-			_filter = PostsFilterOptions.Trending;
-
-		}
-		public async Task SearchPosts()
-		{
-			foreach (var item in await _postsService.GetPostsBySearch(SearchText, 40, Community.Id, Posts.Select(x => x.Id).ToArray()))
-			{
-				Posts.Add(item);
-			}
-		}
-		public async Task DeleteCommuity(int communityId)
-		{
-			await _communityService.DeleteCommunity(communityId);
-		}
-		async partial void OnCommunityChanged(CommunityDTO value)
-		{
-			if (value.IsSubscribed)
-			{
-				ButtonText = "Unfollow";
-			}
-			else
-			{
-				ButtonText = "Follow";
-			}
-			Posts.Clear();
-			await GetPosts();
-		}
 		[RelayCommand]
 		async Task ChangeFollowshipStatusAsync()
 		{
 			if (Community.IsSubscribed)
-			{	
+			{
 				var result = await _communityService.Unfollow(Community.Id);
 				if (result.StatusCode == HttpStatusCode.OK)
 				{
@@ -244,7 +203,7 @@ namespace ZestFrontend.ViewModels
 				{
 					await GetTrendingPosts();
 				}
-                  if (_likesHubConnection.LikesConnection.ConnectionId != null)
+				if (_likesHubConnection.LikesConnection.ConnectionId != null)
 				{
 					await _signalRConnectionService.AddConnectionToGroup(_likesHubConnection.LikesConnection.ConnectionId, Posts.TakeLast(40).Select(x => x.Id.ToString()).ToArray());
 				}
@@ -264,7 +223,7 @@ namespace ZestFrontend.ViewModels
 			{
 				await GetTrendingPosts();
 			}
-			
+
 			IsRefreshing = false;
 			if (_likesHubConnection.LikesConnection.ConnectionId != null)
 			{
@@ -332,7 +291,7 @@ namespace ZestFrontend.ViewModels
 				Posts.Clear();
 				await GetTrendingPosts();
 			}
-			
+
 			if (_likesHubConnection.LikesConnection.ConnectionId != null)
 			{
 				await _signalRConnectionService.AddConnectionToGroup(_likesHubConnection.LikesConnection.ConnectionId, Posts.Select(x => x.Id.ToString()).ToArray());
@@ -346,6 +305,48 @@ namespace ZestFrontend.ViewModels
 			await DeleteCommuity(communityId);
 			await Shell.Current.GoToAsync("..");
 		}
+		public async Task GetPosts()
+		{
+			DateTime lastDate = new DateTime();
+			if (Posts.Count==0)
+			{
+				lastDate = DateTime.Now;
+			}
+			else
+			{
+				lastDate = Posts.Last().PostedOn;
+			}
+			foreach (var post in await _postsService.GetPosts(lastDate, Community.Id, 20))
+			{
+				Posts.Add(post);
+			}
+			_filter = PostsFilterOptions.Last;
+		}
+		public async Task GetTrendingPosts()
+		{
+			Posts.Clear();
+			var skipIds = Posts.Select(x => x.Id).ToArray();
+
+			foreach (var post in await _postsService.GetTrendingPostsAsync(20, Community.Id, skipIds))
+			{
+				Posts.Add(post);
+			}
+			_filter = PostsFilterOptions.Trending;
+
+		}
+		public async Task SearchPosts()
+		{
+			foreach (var item in await _postsService.GetPostsBySearch(SearchText, 40, Community.Id, Posts.Select(x => x.Id).ToArray()))
+			{
+				Posts.Add(item);
+			}
+		}
+		public async Task DeleteCommuity(int communityId)
+		{
+			await _communityService.DeleteCommunity(communityId);
+		}
+		
+		
 		public async Task onNavigatedTo()
 		{
 			

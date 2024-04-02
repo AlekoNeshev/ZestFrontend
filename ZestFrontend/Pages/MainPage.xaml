@@ -29,19 +29,24 @@
             <Label
                 FontSize="18"
                 HorizontalOptions="Center"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
                 SemanticProperties.HeadingLevel="Level2"
                 Text="Your path to science" />
-            <StackLayout
+            <Label
                 HorizontalOptions="Center"
-                Orientation="Horizontal"
-                Spacing="40">
+                IsVisible="{Binding IsSearching}"
+                Text="Trying to log you in" />
+            <Label
+                HorizontalOptions="Center"
+                IsVisible="{Binding IsNotSearching}"
+                Text="Plase, log in" />
+            <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+
                 <Button
                     x:Name="CounterBtn"
-                    Command="{Binding GoToLoginCommand}"
+                    Command="{Binding LoginCommand}"
                     HorizontalOptions="Center"
-                    SemanticProperties.Hint="Counts the number of times you click"
-                    Text="Log in">
+                    IsEnabled="{Binding IsNotSearching}"
+                    Text="Log in/Sign up">
                     <Button.Background>
                         <LinearGradientBrush>
                             <GradientStop Offset="0.0" Color="ForestGreen" />
@@ -49,15 +54,7 @@
                         </LinearGradientBrush>
                     </Button.Background>
                 </Button>
-
-                <Button Command="{Binding GoToRegisterCommand}" Text="Sign Up">
-                    <Button.Background>
-                        <LinearGradientBrush>
-                            <GradientStop Offset="0.0" Color="ForestGreen" />
-                            <GradientStop Offset="1.0" Color="LightBlue" />
-                        </LinearGradientBrush>
-                    </Button.Background>
-                </Button>
+                <ActivityIndicator IsRunning="{Binding IsSearching}" IsVisible="{Binding IsSearching}" />
             </StackLayout>
         </VerticalStackLayout>
     </ScrollView>

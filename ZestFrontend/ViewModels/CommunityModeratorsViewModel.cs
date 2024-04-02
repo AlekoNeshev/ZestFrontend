@@ -31,54 +31,11 @@ namespace ZestFrontend.ViewModels
 		string buttonText;
         public ObservableCollection<UserDTO> Moderators { get; private set; } = new ();
 		public ObservableCollection<UserDTO> Candidates { get; private set; } = new();
-		public async Task GetModerators()
-        {
-            Moderators.Clear();
-            foreach (var item in await _communityService.GetModeratorsByCommunity(Community.Id))
-            {
-                Moderators.Add(item);
-            }
-        }
-		public async Task GetCandidates()
-		{
-			Candidates.Clear();
-			foreach (var item in await _communityService.GetModeratorCandidatesByCommunity(Community.Id))
-
-			{
-				Candidates.Add(item);
-			}
-		}
-        [RelayCommand]
-        async Task ApproveCandidateAsync(UserDTO account)
-        {
-            var result = await _communityService.ApproveCandidate(account.Id, Community.Id);
-			if (result.IsSuccessStatusCode)
-			{
-				Candidates.Remove(account);
-				Moderators.Add(account);
-			}
-        }
-        [RelayCommand]
-		async Task DisapproveCandidateAsync(UserDTO account)
-		{
-			var result = await _communityService.RemoveModerator(account.Id, Community.Id);
-			if (result.IsSuccessStatusCode)
-			{
-				Candidates.Remove(account);
-			}
-				
-			
-		}
-		[RelayCommand]
-		async Task AddMeAsync(UserDTO account)
-		{
-			await _communityService.AddCommunityModerator(_authService.Id, Community.Id);
-		}
 		async partial void OnCommunityChanged(CommunityDTO value)
 		{
-            await GetModerators();
-            await GetCandidates();
-			var isMod  = await _communityService.IsModerator(_authService.Id, Community.Id);
+			await GetModerators();
+			await GetCandidates();
+			var isMod = await _communityService.IsModerator(_authService.Id, Community.Id);
 			if (isMod)
 			{
 				IsModerator = true;
@@ -90,6 +47,33 @@ namespace ZestFrontend.ViewModels
 				ButtonText = "Add me";
 			}
 		}
+		[RelayCommand]
+		async Task ApproveCandidateAsync(UserDTO account)
+		{
+			var result = await _communityService.ApproveCandidate(account.Id, Community.Id);
+			if (result.IsSuccessStatusCode)
+			{
+				Candidates.Remove(account);
+				Moderators.Add(account);
+			}
+		}
+		[RelayCommand]
+		async Task DisapproveCandidateAsync(UserDTO account)
+		{
+			var result = await _communityService.RemoveModerator(account.Id, Community.Id);
+			if (result.IsSuccessStatusCode)
+			{
+				Candidates.Remove(account);
+			}
+
+
+		}
+		[RelayCommand]
+		async Task AddMeAsync(UserDTO account)
+		{
+			await _communityService.AddCommunityModerator(_authService.Id, Community.Id);
+		}
+
 		[RelayCommand]
 		async Task GoToUserDetailPageAsync(UserDTO user)
 		{
@@ -107,7 +91,7 @@ namespace ZestFrontend.ViewModels
 			if (IsModerator)
 			{
 
-				var result = await _communityService.RemoveModerator(_authService.Id,Community.Id);
+				var result = await _communityService.RemoveModerator(_authService.Id, Community.Id);
 				if (result.StatusCode == HttpStatusCode.OK)
 				{
 					ButtonText = "Add me";
@@ -125,5 +109,23 @@ namespace ZestFrontend.ViewModels
 				}
 			}
 		}
+		public async Task GetModerators()
+        {
+            Moderators.Clear();
+            foreach (var item in await _communityService.GetModeratorsByCommunity(Community.Id))
+            {
+                Moderators.Add(item);
+            }
+        }
+		public async Task GetCandidates()
+		{
+			Candidates.Clear();
+			foreach (var item in await _communityService.GetModeratorCandidatesByCommunity(Community.Id))
+
+			{
+				Candidates.Add(item);
+			}
+		}
+      
 	}
 }

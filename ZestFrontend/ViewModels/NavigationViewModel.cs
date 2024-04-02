@@ -27,14 +27,6 @@ namespace ZestFrontend.ViewModels
 		bool isBtnVisible;
 		public ObservableCollection<CommunityDTO> Communities { get; } = new();
 		
-		public async void GetComs()
-		{
-			Communities.Clear();
-			foreach (var item in await _communityService.GetCommunitiesByAccount(_authService.Id, 50, Communities.Count))
-			{
-				Communities.Add(item);
-			}
-		}
 		
 		[RelayCommand]
 		void ShowFollowedComsAsync()
@@ -91,6 +83,14 @@ namespace ZestFrontend.ViewModels
 			{
 			{"Community", community }
 			});
+		}
+		public async void GetComs()
+		{
+			Communities.Clear();
+			foreach (var item in await _communityService.GetCommunitiesByAccount(_authService.Id, 50, Communities.Count))
+			{
+				Communities.Add(item);
+			}
 		}
 	}
 }

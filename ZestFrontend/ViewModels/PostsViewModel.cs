@@ -21,26 +21,26 @@ namespace ZestFrontend.ViewModels
 		PostsFilterOptions _filter;
 		public PostsViewModel(PostsService postsService, LikesService service, LikesHubConnectionService likesHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService, CommunityService communityService, DeleteHubConnectionService commentHubConnectionService)
 		{
-
+			this._likesConnection = likesHubConnectionService;
+			_commentHubConnectionService=commentHubConnectionService;
+			this._likesConnection.Init();
+			this._commentHubConnectionService.Init();
+			_likesConnection.LikesConnection.On<int>("PostLiked", UpdatePost);
+			_commentHubConnectionService.DeleteConnection.On<int>("PostDeleted", UpdatePost);
 			this._postsService = postsService;
 			this._likesService = service;
 			this._authService=authService;
-			this._likesConnection = likesHubConnectionService;
+		
 			this._communityService = communityService;
 			_signalRConnectionService = signalRConnectionService;
 			_filter = PostsFilterOptions.None;
-			 GetPostNotAsync();
-			_commentHubConnectionService=commentHubConnectionService;
+			Initilaze();
+		
 			_ = new MauiIcon();
 			IsInSearchMode = false;
-			 this._likesConnection.Init();
-			 this._commentHubConnectionService.Init();
-			_likesConnection.LikesConnection.On<int>("PostLiked", UpdatePost);
-			_commentHubConnectionService.DeleteConnection.On<int>("PostDeleted", UpdatePost);
+			
 		}
-
-		
-
+	
 		[ObservableProperty]
 		string search;
 		[ObservableProperty]
@@ -62,86 +62,7 @@ namespace ZestFrontend.ViewModels
 
 		public ObservableCollection<PostDTO> Posts { get; } = new();
 
-		public async void UpdatePost(int id)
-		{
-			var updatedPost = await _postsService.GetSinglePost(id);
-			var post = Posts.Where(x => x.Id==id).FirstOrDefault();
-			if (post != null)
-			{
-				post.Likes = updatedPost.Likes;
-				post.Dislikes = updatedPost.Dislikes;
-				post.Like = updatedPost.Like;
-				post.Title = updatedPost.Title;
-				post.Text = updatedPost.Text;
-				post.Publisher = updatedPost.Publisher;
-			}
-		}
-		public async Task GetPosts()
-		{
-
-			DateTime lastDate = new DateTime();
-			if (Posts.Count==0)
-			{
-				lastDate = DateTime.Now;
-			}
-			else
-			{
-				lastDate = Posts.Last().PostedOn;
-			}
-			foreach (var post in await _postsService.GetPosts(lastDate, 0, 40))
-			{
-				Posts.Add(post);
-			}
-			_filter = PostsFilterOptions.Last;
-
-		}
-		public async void GetPostNotAsync()
-		{
-
-			DateTime lastDate = new DateTime();
-			if (Posts.Count==0)
-			{
-				lastDate = DateTime.Now;
-			}
-			else
-			{
-				lastDate = Posts.Last().PostedOn;
-			}
-			//var posts = Task.Run(async () => await _postsService.GetPosts(lastDate, 0, 40)).Result;
-			foreach (var post in await _postsService.GetPosts(lastDate, 0, 40))
-			{
-				Posts.Add(post);
-			}
-			_filter = PostsFilterOptions.Last;
-
-		}
-		public async Task GetTrendingPosts()
-		{
-
-			var skipIds = Posts.Select(x => x.Id).ToArray();
-
-
-			foreach (var post in await _postsService.GetTrendingPostsAsync(40, 0, skipIds))
-			{
-				
-				Posts.Add(post);
-			}
-			_filter = PostsFilterOptions.Trending;
-
-		}
-		public async Task GetFollowedPosts()
-		{
-
-			var skipIds = Posts.Select(x => x.Id).ToArray();
-
-			foreach (var post in await _postsService.GetFollowedPostsAsync(40, skipIds))
-			{
-				Posts.Add(post);
-			}
-			_filter = PostsFilterOptions.Followed;
-
-
-		}
+		
 		[RelayCommand]
 		async Task GetLatestPostsAsync()
 		{
@@ -250,13 +171,7 @@ namespace ZestFrontend.ViewModels
 			});
 
 		}
-		public async Task SearchPosts()
-		{
-			foreach (var item in await _postsService.GetPostsBySearch(SearchText, 40, 0,Posts.Select(x => x.Id).ToArray()))
-			{
-				Posts.Add(item);
-			}
-		}
+		
 		[RelayCommand]
 		async Task SearchPostsAsync()
 		{
@@ -348,6 +263,79 @@ namespace ZestFrontend.ViewModels
 				
 				}
 				_authService.Groups.AddRange(Posts.TakeLast(40).Select(x => x.Id.ToString()).ToList());
+		}
+		public async void UpdatePost(int id)
+		{
+			var updatedPost = await _postsService.GetSinglePost(id);
+			var post = Posts.Where(x => x.Id==id).FirstOrDefault();
+			if (post != null)
+			{
+				post.Likes = updatedPost.Likes;
+				post.Dislikes = updatedPost.Dislikes;
+				post.Like = updatedPost.Like;
+				post.Title = updatedPost.Title;
+				post.Text = updatedPost.Text;
+				post.Publisher = updatedPost.Publisher;
+			}
+		}
+		public async Task GetPosts()
+		{
+
+			DateTime lastDate = new DateTime();
+			if (Posts.Count==0)
+			{
+				lastDate = DateTime.Now;
+			}
+			else
+			{
+				lastDate = Posts.Last().PostedOn;
+			}
+			foreach (var post in await _postsService.GetPosts(lastDate, 0, 40))
+			{
+				Posts.Add(post);
+			}
+			_filter = PostsFilterOptions.Last;
+
+		}
+		
+		public async Task GetTrendingPosts()
+		{
+
+			var skipIds = Posts.Select(x => x.Id).ToArray();
+
+
+			foreach (var post in await _postsService.GetTrendingPostsAsync(40, 0, skipIds))
+			{
+
+				Posts.Add(post);
+			}
+			_filter = PostsFilterOptions.Trending;
+
+		}
+		public async Task GetFollowedPosts()
+		{
+
+			var skipIds = Posts.Select(x => x.Id).ToArray();
+
+			foreach (var post in await _postsService.GetFollowedPostsAsync(40, skipIds))
+			{
+				Posts.Add(post);
+			}
+			_filter = PostsFilterOptions.Followed;
+
+
+		}
+		public async Task SearchPosts()
+		{
+			foreach (var item in await _postsService.GetPostsBySearch(SearchText, 40, 0, Posts.Select(x => x.Id).ToArray()))
+			{
+				Posts.Add(item);
+			}
+		}
+		public async void Initilaze()
+		{
+			await GetPosts();
+			
 		}
 		public async Task onNavigatedTo()
 		{

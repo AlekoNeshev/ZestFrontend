@@ -20,10 +20,10 @@ namespace ZestFrontend.Services
 
 		public HubConnection DeleteConnection => _deleteConnection;
 
-		public async Task Init()
+		public void Init()
 		{
 			_deleteConnection = BuildLikesHubConnection($"{PortConst.Port_Forward_Http}/deletehub");
-			await StartConnections();
+			 StartConnections();
 		}
 		private HubConnection BuildLikesHubConnection(string url)
 		{
@@ -38,12 +38,10 @@ namespace ZestFrontend.Services
 				})
 				.Build();
 
-
-
 			return connection;
 		}
 
-		private async Task StartConnections()
+		private async void StartConnections()
 		{
 			await _deleteConnection.StartAsync();
 			_deleteConnection.Closed +=_commentsConnection_Closed;

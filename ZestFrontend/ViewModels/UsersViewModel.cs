@@ -24,7 +24,7 @@ namespace ZestFrontend.ViewModels
             this._accountService = accountService;
 			this._authService = authService;
 			this._followersService = followersService;
-			GetUsers();
+			Initialize();
         }
        
 		[ObservableProperty]
@@ -42,13 +42,7 @@ namespace ZestFrontend.ViewModels
 			get { return isInSearchMode; }
 			set { isInSearchMode = value; }
 		}
-		public async Task GetUsers()
-		{
-			foreach (var user in await _accountService.GetAllAccounts(50, Users.Count))
-			{
-				Users.Add(user);
-			}
-		}	
+		
 		
 		[RelayCommand]
 		async Task GoToUserDetailPageAsync(UserDTO user)
@@ -61,13 +55,7 @@ namespace ZestFrontend.ViewModels
 			{"User", user }
 			});
 		}
-		public async Task SearchUsers()
-		{
-			foreach (var item in await _accountService.GetAccountsBySearch(SearchText, _authService.Token, 50, Users.Select(x => x.Id).ToArray()))
-			{
-				Users.Add(item);
-			}
-		}
+	
 		
 		[RelayCommand]
 		async Task SearchUsersAsync()
@@ -103,6 +91,24 @@ namespace ZestFrontend.ViewModels
 			else
 			{
 				await GetUsers();
+			}
+		}
+		public async void Initialize()
+		{
+			await GetUsers();
+		}
+		public async Task GetUsers()
+		{
+			foreach (var user in await _accountService.GetAllAccounts(50, Users.Count))
+			{
+				Users.Add(user);
+			}
+		}
+		public async Task SearchUsers()
+		{
+			foreach (var item in await _accountService.GetAccountsBySearch(SearchText, _authService.Token, 50, Users.Select(x => x.Id).ToArray()))
+			{
+				Users.Add(item);
 			}
 		}
 	}

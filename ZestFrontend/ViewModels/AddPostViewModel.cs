@@ -20,14 +20,14 @@ namespace ZestFrontend.ViewModels
 	public partial class AddPostViewModel : ObservableObject
 	{
 		PostsService _postsService;
-		List<FileResult> _fileResult10;
+		List<FileResult> _fileResults;
 		MediaService _mediaService;
 		
 		public AddPostViewModel(PostsService postsService , MediaService mediaService)
         {
             this._postsService = postsService;
 			this._mediaService = mediaService;
-			_fileResult10 = new List<FileResult>();
+			_fileResults = new List<FileResult>();
 			
 		}
 
@@ -37,7 +37,7 @@ namespace ZestFrontend.ViewModels
 		string title;
 		[ObservableProperty]
 		string content;
-		public ObservableCollection<string> Images { get; private set; } = new();
+		public ObservableCollection<string> Files { get; private set; } = new();
 
 		[RelayCommand]
 		async Task CreatePost()
@@ -50,9 +50,9 @@ namespace ZestFrontend.ViewModels
 			var response = await _postsService.AddPost(Title, Content, Community.Id);
 			var content = await response.Content.ReadAsStringAsync();
 			isSuccesfull = response.IsSuccessStatusCode;
-			if(_fileResult10.Count > 0)
+			if(_fileResults.Count > 0)
 			{
-				var imageResponse = await _mediaService.UploadImage(int.Parse(content), _fileResult10.ToArray());
+				var imageResponse = await _mediaService.UploadImage(int.Parse(content), _fileResults.ToArray());
 				isSuccesfull = imageResponse.IsSuccessStatusCode;
 			}
 			
@@ -64,41 +64,46 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		 async Task SelectVideoClicked()
 		{
-			Images.Clear();
-			_fileResult10.Clear();
+			Files.Clear();
+			_fileResults.Clear();
 			var pickOptions = new PickOptions
 			{
 				PickerTitle = "Select videos",
 				FileTypes = FilePickerFileType.Videos
 			};
-			var fileResult1 = await FilePicker.PickAsync(pickOptions);
-			if (fileResult1 != null)
+			var pickedFiles = await FilePicker.PickAsync(pickOptions);
+			if (pickedFiles != null)
 			{
-				fileResult1.ContentType = MimeTypesMap.GetMimeType(fileResult1.FileName);
-				_fileResult10 .Add(new FileResult(fileResult1));
-				Images.Add(fileResult1.FileName);
+				pickedFiles.ContentType = MimeTypesMap.GetMimeType(pickedFiles.FileName);
+				_fileResults .Add(new FileResult(pickedFiles));
+				Files.Add(pickedFiles.FileName);
 			}
 		}
 		[RelayCommand]
 		async Task SelectImageClicked()
 		{
-			Images.Clear();
-			_fileResult10.Clear();
+			Files.Clear();
+			_fileResults.Clear();
 			var pickOptions = new PickOptions
 			{
 				PickerTitle = "Select images",
 				FileTypes = FilePickerFileType.Images
 			};
 
-			var fileResults = await FilePicker.PickMultipleAsync(pickOptions);
-			if (fileResults != null && fileResults.Count() > 0)
+			var pickedFiles = await FilePicker.PickMultipleAsync(pickOptions);
+			if (pickedFiles.Count()>5)
+			{
+				Files.Clear();
+				return;
+			}
+			if (pickedFiles != null && pickedFiles.Count() > 0)
 			{			
-				foreach (var fileResult in fileResults)
+				foreach (var fileResult in pickedFiles)
 				{
 					fileResult.ContentType = MimeTypesMap.GetMimeType(fileResult.FileName);
-					_fileResult10.Add (new FileResult(fileResult));
+					_fileResults.Add (new FileResult(fileResult));
 					
-					Images.Add(fileResult.FileName);
+					Files.Add(fileResult.FileName);
 				}
 			}
 		}
