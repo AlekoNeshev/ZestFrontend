@@ -6,11 +6,13 @@
     xmlns:local="clr-namespace:ZestFrontend.Parameters"
     xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
-    xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     xmlns:valueConverters="clr-namespace:ZestFrontend.ValueConverters"
+    xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="CommunityDetailsPage"
     x:DataType="viewmodel:CommunityDetailsViewModel"
-    BackgroundColor="GhostWhite">
+    BackgroundColor="GhostWhite"
+    Shell.TabBarIsVisible="{OnIdiom Phone=True,
+                                    Desktop=False}">
     <ContentPage.Resources>
         <valueConverters:LikeButtonsColorConverter x:Key="LikeButtonColorConverter" />
         <valueConverters:DislikeButtonColorConverter x:Key="DislikeButtonColorConverter" />
@@ -107,7 +109,7 @@
                             BackgroundColor="Transparent"
                             BorderColor="Transparent"
                             Clicked="ImageButton_Clicked"
-                            Command="{Binding FilterBtnAsyncCommand}"
+                            Command="{Binding FilterBtnCommand}"
                             Text="Filter"
                             TextColor="Black" />
                     </Border>
@@ -125,7 +127,7 @@
                             x:Name="SecondImageButton"
                             BackgroundColor="Transparent"
                             Clicked="ImageButton_Clicked"
-                            Command="{Binding FilterBtnAsyncCommand}"
+                            Command="{Binding FilterBtnCommand}"
                             Source="{mi:FluentFilled ArrowUp20Filled,
                                                      IconAutoScaling=True,
                                                      IconSize=20}" />
@@ -280,7 +282,7 @@
                                             <ColumnDefinition />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <Label FontAttributes="Bold" Text="{Binding Publisher}" />
+                                        <Label FontAttributes="Italic" Text="{Binding Publisher}" />
                                         <Label
                                             Grid.Column="1"
                                             FontSize="12"

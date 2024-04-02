@@ -6,7 +6,9 @@
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="AddPostPage"
     x:DataType="viewmodel:AddPostViewModel"
-    BackgroundColor="GhostWhite">
+    BackgroundColor="GhostWhite"
+    Shell.TabBarIsVisible="{OnIdiom Phone=True,
+                                    Desktop=False}">
     <Grid x:Name="MyGrid" Padding="0,64">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />
@@ -20,7 +22,7 @@
 
                 <Label Text="Content" />
                 <Editor AutoSize="TextChanges" Text="{Binding Content}" />
-                
+
                 <StackLayout
                     HorizontalOptions="CenterAndExpand"
                     Orientation="Horizontal"

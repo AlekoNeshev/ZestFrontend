@@ -35,47 +35,6 @@ namespace ZestFrontend.ViewModels
 			get { return isInSearchMode; }
 			set { isInSearchMode = value; }
 		}
-		public async void Init()
-		{
-			await GetCommunities();
-		}
-		public async Task GetCommunities()
-		{
-			foreach (var item in await _communityService.GetCommunities(Communities.Count, 20))
-			{
-				Communities.Add(item);
-			}
-			_filter = CommunitiesFilterOptions.All;
-		}
-		public async Task GetCommunitiesBySearchAsync(string text)
-		{
-			Communities.Clear();
-
-			foreach (var item in await _communityService.GetCommunitiesBySearch(text, 50, Communities.Select(x => x.Id).ToArray()))
-			{
-				Communities.Add(item);
-			}
-		}
-		public async Task GetPopularCommunities()
-		{
-			int[] skipIds = Communities.Select(x => x.Id).ToArray();
-
-			foreach (var item in await _communityService.GetTrendingCommunitiesAsync(50, skipIds))
-			{
-				Communities.Add(item);
-
-			}
-			_filter = CommunitiesFilterOptions.Popular;
-		}
-		public async Task GetFollowedCommunities()
-		{
-			
-			foreach (var item in await _communityService.GetCommunitiesByAccount(_authService.Id, 50, Communities.Count))
-			{
-				Communities.Add(item);
-			}
-			_filter = CommunitiesFilterOptions.Followed;
-		}
 		[RelayCommand]
 		async Task GoToCommunityDetailPageAsync(CommunityDTO community)
 		{
@@ -162,10 +121,10 @@ namespace ZestFrontend.ViewModels
 		{
 			Communities.Clear();
 			if (_filter == CommunitiesFilterOptions.All)
-			{	
+			{
 				await GetCommunities();
 			}
-			else if(_filter == CommunitiesFilterOptions.Popular)
+			else if (_filter == CommunitiesFilterOptions.Popular)
 			{
 				await GetPopularCommunities();
 			}
@@ -198,5 +157,48 @@ namespace ZestFrontend.ViewModels
 				}
 			}
 		}
+
+		public async void Init()
+		{
+			await GetCommunities();
+		}
+		public async Task GetCommunities()
+		{
+			foreach (var item in await _communityService.GetCommunities(Communities.Count, 20))
+			{
+				Communities.Add(item);
+			}
+			_filter = CommunitiesFilterOptions.All;
+		}
+		public async Task GetCommunitiesBySearchAsync(string text)
+		{
+			Communities.Clear();
+
+			foreach (var item in await _communityService.GetCommunitiesBySearch(text, 50, Communities.Select(x => x.Id).ToArray()))
+			{
+				Communities.Add(item);
+			}
+		}
+		public async Task GetPopularCommunities()
+		{
+			int[] skipIds = Communities.Select(x => x.Id).ToArray();
+
+			foreach (var item in await _communityService.GetTrendingCommunitiesAsync(50, skipIds))
+			{
+				Communities.Add(item);
+
+			}
+			_filter = CommunitiesFilterOptions.Popular;
+		}
+		public async Task GetFollowedCommunities()
+		{
+			
+			foreach (var item in await _communityService.GetCommunitiesByAccount(_authService.Id, 50, Communities.Count))
+			{
+				Communities.Add(item);
+			}
+			_filter = CommunitiesFilterOptions.Followed;
+		}
+		
 	}
 }

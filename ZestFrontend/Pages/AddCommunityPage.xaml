@@ -7,7 +7,9 @@
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="AddCommunityPage"
     x:DataType="viewmodel:AddCommunityViewModel"
-    BackgroundColor="GhostWhite">
+    BackgroundColor="GhostWhite"
+    Shell.TabBarIsVisible="{OnIdiom Phone=True,
+                                    Desktop=False}">
     <Grid x:Name="MyGrid" Padding="0,64">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{OnIdiom Phone=0, Tablet=2*, Desktop=*}" />

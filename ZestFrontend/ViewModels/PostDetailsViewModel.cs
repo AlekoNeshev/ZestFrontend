@@ -131,7 +131,10 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task SendAsync(string text)
 		{
-
+			if(string.IsNullOrWhiteSpace(text))
+			{
+				return;
+			}	
 			var response = await _commentService.PostComment(Post.Id, text);
 			var content = await response.Content.ReadAsStringAsync();
 			AddComment(int.Parse(content));
@@ -195,7 +198,7 @@ namespace ZestFrontend.ViewModels
 			}
 		}
 		[RelayCommand]
-		void ReplyCommentAsync(CommentDTO comment)
+		void ReplyComment(CommentDTO comment)
 		{
 			comment.IsReplyVisible = !comment.IsReplyVisible;
 
@@ -418,6 +421,10 @@ namespace ZestFrontend.ViewModels
 		{
 			var comment = int.Parse(parameter.Comment);
 			var text = parameter.ReplyText;
+			if (string.IsNullOrWhiteSpace(text))
+			{
+				return;
+			}
 			await SendReplyAsync(comment, text);
 			var commentToFind = FindCommentById(comment, Comments, 0);
 			if (commentToFind != null && commentToFind.Length > 1)

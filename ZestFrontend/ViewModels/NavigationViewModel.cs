@@ -29,7 +29,7 @@ namespace ZestFrontend.ViewModels
 		
 		
 		[RelayCommand]
-		void ShowFollowedComsAsync()
+		void ShowFollowedComs()
 		{
 			IsBtnVisible = !IsBtnVisible;
 		}

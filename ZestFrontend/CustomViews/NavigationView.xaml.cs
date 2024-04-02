@@ -1,6 +1,6 @@
 using ZestFrontend.ViewModels;
 using CommunityToolkit.Mvvm.DependencyInjection;
-namespace ZestFrontend.Views;
+namespace ZestFrontend.CustomViews;
 
 public partial class NavigationView : ContentView
 {
@@ -19,8 +19,7 @@ public partial class NavigationView : ContentView
 	{
 		if (sender is View view)
 		{
-			// Change the color when the pointer enters the element
-			view.BackgroundColor = Color.FromArgb("#7dd0ae"); // Change to your desired color
+			view.BackgroundColor = Color.FromArgb("#7dd0ae"); 
 		}
 	}
 
@@ -28,7 +27,6 @@ public partial class NavigationView : ContentView
 	{
 		if (sender is View view)
 		{
-			// Reset the color when the pointer exits the element
 			view.BackgroundColor = Color.FromArgb("#f8f8ff");
 		}
 	}
@@ -36,7 +34,7 @@ public partial class NavigationView : ContentView
 
 	void OnPointerMoved(object sender, PointerEventArgs e)
 	{
-		// Handle the pointer moved event
+		
 	}
 
 	private void ImageButton_Clicked(object sender, EventArgs e)

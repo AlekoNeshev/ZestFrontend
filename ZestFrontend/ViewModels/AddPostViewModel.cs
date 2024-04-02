@@ -42,7 +42,7 @@ namespace ZestFrontend.ViewModels
 		[RelayCommand]
 		async Task CreatePost()
 		{
-			if(Title == null || Content == null) 
+			if(string.IsNullOrWhiteSpace(Title) || string.IsNullOrWhiteSpace(Content)) 
 			{
 				return;
 			}

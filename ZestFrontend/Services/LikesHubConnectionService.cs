@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Threading.Tasks;
+using ZestFrontend.Constants;
 
 namespace ZestFrontend.Services
 {
-	public class LikesHubConnectionService
+    public class LikesHubConnectionService
 	{
 		private  HubConnection _likesConnection;
 		private readonly AuthService _authService;

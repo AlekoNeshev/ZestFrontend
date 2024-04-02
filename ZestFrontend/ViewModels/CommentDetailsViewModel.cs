@@ -119,7 +119,7 @@ namespace ZestFrontend.ViewModels
 			}
 		}
 		[RelayCommand]
-		async Task ReplyCommentAsync(CommentDTO comment)
+		 void ReplyComment(CommentDTO comment)
 		{
 			comment.IsReplyVisible = !comment.IsReplyVisible;
 
@@ -220,6 +220,11 @@ namespace ZestFrontend.ViewModels
 		{
 			var comment = int.Parse(parameter.Comment);
 			var text = parameter.ReplyText;
+		       if (string.IsNullOrWhiteSpace(text))
+				{
+					return;
+				}	
+			
 			await SendReplyAsync(comment, text);
 			if (Comment.Id == comment)
 			{

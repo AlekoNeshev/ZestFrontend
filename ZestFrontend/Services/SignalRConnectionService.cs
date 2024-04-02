@@ -5,10 +5,11 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using ZestFrontend.Constants;
 
 namespace ZestFrontend.Services
 {
-	public class SignalRConnectionService
+    public class SignalRConnectionService
 	{
         HttpClient _httpClient;
 		AuthService _authService;

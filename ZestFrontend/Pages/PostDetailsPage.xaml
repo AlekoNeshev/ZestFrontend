@@ -6,14 +6,15 @@
     xmlns:local="clr-namespace:ZestFrontend.Parameters"
     xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
-    xmlns:nav="clr-namespace:ZestFrontend.Views"
     xmlns:service="clr-namespace:ZestFrontend.Services"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:valueConverters="clr-namespace:ZestFrontend.ValueConverters"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="PostDetailsPage"
     x:DataType="viewmodel:PostDetailsViewModel"
-    BackgroundColor="GhostWhite">
+    BackgroundColor="GhostWhite"
+    Shell.TabBarIsVisible="{OnIdiom Phone=True,
+                                    Desktop=False}">
 
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding GoBackCommand}" />
@@ -109,7 +110,7 @@
                                                                Desktop=10}" />
                                     <Label Text="{Binding Dislikes}" VerticalOptions="Start" />
                                     <ImageButton
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommentAsyncCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:PostDetailsViewModel}}, Path=ReplyCommentCommand}"
                                         CommandParameter="{Binding .}"
                                         HorizontalOptions="End"
                                         MaximumHeightRequest="{OnIdiom Phone=25,
