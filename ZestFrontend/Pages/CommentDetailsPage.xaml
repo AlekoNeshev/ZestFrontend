@@ -6,11 +6,13 @@
     xmlns:local="clr-namespace:ZestFrontend.Parameters"
     xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
-    xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     xmlns:valueConverters="clr-namespace:ZestFrontend.ValueConverters"
+    xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="CommentDetailsPage"
     x:DataType="viewmodel:CommentDetailsViewModel"
-    BackgroundColor="GhostWhite">
+    BackgroundColor="GhostWhite"
+    Shell.TabBarIsVisible="{OnIdiom Phone=True,
+                                    Desktop=False}">
 
     <ContentPage.Resources>
         <valueConverters:LikeButtonsColorConverter x:Key="LikeButtonColorConverter" />

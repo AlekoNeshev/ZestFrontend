@@ -3,11 +3,12 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
+using ZestFrontend.Constants;
 using ZestFrontend.DTOs;
 
 namespace ZestFrontend.Services
 {
-	public class CommunityService
+    public class CommunityService
     {
         HttpClient _httpClient;
 		AuthService _authService;

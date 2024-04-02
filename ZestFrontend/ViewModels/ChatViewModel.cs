@@ -53,6 +53,20 @@ namespace ZestFrontend.ViewModels
 			await OnOpen();
 
 		}
+		[RelayCommand]
+		async Task SendAsync(string text)
+		{
+			if (string.IsNullOrWhiteSpace(text))
+			{
+				return;
+			}
+			await _messageService.SendMessage(Follower.Id, text);
+		}
+		[RelayCommand]
+		async Task GetMoreMessagesAsync()
+		{
+			await LoadMoreMessages();
+		}
 		public async Task GetMessages()
 		{
 			
@@ -123,18 +137,7 @@ namespace ZestFrontend.ViewModels
 
 			IsLoadingMessages = false;
 		}
-		
-		
-		[RelayCommand]
-		async Task SendAsync(string text)
-		{
-			await _messageService.SendMessage(Follower.Id, text);
-		}
-		[RelayCommand]
-		async Task GetMoreMessagesAsync()
-		{
-			await LoadMoreMessages();
-		}
+			
 		public async Task GetSingleMessage(int messageId)
 		{
 			var message = await _messageService.FindById(messageId);
@@ -160,7 +163,7 @@ namespace ZestFrontend.ViewModels
 		}
 		async protected virtual Task OnOpen()
 		{
-			 OnOpenScreen?.Invoke(this, EventArgs.Empty);
+			OnOpenScreen?.Invoke(this, EventArgs.Empty);
 		}
 		public async void OnNavigatedTo()
 		{

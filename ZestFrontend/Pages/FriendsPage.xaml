@@ -7,7 +7,9 @@
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="FriendsPage"
     x:DataType="viewmodel:FriendsViewModel"
-    BackgroundColor="GhostWhite">
+    BackgroundColor="GhostWhite"
+    Shell.TabBarIsVisible="{OnIdiom Phone=True,
+                                    Desktop=False}">
     <ContentPage.ToolbarItems>
         <ToolbarItem Command="{Binding RefreshCommand}" Text="Refresh" />
     </ContentPage.ToolbarItems>

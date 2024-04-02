@@ -24,6 +24,10 @@ namespace ZestFrontend.ViewModels
         [RelayCommand]
         async Task CreateCommunityAsync()
         {
+			if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Description))
+			{
+                return;
+            }
             var response = await _communityService.AddCommunity(Name, Description);
             if (response.IsSuccessStatusCode)
             {

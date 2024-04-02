@@ -1,6 +1,6 @@
 using CommunityToolkit.Maui.Markup;
 using ZestFrontend.ViewModels;
-using ZestFrontend.Views;
+using ZestFrontend.CustomViews;
 
 namespace ZestFrontend;
 
@@ -12,7 +12,7 @@ public partial class CommunityDetailsPage : ContentPage
 		BindingContext = viewModel;
 		_viewModel = viewModel;
 		InitializeComponent();
-		if (Microsoft.Maui.Devices.DeviceInfo.Current.Platform == Microsoft.Maui.Devices.DevicePlatform.WinUI)
+		if (Microsoft.Maui.Devices.DeviceInfo.Current.Platform == Microsoft.Maui.Devices.DevicePlatform.WinUI || Microsoft.Maui.Devices.DeviceInfo.Current.Platform == Microsoft.Maui.Devices.DevicePlatform.macOS)
 		{
 			var nav = serviceProvider.GetRequiredService<NavigationView>();
 			nav.RowSpan(4);

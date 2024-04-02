@@ -7,9 +7,11 @@
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="UsersPage"
     x:DataType="viewmodel:UsersViewModel"
-    BackgroundColor="GhostWhite">
+    BackgroundColor="GhostWhite"
+    Shell.TabBarIsVisible="{OnIdiom Phone=True,
+                                    Desktop=False}">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding RefreshCommand}" Text="Refresh"/>
+        <ToolbarItem Command="{Binding RefreshCommand}" Text="Refresh" />
     </ContentPage.ToolbarItems>
     <Grid x:Name="MyGrid">
         <Grid.ColumnDefinitions>
@@ -35,7 +37,11 @@
             Grid.Column="1"
             Command="{Binding RefreshCommand}"
             IsRefreshing="{Binding IsRefreshing}">
-            <CollectionView HorizontalOptions="CenterAndExpand" ItemsSource="{Binding Users}" RemainingItemsThreshold="1" RemainingItemsThresholdReachedCommand="{Binding LoadMoreUsersCommand}">
+            <CollectionView
+                HorizontalOptions="CenterAndExpand"
+                ItemsSource="{Binding Users}"
+                RemainingItemsThreshold="1"
+                RemainingItemsThresholdReachedCommand="{Binding LoadMoreUsersCommand}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:UserDTO">
                         <Grid>

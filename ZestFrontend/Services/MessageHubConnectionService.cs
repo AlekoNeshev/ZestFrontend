@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZestFrontend.Constants;
 
 namespace ZestFrontend.Services
 {
-	public class MessageHubConnectionService
+    public class MessageHubConnectionService
 	{
 		private HubConnection _messageConnection;
 		private readonly AuthService _authService;

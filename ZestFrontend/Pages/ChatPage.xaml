@@ -4,12 +4,14 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:ZestFrontend.Parameters"
-    xmlns:valueConverters="clr-namespace:ZestFrontend.ValueConverters"
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
+    xmlns:valueConverters="clr-namespace:ZestFrontend.ValueConverters"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="ChatPage"
     x:DataType="viewmodel:ChatViewModel"
-    BackgroundColor="GhostWhite">
+    BackgroundColor="GhostWhite"
+    Shell.TabBarIsVisible="{OnIdiom Phone=True,
+                                    Desktop=False}">
     <ContentPage.Resources>
         <ResourceDictionary>
             <valueConverters:UserMessageColorConverter x:Key="UserMessageColorConverter" />

@@ -5,7 +5,7 @@ using ZestFrontend.Services;
 using ZestFrontend.ViewModels;
 using MauiIcons.Fluent.Filled;
 using ZestFrontend.Pages;
-using ZestFrontend.Views;
+using ZestFrontend.CustomViews;
 using Material.Components.Maui.Extensions;
 namespace ZestFrontend;
 

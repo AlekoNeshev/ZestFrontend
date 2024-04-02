@@ -6,7 +6,6 @@
     xmlns:local="clr-namespace:ZestFrontend.Parameters"
     xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
-    xmlns:nav="clr-namespace:ZestFrontend.Views"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     xmlns:windows="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;assembly=Microsoft.Maui.Controls"
     Title="PostsPage"
@@ -15,7 +14,7 @@
     BackgroundColor="GhostWhite"
     Shell.ForegroundColor="Orange"
     Shell.TabBarIsVisible="{OnIdiom Phone=True,
-                                    Desktop=True}">
+                                    Desktop=False}">
 
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="False" />
@@ -65,7 +64,7 @@
                                     BackgroundColor="Transparent"
                                     BorderColor="Transparent"
                                     Clicked="ImageButton_Clicked"
-                                    Command="{Binding FilterBtnAsyncCommand}"
+                                    Command="{Binding FilterBtnCommand}"
                                     Text="Filter"
                                     TextColor="Black" />
                             </Border>
@@ -83,7 +82,7 @@
                                     x:Name="SecondImageButton"
                                     BackgroundColor="Transparent"
                                     Clicked="ImageButton_Clicked"
-                                    Command="{Binding FilterBtnAsyncCommand}"
+                                    Command="{Binding FilterBtnCommand}"
                                     Source="{mi:FluentFilled ArrowUp20Filled,
                                                              IconAutoScaling=True,
                                                              IconSize=20}" />

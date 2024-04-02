@@ -2,12 +2,13 @@
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using ZestFrontend.Constants;
 using ZestFrontend.DTOs;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace ZestFrontend.Services
 {
-	public class AccountService
+    public class AccountService
     {
         HttpClient _httpClient;
         public AccountService(HttpClient httpClient)

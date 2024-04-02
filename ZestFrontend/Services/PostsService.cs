@@ -9,10 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using ZestFrontend.DTOs;
 using static System.Net.Mime.MediaTypeNames;
+using ZestFrontend.Constants;
 
 namespace ZestFrontend.Services
 {
-	public class PostsService
+    public class PostsService
 	{
 		HttpClient _httpClient;
 		AuthService _authService;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView
-    x:Class="ZestFrontend.Views.NavigationView"
+    x:Class="ZestFrontend.CustomViews.NavigationView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
@@ -148,7 +148,7 @@
                                 BackgroundColor="Transparent"
                                 BorderColor="Transparent"
                                 Clicked="ImageButton_Clicked"
-                                Command="{Binding ShowFollowedComsAsyncCommand}"
+                                Command="{Binding ShowFollowedComsCommand}"
                                 ContentLayout="Right, 20"
                                 CornerRadius="0"
                                 FontSize="13"
@@ -170,7 +170,7 @@
                                 x:Name="SecondImageButton"
                                 BackgroundColor="Transparent"
                                 Clicked="ImageButton_Clicked"
-                                Command="{Binding ShowFollowedComsAsyncCommand}"
+                                Command="{Binding ShowFollowedComsCommand}"
                                 Source="{mi:FluentFilled ArrowUp20Filled,
                                                          IconAutoScaling=True,
                                                          IconSize=20}" />
