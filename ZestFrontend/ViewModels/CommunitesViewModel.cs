@@ -17,7 +17,7 @@ namespace ZestFrontend.ViewModels
 			this._communityService = communityService;
 			this._authService = authService;
 			_filter = CommunitiesFilterOptions.Popular;
-			GetCommunities();
+			Init();
 		}
 
 		public ObservableCollection<CommunityDTO> Communities { get; } = new();
@@ -35,7 +35,10 @@ namespace ZestFrontend.ViewModels
 			get { return isInSearchMode; }
 			set { isInSearchMode = value; }
 		}
-
+		public async void Init()
+		{
+			await GetCommunities();
+		}
 		public async Task GetCommunities()
 		{
 			foreach (var item in await _communityService.GetCommunities(Communities.Count, 20))

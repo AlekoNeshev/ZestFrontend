@@ -3,26 +3,34 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using ZestFrontend.DTOs;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ZestFrontend.Services
 {
 	public class AccountService
     {
         HttpClient _httpClient;
-
         public AccountService(HttpClient httpClient)
         {
             this._httpClient = httpClient;
         }
-        public async Task<string[]> CreateAccount(string accessToken, string name, string email)
+        public async Task<AccountDTO> CreateAccount(string accessToken, string name, string email)
         {
            
             var url = $"{PortConst.Port_Forward_Http}/Zest/Account/add/{name}/{email}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 			var response = await _httpClient.PostAsJsonAsync(url, new StringContent("data"));
-			response.EnsureSuccessStatusCode();
-          
-			return JsonSerializer.Deserialize<string[]>(await response.Content.ReadAsStringAsync());
+			if (response.IsSuccessStatusCode)
+			{
+				if (response.Content != null && response.Content.Headers.ContentLength > 0)
+				{
+					return await response.Content.ReadFromJsonAsync<AccountDTO>();
+				}
+				else { return null; }
+
+			}
+			else
+				return null;
 		}
 
         public async Task<AccountDTO> GetCurrentAccount(string accessToken)
@@ -67,5 +75,6 @@ namespace ZestFrontend.Services
 			else
 				return null;
 		}
+		
 	}
 }

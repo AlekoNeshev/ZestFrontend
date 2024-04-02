@@ -27,16 +27,8 @@ namespace ZestFrontend.ViewModels
 		[ObservableProperty]
 		string buttonText;
 		public ObservableCollection<CommunityDTO> Communities { get; } = new();
-
-		public async void GetComs()
-		{
-			Communities.Clear();
-			foreach (var item in await _communityService.GetCommunitiesByAccount(User.Id, 50, Communities.Count))
-			{
-				Communities.Add(item);
-			}
-		}
-		partial void OnUserChanged(UserDTO value)
+	
+		async partial void OnUserChanged(UserDTO value)
 		{
 			if (value.IsFollowed)
 			{
@@ -46,7 +38,7 @@ namespace ZestFrontend.ViewModels
 			{
 				ButtonText = "Follow";
 			}
-			GetComs();
+			await GetComs();
 		}
 		[RelayCommand]
 		async Task ChangeFollowshipStatusAsync()
@@ -82,6 +74,14 @@ namespace ZestFrontend.ViewModels
 			{
 			{"Community", community }
 			});
+		}
+		public async Task GetComs()
+		{
+			Communities.Clear();
+			foreach (var item in await _communityService.GetCommunitiesByAccount(User.Id, 50, Communities.Count))
+			{
+				Communities.Add(item);
+			}
 		}
 	}
 }

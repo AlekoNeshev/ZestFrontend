@@ -19,7 +19,7 @@ namespace ZestFrontend.ViewModels
         {
             this._followersService = followersService;
 			this._authService = authService;
-			GetFriends();
+			Init();
         }
 		public ObservableCollection<FollowerDTO> Friends { get; private set; } = new();
 		[ObservableProperty]
@@ -34,19 +34,9 @@ namespace ZestFrontend.ViewModels
 			get { return isInSearchMode; }
 			set { isInSearchMode = value; }
 		}
-		public async Task GetFriends()
+		public async void Init()
 		{
-			foreach (var item in await _followersService.GetFriends(50, Friends.Count))
-			{
-				Friends.Add(item);
-			}
-		}
-		public async Task SearchFriends()
-		{
-			foreach (var item in await _followersService.GetAccountsBySearch(SearchText, 50, Friends.Select(x => x.Id).ToArray()))
-			{
-				Friends.Add(item);
-			}
+			await GetFriends();
 		}
 		[RelayCommand]
 		async Task GoToChatPageAsync(FollowerDTO follower)
@@ -94,6 +84,19 @@ namespace ZestFrontend.ViewModels
 				await GetFriends();
 			}
 		}
-		
+		public async Task GetFriends()
+		{
+			foreach (var item in await _followersService.GetFriends(50, Friends.Count))
+			{
+				Friends.Add(item);
+			}
+		}
+		public async Task SearchFriends()
+		{
+			foreach (var item in await _followersService.GetAccountsBySearch(SearchText, 50, Friends.Select(x => x.Id).ToArray()))
+			{
+				Friends.Add(item);
+			}
+		}
 	}
 }

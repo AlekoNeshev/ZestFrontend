@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:ZestFrontend.Parameters"
+    xmlns:valueConverters="clr-namespace:ZestFrontend.ValueConverters"
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
     Title="ChatPage"
@@ -11,8 +12,8 @@
     BackgroundColor="GhostWhite">
     <ContentPage.Resources>
         <ResourceDictionary>
-            <local:UserMessageColorConverter x:Key="UserMessageColorConverter" />
-            <local:BoolToLayoutOptionsConverter x:Key="BoolToLayoutOptionsConverter" />
+            <valueConverters:UserMessageColorConverter x:Key="UserMessageColorConverter" />
+            <valueConverters:BoolToLayoutOptionsConverter x:Key="BoolToLayoutOptionsConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 

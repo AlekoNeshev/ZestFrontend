@@ -45,7 +45,6 @@ public static class MauiProgram
 		builder.Services.AddSingleton<SignalRConnectionService>();
 
         builder.Services.AddSingleton<MainViewModel>();
-		builder.Services.AddSingleton<LoginViewModel>();
 		builder.Services.AddSingleton<PostsViewModel>();
 		builder.Services.AddSingleton<CommunitesViewModel>();
 		builder.Services.AddSingleton<CommunityDetailsViewModel>();
@@ -54,7 +53,6 @@ public static class MauiProgram
 		builder.Services.AddTransient<AddPostViewModel>();
 		builder.Services.AddSingleton<FriendsViewModel>();
 		builder.Services.AddSingleton<ChatViewModel>();
-		builder.Services.AddSingleton<RegisterNewUserViewModel>();
 		builder.Services.AddSingleton<UsersViewModel>();
 		builder.Services.AddSingleton<UserDetailsViewModel>();
 		builder.Services.AddTransient<AddCommunityViewModel>();
@@ -63,7 +61,6 @@ public static class MauiProgram
 		builder.Services.AddTransient<CommentDetailsViewModel>();
 
         builder.Services.AddSingleton<MainPage>();
-        builder.Services.AddSingleton<Login>();
 		builder.Services.AddSingleton<PostsPage>();
 		builder.Services.AddSingleton<CommunitiesPage>();
 		builder.Services.AddSingleton<CommunityDetailsPage>();
@@ -72,7 +69,6 @@ public static class MauiProgram
 		builder.Services.AddTransient<AddPostPage>();
 		builder.Services.AddSingleton<FriendsPage>();
 		builder.Services.AddSingleton<ChatPage>();
-		builder.Services.AddSingleton<RegisterNewUser>();
 		builder.Services.AddSingleton<UsersPage>();
 		builder.Services.AddSingleton<UserDetailsPage>();
 		builder.Services.AddTransient<AddCommunityPage>();

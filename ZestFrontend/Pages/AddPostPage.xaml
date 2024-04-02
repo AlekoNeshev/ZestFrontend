@@ -54,7 +54,7 @@
                     Grid.Row="1"
                     Grid.Column="1"
                     HorizontalOptions="CenterAndExpand"
-                    ItemsSource="{Binding Images}">
+                    ItemsSource="{Binding Files}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="x:String">
                             <Grid>

@@ -26,7 +26,6 @@ namespace ZestFrontend.ViewModels
 		CommunityService _communityService;
 		MediaService _mediaService;
 		CommentFilter _filter;
-		private Task TaskInit;
 		private bool _isNavigatingToCommentDetailPage;
 
 
@@ -40,17 +39,13 @@ namespace ZestFrontend.ViewModels
 			_likesHubConnectionService=likesHubConnectionService;
 			_deleteHubConnectionService=deleteHubConnectionService;
 			_signalRConnectionService = signalRConnectionService;
-			TaskInit = Init();
 			ReplyCommand = new ReplyCommand(ExecuteReplyCommand);
+			_deleteHubConnectionService.DeleteConnection.On<int>("CommentDeleted", UpdateComment);
+			_likesHubConnectionService.LikesConnection.On<int>("CommentLiked", UpdateComment);
 			_ = new MauiIcon();
 			_filter = CommentFilter.All;
 			filterButtonText = "See trending";
 			_communityService=communityService;
-		}
-		private async Task Init()
-		{
-			_deleteHubConnectionService.DeleteConnection.On<int>("CommentDeleted", UpdateComment);
-			_likesHubConnectionService.LikesConnection.On<int>("CommentLiked", UpdateComment);
 		}
 		public CarouselView Carousel { get; set; }
 		public ICommand ReplyCommand { get; }
@@ -74,7 +69,24 @@ namespace ZestFrontend.ViewModels
 		string replyText;
 		public ObservableCollection<PostResourcesDTO> Resources { get; private set; } = new();
 
+		async partial void OnPostChanged(PostDTO value)
+		{
+			Post.IsModerator = await _communityService.IsModerator(_authService.Id, Post.CommunityId);
+			if ((Post.Publisher == _authService.Username|| Post.IsModerator || _authService.IsAdmin) && Post.Publisher != "Unknown")
+			{
+				Post.IsOwner = true;
+			}
 
+			Comments.Clear();
+			await GetComments();
+			await DealWithResource();
+
+		}
+		[RelayCommand]
+		async Task DeleteCommentAsync(CommentDTO commentDTO)
+		{
+			await _commentService.DeleteComment(commentDTO.Id, Post.Id);
+		}
 		[RelayCommand]
 		async Task LikePostAsync()
 		{
@@ -116,7 +128,112 @@ namespace ZestFrontend.ViewModels
 		{
 			await _postsService.DeletePost(Post.Id);
 		}
+		[RelayCommand]
+		async Task SendAsync(string text)
+		{
 
+			var response = await _commentService.PostComment(Post.Id, text);
+			var content = await response.Content.ReadAsStringAsync();
+			AddComment(int.Parse(content));
+
+		}
+
+
+		[RelayCommand]
+		async Task RefreshAsync()
+		{
+			Comments.Clear();
+			if (_filter == CommentFilter.All)
+			{
+				await GetComments();
+			}
+			else if (_filter == CommentFilter.Trending)
+			{
+				await GetTrendingComments();
+			}
+			IsRefreshing = false;
+		}
+		[RelayCommand]
+		async Task GoBackAsync()
+		{
+			await Shell.Current.GoToAsync("..");
+		}
+		[RelayCommand]
+		async Task LikeCommentAsync(CommentDTO commentDTO)
+		{
+			if (commentDTO.Like == null)
+			{
+
+				await _likesService.Like(Post.Id, commentDTO.Id, true);
+			}
+			else if (commentDTO.Like.Value == true)
+			{
+				await _likesService.RemoveLike(commentDTO.Like.Id, Post.Id, commentDTO.Id);
+			}
+			else if (commentDTO.Like.Value == false)
+			{
+				await _likesService.RemoveLike(commentDTO.Like.Id, Post.Id, commentDTO.Id);
+				await _likesService.Like(Post.Id, commentDTO.Id, true);
+			}
+		}
+		[RelayCommand]
+		async Task DislikeCommentAsync(CommentDTO commentDTO)
+		{
+			if (commentDTO.Like == null)
+			{
+
+				await _likesService.Like(Post.Id, commentDTO.Id, false);
+			}
+			else if (commentDTO.Like.Value == false)
+			{
+				await _likesService.RemoveLike(commentDTO.Like.Id, Post.Id, commentDTO.Id);
+			}
+			else if (commentDTO.Like.Value == true)
+			{
+				await _likesService.RemoveLike(commentDTO.Like.Id, Post.Id, commentDTO.Id);
+				await _likesService.Like(Post.Id, commentDTO.Id, false);
+			}
+		}
+		[RelayCommand]
+		void ReplyCommentAsync(CommentDTO comment)
+		{
+			comment.IsReplyVisible = !comment.IsReplyVisible;
+
+		}
+		[RelayCommand]
+		async Task LoadMoreComments()
+		{
+			if (_filter == CommentFilter.All)
+				await GetComments();
+			else
+				await GetTrendingComments();
+		}
+		[RelayCommand]
+		async Task FilterCommentsAsync()
+		{
+			Comments.Clear();
+			if (_filter == CommentFilter.Trending)
+			{
+				await GetComments();
+			}
+			else
+			{
+				await GetTrendingComments();
+			}
+		}
+		[RelayCommand]
+		async Task GoToCommentDetailPageAsync(CommentDTO comment)
+		{
+			if (comment == null) return;
+			_isNavigatingToCommentDetailPage = true;
+			await Shell.Current.GoToAsync($"{nameof(CommentDetailsPage)}?id={comment.Id}", true,
+				new Dictionary<string, object>
+			{
+			{"Comment", comment },
+			{"postId", Post }
+			});
+
+		}
 		public async Task GetComments()
 		{
 
@@ -182,107 +299,23 @@ namespace ZestFrontend.ViewModels
 			}
 
 		}
-		[RelayCommand]
-		async Task SendAsync(string text)
-		{
-
-			var response = await _commentService.PostComment(Post.Id, text);
-			var content = await response.Content.ReadAsStringAsync();
-			AddComment(int.Parse(content));
-
-		}
-		async partial void OnPostChanged(PostDTO value)
-		{
-			Post.IsModerator = await _communityService.IsModerator(_authService.Id, Post.CommunityId);
-			if ((Post.Publisher == _authService.Username|| Post.IsModerator || _authService.IsAdmin) && Post.Publisher != "Unknown")
-			{
-				Post.IsOwner = true;
-			}
-			
-			Comments.Clear();
-			await GetComments();
-			DealWithResource();
-					
-			
-		}
-
-		[RelayCommand]
-		async Task RefreshAsync()
-		{
-			Comments.Clear();
-			if(_filter == CommentFilter.All) 
-			{
-				await GetComments();
-			}
-			else if(_filter == CommentFilter.Trending)
-			{
-				await GetTrendingComments();
-			}
-			IsRefreshing = false;
-		}
-		[RelayCommand]
-		async Task GoBackAsync()
-		{
-			await Shell.Current.GoToAsync("..");
-		}
-		[RelayCommand]
-		async Task LikeCommentAsync(CommentDTO commentDTO)
-		{
-			if (commentDTO.Like == null)
-			{
-
-				await _likesService.Like(Post.Id, commentDTO.Id, true);
-			}
-			else if (commentDTO.Like.Value == true)
-			{
-				await _likesService.RemoveLike(commentDTO.Like.Id, Post.Id, commentDTO.Id);
-			}
-			else if (commentDTO.Like.Value == false)
-			{
-				await _likesService.RemoveLike(commentDTO.Like.Id, Post.Id, commentDTO.Id);
-				await _likesService.Like(Post.Id, commentDTO.Id, true);
-			}
-		}
-		[RelayCommand]
-		async Task DislikeCommentAsync(CommentDTO commentDTO)
-		{
-			if (commentDTO.Like == null)
-			{
-
-				await _likesService.Like(Post.Id, commentDTO.Id, false);
-			}
-			else if (commentDTO.Like.Value == false)
-			{
-				await _likesService.RemoveLike(commentDTO.Like.Id, Post.Id, commentDTO.Id);
-			}
-			else if (commentDTO.Like.Value == true)
-			{
-				await _likesService.RemoveLike(commentDTO.Like.Id, Post.Id, commentDTO.Id);
-				await _likesService.Like(Post.Id, commentDTO.Id, false);
-			}
-		}
-		[RelayCommand]
-		void ReplyCommentAsync(CommentDTO comment)
-		{
-			comment.IsReplyVisible = !comment.IsReplyVisible;
-
-		}
+		
 
 		public async Task SendReplyAsync(int comment, string text)
 		{
 			var response = await _commentService.PostComment(Post.Id, text, comment);
 
 			var content = await response.Content.ReadAsStringAsync();
-			string[] parts = content.Trim('[', ']').Split(',');
-			int firstNumber = int.Parse(parts[0]);
-			int secondNumber = int.Parse(parts[1]);
-			var reply = await _commentService.GetSingleComment(firstNumber);
+			string[] ids = content.Trim('[', ']').Split(',');
+			int replyId = int.Parse(ids[0]);
+			int fatherCommentId = int.Parse(ids[1]);
+			var reply = await _commentService.GetSingleComment(replyId);
 			if(Post.IsModerator == true || reply.Publisher == _authService.Username)
 			{
 				reply.IsOwner = true;
 			}
 		
-			var commentToFind = FindCommentById(secondNumber, Comments, 0);
+			var commentToFind = FindCommentById(fatherCommentId, Comments, 0);
 			if (commentToFind != null && commentToFind.Length > 1)
 			{
 				var commentDto = (CommentDTO)commentToFind[0];
@@ -343,12 +376,8 @@ namespace ZestFrontend.ViewModels
 			}
 			Comments.Add(comment);
 		}
-		[RelayCommand]
-		async Task DeleteCommentAsync(CommentDTO commentDTO)
-		{
-			await _commentService.DeleteComment(commentDTO.Id, Post.Id);
-		}
-		public async void DealWithResource()
+		
+		public async Task DealWithResource()
 		{
 			Resources.Clear();
 			if (Post.ResourceType == null)
@@ -384,27 +413,6 @@ namespace ZestFrontend.ViewModels
 				return;
 			}
 		}
-		[RelayCommand]
-		async Task LoadMoreComments()
-		{
-			if (_filter == CommentFilter.All)
-				await GetComments();
-			else
-				await GetTrendingComments();
-		}
-		[RelayCommand]
-		async Task FilterCommentsAsync()
-		{
-			Comments.Clear();
-			if (_filter == CommentFilter.Trending)
-			{
-				await GetComments();
-			}
-			else
-			{
-				await GetTrendingComments();
-			}
-		}
 		
 		private async void ExecuteReplyCommand(ReplyCommandParameter parameter)
 		{
@@ -418,25 +426,10 @@ namespace ZestFrontend.ViewModels
 				commentDto.IsReplyVisible = false;
 			}
 			
-
 		}
-		[RelayCommand]
-		async Task GoToCommentDetailPageAsync(CommentDTO comment)
-		{
-			if (comment == null) return;
-			_isNavigatingToCommentDetailPage = true;
-			await Shell.Current.GoToAsync($"{nameof(CommentDetailsPage)}?id={comment.Id}", true,
-				new Dictionary<string, object>
-			{
-			{"Comment", comment },
-			{"postId", Post }
-			});
-
-		}
-
+		
 		public async Task OnNavigatedTo()
 		{
-			if (TaskInit is not null && !TaskInit.IsCompleted) await TaskInit;
 			if (!_isNavigatingToCommentDetailPage)
 			{
 				if(_likesHubConnectionService.LikesConnection.ConnectionId != null)

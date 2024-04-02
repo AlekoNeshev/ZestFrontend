@@ -20,7 +20,7 @@ namespace ZestFrontend.Services
 
 		public HubConnection MessageConnection => _messageConnection;
 
-		public async Task Init()
+		public async void Init()
 		{
 			_messageConnection = BuildLikesHubConnection($"{PortConst.Port_Forward_Http}/messagehub");
 			await StartConnections();

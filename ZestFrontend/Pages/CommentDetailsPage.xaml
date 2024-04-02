@@ -7,13 +7,14 @@
     xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
     xmlns:model="clr-namespace:ZestFrontend.DTOs"
     xmlns:viewmodel="clr-namespace:ZestFrontend.ViewModels"
+    xmlns:valueConverters="clr-namespace:ZestFrontend.ValueConverters"
     Title="CommentDetailsPage"
     x:DataType="viewmodel:CommentDetailsViewModel"
     BackgroundColor="GhostWhite">
 
     <ContentPage.Resources>
-        <local:LikeButtonsColorConverter x:Key="LikeButtonColorConverter" />
-        <local:DislikeButtonColorConverter x:Key="DislikeButtonColorConverter" />
+        <valueConverters:LikeButtonsColorConverter x:Key="LikeButtonColorConverter" />
+        <valueConverters:DislikeButtonColorConverter x:Key="DislikeButtonColorConverter" />
         <ResourceDictionary>
 
             <DataTemplate x:Key="CommentTemplate" x:DataType="model:CommentDTO">

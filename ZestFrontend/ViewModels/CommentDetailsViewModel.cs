@@ -18,9 +18,9 @@ namespace ZestFrontend.ViewModels
         private readonly CommentService _commentService;
 		private readonly AuthService _authService;
 		private readonly LikesService _likesService;
-		LikesHubConnectionService _likesHubConnectionService;
-		DeleteHubConnectionService _deleteHubConnectionService;
-		SignalRConnectionService _signalRConnectionService;
+		private readonly LikesHubConnectionService _likesHubConnectionService;
+		private readonly DeleteHubConnectionService _deleteHubConnectionService;
+		private readonly SignalRConnectionService _signalRConnectionService;
         public CommentDetailsViewModel(CommentService commentService, AuthService authService, LikesService likesService, LikesHubConnectionService likesHubConnectionService, DeleteHubConnectionService deleteHubConnectionService, SignalRConnectionService signalRConnectionService)
         {
             _commentService = commentService;
@@ -142,18 +142,18 @@ namespace ZestFrontend.ViewModels
 		{
 			var response = await _commentService.PostComment(Post.Id, text, comment);
 			var content = await response.Content.ReadAsStringAsync();
-			string[] parts = content.Trim('[', ']').Split(',');
-			int firstNumber = int.Parse(parts[0]);
-			int secondNumber = int.Parse(parts[1]);
-			var reply = await _commentService.GetSingleComment(firstNumber);
+			string[] ids = content.Trim('[', ']').Split(',');
+			int replyId = int.Parse(ids[0]);
+			int fatherCommentId = int.Parse(ids[1]);
+			var reply = await _commentService.GetSingleComment(replyId);
 			reply.IsOwner = reply.Publisher == _authService.Username;
-			if (Comment.Id == secondNumber)
+			if (Comment.Id == fatherCommentId)
 			{
 				Comment.Replies.Add(reply);
 			}
 			else
 			{
-				var commentToFind = FindCommentById(secondNumber, Replies, 0);
+				var commentToFind = FindCommentById(fatherCommentId, Replies, 0);
 				if (commentToFind != null && commentToFind.Length > 1)
 				{
 					var commentDto = (CommentDTO)commentToFind[0];
@@ -233,10 +233,7 @@ namespace ZestFrontend.ViewModels
 					var commentDto = (CommentDTO)commentToFind[0];
 					commentDto.IsReplyVisible = false;
 				}
-			}
-			
-
+			}			
 		}
-
 	}
 }
