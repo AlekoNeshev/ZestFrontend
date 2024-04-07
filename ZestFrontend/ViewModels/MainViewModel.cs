@@ -1,6 +1,7 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using IdentityModel.OidcClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,8 @@ namespace ZestFrontend.ViewModels
 			{
 				var accessToken = await SecureStorage.Default.GetAsync("access_token");
 				var account = await _accountService.GetCurrentAccount(accessToken);
-				_authService.Token = accessToken;
+               
+                _authService.Token = accessToken;
 				_authService.Id = account.Id;
 				_authService.Username = account.Username;
 				_authService.IsAdmin = account.IsAdmin;
