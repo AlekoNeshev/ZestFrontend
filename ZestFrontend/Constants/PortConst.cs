@@ -7,6 +7,6 @@ namespace ZestFrontend.Constants
 {
     public class PortConst
     {
-        public const string Port_Forward_Http = "https://926zh759-5132.euw.devtunnels.ms";
+        public const string Port_Forward_Http = "https://zestapi.azurewebsites.net";
     }
 }

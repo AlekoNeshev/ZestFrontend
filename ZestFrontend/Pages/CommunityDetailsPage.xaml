@@ -182,6 +182,7 @@
                 ItemsSource="{Binding Posts}"
                 ItemsUpdatingScrollMode="KeepScrollOffset"
                 RemainingItemsThreshold="1"
+                Background="Transparent"
                 RemainingItemsThresholdReachedCommand="{Binding LoadMorePostsCommand}">
                 <CollectionView.Header>
 

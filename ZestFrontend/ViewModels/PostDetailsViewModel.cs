@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
+using ZestFrontend.Constants;
 using ZestFrontend.DTOs;
 using ZestFrontend.Filters;
 using ZestFrontend.Pages;
@@ -394,7 +395,10 @@ namespace ZestFrontend.ViewModels
 				IsCarouselVisible = true;
 				IsMediaPlayerVisible = false;
 				PostResourcesDTO[] results = await _mediaService.GetPhotosByPostId(Post.Id);
-
+				foreach (var item in results)
+				{
+					item.Source = PortConst.Port_Forward_Http + item.Source;
+				}
 				Resources = new ObservableCollection<PostResourcesDTO>(results);
 
 				OnPropertyChanged(nameof(Resources));
@@ -407,7 +411,7 @@ namespace ZestFrontend.ViewModels
 				var results = await _mediaService.GetPhotosByPostId(Post.Id);
 
 
-				Source = results.First().Source;
+				Source = PortConst.Port_Forward_Http + results.First().Source;
 			}
 			else
 			{
