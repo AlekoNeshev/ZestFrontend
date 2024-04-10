@@ -20,7 +20,7 @@ namespace ZestFrontend.Services
            
             var url = $"{PortConst.Port_Forward_Http}/Zest/Account/add/{name}/{email}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-			var response = await _httpClient.PostAsJsonAsync(url, new StringContent("data"));
+			var response = await _httpClient.PostAsync(url, new StringContent("data"));
 			if (response.IsSuccessStatusCode)
 			{
 				if (response.Content != null && response.Content.Headers.ContentLength > 0)

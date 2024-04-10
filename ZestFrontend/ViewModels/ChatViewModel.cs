@@ -22,7 +22,6 @@ namespace ZestFrontend.ViewModels
 		SignalRConnectionService _signalRConnectionService;
 		public event EventHandler NewMessageReceived;
 		public event EventHandler OnOpenScreen;
-		private Task InitTask;
 		
         public ChatViewModel(MessageService messageService, MessageHubConnectionService messageHubConnectionService, SignalRConnectionService signalRConnectionService, AuthService authService)
         {
@@ -33,13 +32,10 @@ namespace ZestFrontend.ViewModels
 			this._authService = authService;
 			
 			this._signalRConnectionService = signalRConnectionService;
-			Init();
+			
 			
 		}
-		private async void Init()
-		{	
-			
-		}
+		
 		public ObservableCollection<MessageGroup> Messages { get; private set; } = new();
 		
 		[ObservableProperty]
@@ -50,8 +46,9 @@ namespace ZestFrontend.ViewModels
 		{
 			Messages.Clear();
 			await GetMessages();
+			await Task.Delay(100);
 			await OnOpen();
-
+			
 		}
 		[RelayCommand]
 		async Task SendAsync(string text)
@@ -142,17 +139,21 @@ namespace ZestFrontend.ViewModels
 		{
 			var message = await _messageService.FindById(messageId);
 			message.IsOwner = message.SenderUsername == _authService.Username;
-			if(Messages.LastOrDefault().Date.Date == message.CreatedOn.Date)
+			if(Messages.Count >0)
 			{
-				Messages.LastOrDefault().Add(message);
-			}
-			else
-			{
-				var messageGroup = new MessageGroup { Date = message.CreatedOn.Date };
-				messageGroup.Add(message);
-				Messages.Add(messageGroup);
+				if (Messages.LastOrDefault().Date.Date == message.CreatedOn.Date)
+				{
+					Messages.LastOrDefault().Add(message);
+				}
+				else
+				{
+					var messageGroup = new MessageGroup { Date = message.CreatedOn.Date };
+					messageGroup.Add(message);
+					Messages.Add(messageGroup);
 
+				}
 			}
+			
 			OnNewMessageReceived();
 
 		}
@@ -161,8 +162,9 @@ namespace ZestFrontend.ViewModels
 		{
 			NewMessageReceived?.Invoke(this, EventArgs.Empty);
 		}
-		async protected virtual Task OnOpen()
+		 async protected virtual Task OnOpen()
 		{
+			
 			OnOpenScreen?.Invoke(this, EventArgs.Empty);
 		}
 		public async void OnNavigatedTo()

@@ -83,15 +83,20 @@ public partial class ChatPage : ContentPage
 	private void ViewModel_OnOpenScreen(object sender, EventArgs e)
 	{
 		int lastGroupIndex = viewModel.Messages.Count - 1;
-		var lastItemIndex = viewModel.Messages.LastOrDefault().LastOrDefault();
-
-		if (lastGroupIndex >= 0 && lastItemIndex != null)
+		if (lastGroupIndex >= 0)
 		{
-			MainThread.BeginInvokeOnMainThread(() =>
+			var lastItemIndex = viewModel.Messages.LastOrDefault().LastOrDefault();
+
+			if (lastItemIndex != null)
 			{
-				Messages.ScrollTo(lastItemIndex, position: ScrollToPosition.MakeVisible, animate: false);
-			});
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					Messages.ScrollTo(lastItemIndex, position: ScrollToPosition.MakeVisible, animate: false);
+				});
+			}
 		}
+	
+		
 	}
 	private void Button_Clicked(object sender, EventArgs e)
 	{
