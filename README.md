@@ -6,7 +6,7 @@
 Клиентското приложение на Zest използва технологията за cross-platform native applications .Net MAUI. Технологията е избрана зареди нейното таргетиране на платформите Windows, Android, Tyzen и IOS. Трябва да се има впредвид, че технологията е сравнително нова и все още се развива. Приложението е тествано на Windows и Android. Използва се Shell application. Приложение следва MVVM модел.
 
 
-
+[Documentation for Zest](https://docs.google.com/document/d/1qqqjbg7KEzuyHqtHrxew4PBPGfpP7X1eJF-H1fZSR1A/edit)
 
 ## Страници
 
