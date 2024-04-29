@@ -79,6 +79,7 @@
                 Command="{Binding DeleteCommunityCommand}"
                 CommandParameter="{Binding Community.Id}"
                 HorizontalOptions="Center"
+                IsVisible="{Binding CanDelete}"
                 Text="Delete"
                 WidthRequest="90">
                 <Button.Background>

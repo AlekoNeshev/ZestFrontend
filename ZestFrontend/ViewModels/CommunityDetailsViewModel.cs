@@ -40,6 +40,8 @@ namespace ZestFrontend.ViewModels
 		}
 		[ObservableProperty]
 		string searchText;
+		[ObservableProperty]
+		bool canDelete;
 
 		private bool isInSearchMode;
 
@@ -48,6 +50,7 @@ namespace ZestFrontend.ViewModels
 			get { return isInSearchMode; }
 			set { isInSearchMode = value; }
 		}
+
 		async partial void OnCommunityChanged(CommunityDTO value)
 		{
 			if (value.IsSubscribed)
@@ -60,6 +63,10 @@ namespace ZestFrontend.ViewModels
 			}
 			Posts.Clear();
 			await GetPosts();
+			if(_authService.IsAdmin == true)
+			{
+				CanDelete = true;
+			}
 		}
 		public async void UpdatePost(int id)
 		{

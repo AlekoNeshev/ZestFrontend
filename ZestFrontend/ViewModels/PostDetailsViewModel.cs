@@ -81,6 +81,8 @@ namespace ZestFrontend.ViewModels
 			Comments.Clear();
 			await GetComments();
 			await DealWithResource();
+			_filter = CommentFilter.All;
+			FilterButtonText = "See trending";
 
 		}
 		[RelayCommand]
