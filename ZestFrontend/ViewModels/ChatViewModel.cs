@@ -70,11 +70,11 @@ namespace ZestFrontend.ViewModels
 			DateTime lastDate = new DateTime();
 			if (Messages.Count==0)
 			{
-				lastDate = DateTime.Now;
+				lastDate = DateTime.UtcNow;
 			}
 			else
 			{
-				lastDate = Messages.First().FirstOrDefault().CreatedOn;
+				lastDate = Messages.First().FirstOrDefault().CreatedOn + (DateTime.UtcNow - DateTime.Now); ;
 			}
 			var p = await _messageService.GetMessages(Follower.Id, lastDate, 40);
 			
@@ -87,6 +87,7 @@ namespace ZestFrontend.ViewModels
 				{
 					messageGroup.Add(message);
 					message.IsOwner = message.SenderUsername == _authService.Username;
+					message.CreatedOn = message.CreatedOn + (DateTime.Now - DateTime.UtcNow);
 				}
 				Messages.Add(messageGroup);
 
@@ -98,11 +99,11 @@ namespace ZestFrontend.ViewModels
 			DateTime lastDate = new DateTime();
 			if (Messages.Count==0)
 			{
-				lastDate = DateTime.Now;
+				lastDate = DateTime.UtcNow;
 			}
 			else
 			{
-				lastDate = Messages.First().FirstOrDefault().CreatedOn;
+				lastDate = Messages.First().FirstOrDefault().CreatedOn +  (DateTime.UtcNow - DateTime.Now); 
 			}
 			var messages = await _messageService.GetMessages(Follower.Id, lastDate, 40);
 			var groups = messages.GroupBy(m => m.CreatedOn.Date);
@@ -116,6 +117,7 @@ namespace ZestFrontend.ViewModels
 					foreach (var message in item.OrderByDescending(x => x.CreatedOn))
 					{
 						message.IsOwner = message.SenderUsername == _authService.Username;
+						message.CreatedOn = message.CreatedOn +  (DateTime.Now - DateTime.UtcNow);
 						group.Insert(0, message);
 					}
 				}
@@ -125,6 +127,7 @@ namespace ZestFrontend.ViewModels
 					foreach (var message in item.OrderBy(x => x.CreatedOn))
 					{
 						message.IsOwner = message.SenderUsername == _authService.Username;
+						message.CreatedOn = message.CreatedOn +  (DateTime.Now - DateTime.UtcNow);
 						messageGroup.Add(message);
 					}
 					Messages.Insert(0, messageGroup);
@@ -139,7 +142,8 @@ namespace ZestFrontend.ViewModels
 		{
 			var message = await _messageService.FindById(messageId);
 			message.IsOwner = message.SenderUsername == _authService.Username;
-			if(Messages.Count >0)
+			message.CreatedOn = message.CreatedOn + (DateTime.Now - DateTime.UtcNow);
+			if (Messages.Count >0)
 			{
 				if (Messages.LastOrDefault().Date.Date == message.CreatedOn.Date)
 				{
