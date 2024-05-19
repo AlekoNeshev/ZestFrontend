@@ -85,9 +85,12 @@ namespace ZestFrontend.Services
 		}
 		public async Task<HttpResponseMessage> AddPost(string title, string content, int communityId)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/Zest/Post/add/{title}/community/{communityId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Post/add/community/{communityId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
-			var body = JsonConvert.SerializeObject(content);
+			var postInfo = new PostBaseDTO();
+			postInfo.Title = title;
+			postInfo.Text = content;
+			var body = JsonConvert.SerializeObject(postInfo);
 			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
 			response.EnsureSuccessStatusCode();
 			return response;
@@ -105,8 +108,6 @@ namespace ZestFrontend.Services
 			var url = $"{PortConst.Port_Forward_Http}/Zest/Post/getByTrending/{takeCount}/{communityId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject(skipIds);
-
-
 
 			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
 

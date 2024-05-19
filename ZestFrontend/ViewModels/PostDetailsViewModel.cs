@@ -246,11 +246,11 @@ namespace ZestFrontend.ViewModels
 			DateTime lastDate = new DateTime();
 			if (Comments.Count==0)
 			{
-				lastDate = DateTime.Now;
+				lastDate = DateTime.UtcNow;
 			}
 			else
 			{
-				lastDate = Comments.Last().PostedOn;
+				lastDate = Comments.Last().PostedOn + (DateTime.UtcNow - DateTime.Now);
 			}
 			var comments = await _commentService.GetComments(Post.Id, lastDate, 5);
 			if (comments != null)
@@ -261,6 +261,7 @@ namespace ZestFrontend.ViewModels
 					{
 						comment.IsOwner = true;
 					}
+					comment.PostedOn = comment.PostedOn + (DateTime.Now - DateTime.UtcNow);
 					await IsOwner(comment.Replies, 0);
 					Comments.Add(comment);
 
@@ -280,6 +281,7 @@ namespace ZestFrontend.ViewModels
 				{
 					comment.IsOwner = true;
 				}
+				comment.PostedOn = comment.PostedOn +  (DateTime.Now - DateTime.UtcNow);
 				await IsOwner(comment.Replies, 0);
 				Comments.Add(comment);
 			}
@@ -291,7 +293,8 @@ namespace ZestFrontend.ViewModels
 		{
 			foreach (var comment in comments)
 			{
-				if((Post.IsModerator == true || comment.Publisher==_authService.Username || _authService.IsAdmin)  && comment.Publisher != "Unknown")
+				comment.PostedOn = comment.PostedOn +  (DateTime.Now - DateTime.UtcNow);
+				if ((Post.IsModerator == true || comment.Publisher==_authService.Username || _authService.IsAdmin)  && comment.Publisher != "Unknown")
 				{
 					comment.IsOwner = true;
 				}
@@ -316,7 +319,8 @@ namespace ZestFrontend.ViewModels
 			int replyId = int.Parse(ids[0]);
 			int fatherCommentId = int.Parse(ids[1]);
 			var reply = await _commentService.GetSingleComment(replyId);
-			if(Post.IsModerator == true || reply.Publisher == _authService.Username)
+			reply.PostedOn = reply.PostedOn + (DateTime.Now - DateTime.UtcNow);
+			if (Post.IsModerator == true || reply.Publisher == _authService.Username)
 			{
 				reply.IsOwner = true;
 			}
@@ -380,6 +384,7 @@ namespace ZestFrontend.ViewModels
 			{
 				comment.IsOwner = true;
 			}
+			comment.PostedOn = comment.PostedOn + (DateTime.Now - DateTime.UtcNow);
 			Comments.Add(comment);
 		}
 		

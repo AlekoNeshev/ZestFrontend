@@ -8,26 +8,11 @@ using System.Threading.Tasks;
 
 namespace ZestFrontend.DTOs
 {
-    public class PostDTO : ObservableObject
+    public class PostDTO : PostBaseDTO
     {
         private int _likes;
         private int _dislikes;
         private LikeDTO _like;
-
-        private string _text;
-
-		private string _title;
-
-		public string Title
-		{
-			get => _text;
-			set => SetProperty(ref _title, value);
-		}
-		public string Text
-        {
-			get => _text;
-			set => SetProperty(ref _text, value);
-		}
 
         public int Id { get; set; }
 

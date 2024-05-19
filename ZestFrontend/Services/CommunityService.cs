@@ -82,9 +82,10 @@ namespace ZestFrontend.Services
 		}
         public async Task<HttpResponseMessage> AddCommunity(string name, string description)
         {
-			var url = $"{PortConst.Port_Forward_Http}/Zest/Community/add/{name}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/Community/add";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
-			var body = JsonConvert.SerializeObject(description);
+			var communityInfo = new CommunityBaseDTO { Name = name, Description = description };
+			var body = JsonConvert.SerializeObject(communityInfo);
 			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
 			response.EnsureSuccessStatusCode();
 			return response;
@@ -124,7 +125,7 @@ namespace ZestFrontend.Services
 		}
 		public async Task<HttpResponseMessage> ApproveCandidate(string accountId, int communityId)
 		{
-			var url = $"{PortConst.Port_Forward_Http}/ZestCommunityModerators/approveCandidate/{accountId}/{communityId}";
+			var url = $"{PortConst.Port_Forward_Http}/Zest/CommunityModerators/approveCandidate/{accountId}/{communityId}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var response = await _httpClient.PostAsync(url, new StringContent("data"));
 			response.EnsureSuccessStatusCode();
@@ -151,8 +152,6 @@ namespace ZestFrontend.Services
 			var url = $"{PortConst.Port_Forward_Http}/Zest/Community/getByPopularityId/{takeCount}";
 			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authService.Token);
 			var body = JsonConvert.SerializeObject(skipIds);
-
-
 
 			var response = await _httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
 

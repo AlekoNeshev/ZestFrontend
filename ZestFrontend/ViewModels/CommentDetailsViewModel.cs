@@ -57,10 +57,11 @@ namespace ZestFrontend.ViewModels
 			var comment = await _commentService.GetSingleComment(Comment.Id);
 			foreach (var item in comment.Replies)
 			{
-				if ((Post.IsModerator == true || comment.Publisher==_authService.Username || _authService.IsAdmin)  && comment.Publisher != "Unknown")
+				if ((Post.IsModerator == true || item.Publisher==_authService.Username || _authService.IsAdmin)  && item.Publisher != "Unknown")
 				{
-					comment.IsOwner = true;
+					item.IsOwner = true;
 				}
+				item.PostedOn = item.PostedOn +  (DateTime.Now - DateTime.UtcNow);
 				await IsOwner(item.Replies, 0);
 				Replies.Add(item);
 			}
@@ -69,7 +70,7 @@ namespace ZestFrontend.ViewModels
 		{
 			foreach (var comment in comments)
 			{
-
+				comment.PostedOn = comment.PostedOn +  (DateTime.Now - DateTime.UtcNow);
 				if ((Post.IsModerator == true || comment.Publisher==_authService.Username || _authService.IsAdmin)  && comment.Publisher != "Unknown")
 				{
 					comment.IsOwner = true;
@@ -147,9 +148,10 @@ namespace ZestFrontend.ViewModels
 			int fatherCommentId = int.Parse(ids[1]);
 			var reply = await _commentService.GetSingleComment(replyId);
 			reply.IsOwner = reply.Publisher == _authService.Username;
+			reply.PostedOn = reply.PostedOn +  (DateTime.Now - DateTime.UtcNow);
 			if (Comment.Id == fatherCommentId)
 			{
-				Comment.Replies.Add(reply);
+				Replies.Add(reply);
 			}
 			else
 			{

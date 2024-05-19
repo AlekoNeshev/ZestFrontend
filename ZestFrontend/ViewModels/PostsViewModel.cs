@@ -284,14 +284,15 @@ namespace ZestFrontend.ViewModels
 			DateTime lastDate = new DateTime();
 			if (Posts.Count==0)
 			{
-				lastDate = DateTime.Now;
+				lastDate = DateTime.UtcNow;
 			}
 			else
 			{
-				lastDate = Posts.Last().PostedOn;
+				lastDate = Posts.Last().PostedOn + (DateTime.UtcNow - DateTime.Now);
 			}
 			foreach (var post in await _postsService.GetPosts(lastDate, 0, 40))
 			{
+				post.PostedOn = post.PostedOn + (DateTime.Now - DateTime.UtcNow);
 				Posts.Add(post);
 			}
 			_filter = PostsFilterOptions.Last;
@@ -306,7 +307,7 @@ namespace ZestFrontend.ViewModels
 
 			foreach (var post in await _postsService.GetTrendingPostsAsync(40, 0, skipIds))
 			{
-
+				post.PostedOn = post.PostedOn +  (DateTime.Now - DateTime.UtcNow);
 				Posts.Add(post);
 			}
 			_filter = PostsFilterOptions.Trending;
@@ -319,6 +320,7 @@ namespace ZestFrontend.ViewModels
 
 			foreach (var post in await _postsService.GetFollowedPostsAsync(40, skipIds))
 			{
+				post.PostedOn = post.PostedOn +  (DateTime.Now - DateTime.UtcNow);
 				Posts.Add(post);
 			}
 			_filter = PostsFilterOptions.Followed;
@@ -329,6 +331,7 @@ namespace ZestFrontend.ViewModels
 		{
 			foreach (var item in await _postsService.GetPostsBySearch(SearchText, 40, 0, Posts.Select(x => x.Id).ToArray()))
 			{
+				item.PostedOn = item.PostedOn +  (DateTime.Now - DateTime.UtcNow);
 				Posts.Add(item);
 			}
 		}
